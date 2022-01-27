@@ -1,0 +1,55 @@
+
+#############################
+# TIBERO environment variable
+#############################
+#### SHELL
+stty erase ^H
+export PS1="[`whoami`@`hostname`:\$PWD]$ "
+export EDITOR=vim
+
+#### JAVA
+# 설치 시 필수로 확인.
+#export JAVA_HOME=
+
+#### TIBERO genernal
+export TB_SID=
+## TSC / TAC Examples
+#export TB_SID=<DB_NAME>_p
+#export TB_SID=<DB_NAME>_s
+#export TB_SID=<DB_NAME>0
+#export TB_SID=<DB_NAME>1
+
+export TB_HOME=
+export TB_PROF_DIR=$TB_HOME/bin/prof
+export LD_LIBRARY_PATH=$TB_HOME/lib:$TB_HOME/client/lib
+export LIBPATH=$LD_LIBRARY_PATH
+export SHLIB_PATH=$LD_LIBRARY_PATH
+export PATH=$PATH:$TB_HOME/bin:$TB_HOME/client/bin:$JAVA_HOME/bin
+
+#### TSC (Tibero Standby Cluster)
+#export CM_SID=primary
+#export CM_SID=standby
+#export CM_SID=observer
+#export CM_HOME=$TB_HOME
+
+#### TAC (Tibero Active Cluster)
+#export CM_SID=cm0
+#export CM_SID=cm1
+#export CM_HOME=$TB_HOME
+
+
+#### TIBERO alias
+alias tbhome='cd $TB_HOME'
+alias tbbin='cd $TB_HOME/bin'
+alias tblog='cd $TB_HOME/instance/$TB_SID/log'
+alias tbcfg='cd $TB_HOME/config'
+alias tbcfgv='vi $TB_HOME/config/$TB_SID.tip'
+alias tbcli='cd $TB_HOME/client/config'
+alias tbcliv='vi $TB_HOME/client/config/tbdsn.tbr'
+alias tbi='cd $HOME/tbinary'
+alias tm='$HOME/tbinary/monitor/monitor'
+
+
+#### linux 전용(UNIX일 경우 IF문으로 구분할지 ?) --제거할
+#alias tbprofv='vi ~/.bash_profile'
+#alias tbscr='cd $TB_HOME/scripts'
