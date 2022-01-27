@@ -1,6 +1,6 @@
 
 #!/bin/sh
-
+#http://daplus.net/bash-%EC%89%98-%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EC%97%90-%EC%A7%84%ED%96%89%EB%A5%A0-%ED%91%9C%EC%8B%9C-%EC%A4%84%EC%9D%84-%EC%B6%94%EA%B0%80%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95/
 #!/bin/bash
 # 1. Create ProgressBar function
 # 1.1 Input is currentState($1) and totalState($2)
