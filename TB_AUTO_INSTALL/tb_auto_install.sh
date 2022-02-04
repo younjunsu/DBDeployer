@@ -5,12 +5,17 @@ function FN_PRINT_PRESS(){
     echo "Press Enter Key to continue..."
 }
 function FN_PRINT_TYPE(){
+    echo "############################"
+    echo "# TIBERO TYPE"
     echo "# 1. SINGLE"
     echo "# 2. TSC"
     echo "# 3. TAC"
     echo "# 4. PROSYNC"
     echo "# 5. TAS"
+    echo "############################"
     echo -n "Choose the Number : "
+
+    
 }
 
 function FN_AUTO_MENU(){
@@ -65,13 +70,42 @@ function FN_MANUAL_MENU(){
         clear
         FN_PRINT_TYPE
         read INTPUT_TYPE
+        echo
+        echo "############################"
         echo -n "# USER NAME : "
         read INPUT_USER
+        USER_HOME_PATH=`su - $INPUT_USER -c "env" |grep -w "HOME="`
+        echo "# $USER_HOME_PATH"
         echo
+        echo "############################"
+        echo "# ENV Prrofile Select"
         echo "# 1. .bash_profile"
         echo "# 2. .profile"
+        echo "############################"
         echo -n "Choose the Number : "
         read INPUT_ENV
+        echo
+        USER_HOME_PATH=`echo $USER_HOME_PATH |sed 's/=/ /g' |awk '{print $NF}'`
+        case $INPUT_ENV in 
+        1)
+            echo "-----------------------------------------------------------------"
+            echo
+            echo "cat ./tb_files/tb_profile.txt >> "$USER_HOME_PATH"/.bash_profile"            
+            echo
+            echo "-----------------------------------------------------------------"            
+        ;;
+        2)
+            echo "-----------------------------------------------------------------"
+            echo
+            echo "cat ./tb_files/tb_profile.txt >> "$USER_HOME_PATH"/.profile"
+            echo
+            echo "-----------------------------------------------------------------"
+        ;;
+        *)
+            ""
+        ;;
+        esac
+
         FN_PRINT_PRESS
         read PRESS_KEY
     ;;
