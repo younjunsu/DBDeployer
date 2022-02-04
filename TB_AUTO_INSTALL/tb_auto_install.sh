@@ -18,6 +18,7 @@ function FN_AUTO_MENU(){
 }
 
 function FN_MANUAL_MENU(){
+    clear
     echo " -----------------------------------------------------------------------------------"
     echo "  1.TIBERO USER CREATE                    |  2.TIBERO User Profile                  "
     echo " ---------------------------------------- + ----------------------------------------"
@@ -112,16 +113,19 @@ function FN_MANUAL_MENU(){
     esac
 }
 
+
+
+## Main Progress
 function FN_CHOICE_MENU(){
     echo "* TIBERO Installation Shell Script"
-    echo "* This script is for Tibero "Daejeon Office" only."
+    echo "* This script is for TmaxTibero "Daejeon Office" only."
     echo "1 AUTO SCRIPT"
     echo "2 MANUAL SCRIPT"
     read INPUT_NUMBER
     case $INPUT_NUMBER in 
     1)
         FN_AUTO_MENU
-        exit
+        exit 1
         ;;
     2)
         while true
@@ -130,7 +134,7 @@ function FN_CHOICE_MENU(){
         done
     ;;
     *)
-        exit
+        exit 1
     ;;
     esac
 }
