@@ -1,4 +1,11 @@
 #!/bin/sh
+############################################################
+############################################################
+TB_CNF_INI_FILE="tb_cnf_ini.sh"
+TB_RESULT_FILE="./tb_files"
+############################################################
+############################################################
+
 clear
 
 function FN_PRINT_PRESS(){
@@ -14,8 +21,6 @@ function FN_PRINT_TYPE(){
     echo "# 5. TAS"
     echo "############################"
     echo -n "Choose the Number : "
-
-    
 }
 
 function FN_AUTO_MENU(){
@@ -74,8 +79,12 @@ function FN_MANUAL_MENU(){
         echo "############################"
         echo -n "# USER NAME : "
         read INPUT_USER
-        USER_HOME_PATH=`su - $INPUT_USER -c "env" |grep -w "HOME="`
-        echo "# $USER_HOME_PATH"
+        echo -n "# DB NAME : "
+        read INPUT_DBNM
+        echo -n "# CM_SID NAME : "
+        read INPUT_CMNM
+        echo -n "# TB_HOME PATH : "
+        read INPUT_TBHOME
         echo
         echo "############################"
         echo "# ENV Prrofile Select"
@@ -90,7 +99,8 @@ function FN_MANUAL_MENU(){
         1)
             echo "-----------------------------------------------------------------"
             echo
-            echo "cat ./tb_files/tb_profile.txt >> "$USER_HOME_PATH"/.bash_profile"            
+            sh $TB_CNF_INI_FILE PROFILE $INTPUT_TYPE $INPUT_TBHOME $INPUT_DBNM $INPUT_CMNM
+            echo "cat $TB_RESULT_FILE/TIBERO_PROFILE_RESULT.txt >> "$USER_HOME_PATH"/.bash_profile"
             echo
             echo "-----------------------------------------------------------------"            
         ;;
