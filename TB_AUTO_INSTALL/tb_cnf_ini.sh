@@ -1,8 +1,19 @@
 #!/bin/sh
 
-############################# TIBERO configuration ini files
+############################################################
+#
+# Program variables
+############################################################
+# Initialization
 export FN_PROFILE_RESULT_FILE="./tb_files/TIBERO_PROFILE_RESULT.txt"
 echo "" > FN_PROFILE_RESULT_FILE
+
+# Functions Parameters
+INI_TYPE=$1
+TB_TPYE=$2
+TB_ENGPATH=$3
+TB_DBNAME=$4
+TB_CMNAME=$5
 
 
 ############################# Profile
@@ -245,13 +256,7 @@ function TAC_CM_TIP(){
 
 
 
-############################# MAIN
-INI_TYPE=$1
-TB_TPYE=$2
-TB_ENGPATH=$3
-TB_DBNAME=$4
-TB_CMNAME=$5
-#############################
+
 if [ $INI_TYPE == "PROFILE" ] && [ $TB_TPYE == "1" ] && [ -n $TB_ENGPATH ] && [ -n $TB_DBNAME ] && [ -n $TB_CMNAME ]
 then
     # SINGLE
@@ -269,5 +274,6 @@ then
     # TAC
     echo
 else
+    echo
     exit 0
 fi

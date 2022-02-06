@@ -8,9 +8,16 @@ TB_CNF_INI_FILE="tb_cnf_ini.sh"
 TB_RESULT_FILE="./tb_files"
 
 
+############################################################
+#
+# Function lists
+############################################################
+# Press key
 function FN_PRINT_PRESS(){
     echo "Press Enter Key to continue..."
 }
+
+# Type Select
 function FN_PRINT_TYPE(){
     echo "############################"
     echo "# TIBERO TYPE"
@@ -23,10 +30,12 @@ function FN_PRINT_TYPE(){
     echo -n "Choose the Number : "
 }
 
+# Automatic menu
 function FN_AUTOMATIC_MENU(){
     echo "FN_AUTOMATIC_MENU"
 }
 
+# Manual menu
 function FN_MANUAL_MENU(){
     clear
     echo " -----------------------------------------------------------------------------------"
@@ -157,7 +166,7 @@ function FN_MANUAL_MENU(){
     esac
 }
 
-## Main function
+# Main function
 function FN_CHOICE_MENU(){
     echo "* TIBERO Installation Shell Script"
     echo "* This script is for TmaxTibero "Daejeon Office" only."
@@ -183,7 +192,7 @@ function FN_CHOICE_MENU(){
 
 ############################################################
 #
-# Script Runing
+# Main function running
 ############################################################
 clear
 FN_CHOICE_MENU
