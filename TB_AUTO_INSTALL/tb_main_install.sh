@@ -28,6 +28,27 @@ function FN_PRINT_TYPE(){
     echo "# 5. TAS"
     echo "############################"
     echo -n "Choose the Number : "
+    
+    read INPUT_TYPE
+
+    # Type Select exception out
+    if [ $INPUT_TYPE != "1" ] && [ $INPUT_TYPE != "2" ] && [ $INPUT_TYPE != "3" ] && [ $INPUT_TYPE != "4" ] && [ $INPUT_TYPE != "5" ]
+    then
+        exit 1
+    fi
+}
+
+function FN_PRINT_TYPE_DETAIL(){
+    CHOICE=$1
+    echo "############################"
+    echo "# TIBERO TYPE"
+    echo "# 1. SINGLE"
+    echo "# 2. TSC"
+    echo "# 3. TAC"
+    echo "# 4. PROSYNC"
+    echo "# 5. TAS"
+    echo "############################"
+    echo -n "Choose the Number : "
 }
 
 # Automatic menu
@@ -66,24 +87,57 @@ function FN_MANUAL_MENU(){
         clear
         echo -n "# GROUP NAME : "
         read INPUT_GROUPNM
+        echo -n "# GROUP GID : "
+        read INPUT_GROUPGID
         echo -n "# USER NAME : "
         read INPUT_USERNM
-        echo -n "# USER HOME PATH : "
-        read INPUT_HOMEPATH
-        echo "-----------------------------------------------------------------"
-        echo
-        echo "groupadd $INPUT_GROUPNM"
-        echo "useradd $INPUT_USERNM -d $INPUT_HOMEPATH -g $INPUT_GROUPNM"
-        echo
-        echo "-----------------------------------------------------------------"
-        echo
-        FN_PRINT_PRESS
-        read PRESS_KEY
+        echo -n "# USER UID : "
+        read INPUT_USERUID
+        if [ -z $INPUT_USERUID ] || [ -z $INPUT_GROUPGID ]
+        then
+            echo -n "# USER HOME PATH : "
+            read INPUT_HOMEPATH
+            echo "-----------------------------------------------------------------"
+            echo "# LINUX | HP-UX | Solaris"
+            echo
+            echo "groupadd $INPUT_GROUPNM"
+            echo "useradd $INPUT_USERNM -d $INPUT_HOMEPATH -g $INPUT_GROUPNM"
+            echo
+            echo "-----------------------------------------------------------------"
+            echo "# AIX "
+            echo 
+            echo
+            echo "-----------------------------------------------------------------"
+            echo
+            echo
+            FN_PRINT_PRESS
+            read PRESS_KEY        
+        else
+            echo -n "# USER HOME PATH : "
+            read INPUT_HOMEPATH
+            echo "-----------------------------------------------------------------"
+            echo "# LINUX | HP-UX | Solaris"
+            echo
+            echo "groupadd $INPUT_GROUPNM -g $INPUT_GROUPGID"
+            echo "useradd $INPUT_USERNM -d $INPUT_HOMEPATH -g $INPUT_GROUPNM -u $INPUT_USERUID"
+            echo
+            echo "-----------------------------------------------------------------"
+            echo "# AIX "
+            echo 
+            echo
+            echo "-----------------------------------------------------------------"
+            echo
+            echo
+            FN_PRINT_PRESS
+            read PRESS_KEY
+        fi
+
     ;;
     21)
         clear
         FN_PRINT_TYPE
-        read INTPUT_TYPE
+       
+
         echo
         echo "############################"
         echo -n "# USER NAME : "
@@ -95,60 +149,58 @@ function FN_MANUAL_MENU(){
         echo -n "# TB_HOME PATH : "
         read INPUT_TBHOME
         echo
-        echo "############################"
-        echo "# ENV Prrofile Select"
-        echo "# 1. .bash_profile"
-        echo "# 2. .profile"
-        echo "############################"
-        echo -n "Choose the Number : "
-        read INPUT_ENV
-        echo
         USER_HOME_PATH=`echo $USER_HOME_PATH |sed 's/=/ /g' |awk '{print $NF}'`
-        case $INPUT_ENV in 
-        1)
-            echo "-----------------------------------------------------------------"
-            echo
-            sh $TB_CNF_INI_FILE PROFILE $INTPUT_TYPE $INPUT_TBHOME $INPUT_DBNM $INPUT_CMNM
-            echo "cat $TB_RESULT_FILE/TIBERO_PROFILE_RESULT.txt >> "$USER_HOME_PATH"/.bash_profile"
-            echo
-            echo "-----------------------------------------------------------------"            
-        ;;
-        2)
-            echo "-----------------------------------------------------------------"
-            echo
-            echo "cat ./tb_files/tb_profile.txt >> "$USER_HOME_PATH"/.profile"
-            echo
-            echo "-----------------------------------------------------------------"
-        ;;
-        *)
-            ""
-        ;;
-        esac
-
+        echo "-----------------------------------------------------------------"
+        echo "# .bash_profile"
+        echo
+        sh $TB_CNF_INI_FILE PROFILE $INPUT_TYPE $INPUT_TBHOME $INPUT_DBNM $INPUT_CMNM
+        echo "cat $TB_RESULT_FILE/TIBERO_PROFILE_RESULT.txt >> "$USER_HOME_PATH"/.bash_profile"
+        echo
+        echo "# Checking for command"
+        echo "cat "$USER_HOME_PATH"/.bash_profile"
+        echo
+        echo "-----------------------------------------------------------------"            
+        echo
+        echo "-----------------------------------------------------------------"
+        echo "# .profile"
+        echo
+        echo "cat ./tb_files/tb_profile.txt >> "$USER_HOME_PATH"/.profile"
+        echo
+        echo "# Checking for command"
+        echo "cat  "$USER_HOME_PATH"/.profile"
+        echo
+        echo "-----------------------------------------------------------------"
+        echo
+        echo
         FN_PRINT_PRESS
         read PRESS_KEY
     ;;
     31)
         clear
         FN_PRINT_TYPE
+
         FN_PRINT_PRESS
         read PRESS_KEY
     ;;
     41)
         clear
         FN_PRINT_TYPE
+
         FN_PRINT_PRESS
         read PRESS_KEY    
     ;;
     51)
         clear
         FN_PRINT_TYPE
+
         FN_PRINT_PRESS
         read PRESS_KEY
     ;;
     61)
         clear
         FN_PRINT_TYPE
+
+
         FN_PRINT_PRESS
         read PRESS_KEY
     ;;

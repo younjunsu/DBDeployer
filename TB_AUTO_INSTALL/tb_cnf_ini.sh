@@ -6,7 +6,7 @@
 ############################################################
 # Initialization
 export FN_PROFILE_RESULT_FILE="./tb_files/TIBERO_PROFILE_RESULT.txt"
-echo "" > FN_PROFILE_RESULT_FILE
+echo "" > $FN_PROFILE_RESULT_FILE
 
 # Functions Parameters
 INI_TYPE=$1
@@ -18,6 +18,7 @@ TB_CMNAME=$5
 
 ############################# Profile
 function FN_BASE_PROFILE(){
+    echo "" > $FN_PROFILE_RESULT_FILE
     echo "#############################" >> $FN_PROFILE_RESULT_FILE
     echo "# TIBERO environment variable" >> $FN_PROFILE_RESULT_FILE
     echo "#############################" >> $FN_PROFILE_RESULT_FILE
