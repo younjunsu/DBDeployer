@@ -30,7 +30,8 @@ function FN_PRINT_TYPE(){
     echo -n "Choose the Number : "
     
     read INPUT_TYPE
-
+    export INPUT_TYPE=$INPUT_TYPE
+    
     # Type Select exception out
     if [ $INPUT_TYPE != "1" ] && [ $INPUT_TYPE != "2" ] && [ $INPUT_TYPE != "3" ] && [ $INPUT_TYPE != "4" ] && [ $INPUT_TYPE != "5" ]
     then
@@ -39,16 +40,36 @@ function FN_PRINT_TYPE(){
 }
 
 function FN_PRINT_TYPE_DETAIL(){
-    CHOICE=$1
-    echo "############################"
-    echo "# TIBERO TYPE"
-    echo "# 1. SINGLE"
-    echo "# 2. TSC"
-    echo "# 3. TAC"
-    echo "# 4. PROSYNC"
-    echo "# 5. TAS"
-    echo "############################"
-    echo -n "Choose the Number : "
+    TYPE=$INPUT_TYPE
+
+    if [ $TYPE == "2" ]
+    then
+        echo "############################"
+        echo "# TIBERO TSC DETAIL TYPE"
+        echo "# 1. TSC Primary"
+        echo "# 2. TSC Standby"
+        echo "# 3. TSC Observer"
+        echo "############################"
+        echo -n "Choose the Number : "
+
+        read INPUT_TYPE_DETAIL
+        export INPUT_TYPE_DETAIL=$INPUT_TYPE_DETAIL
+    elif [ $TYPE == "3" ]
+    then
+        echo "############################"
+        echo "# TIBERO TAC DETAIL TYPE"
+        echo "# 1. TAC THREAD 0"
+        echo "# 2. TAC THREAD 1"
+        echo "############################"
+        echo -n "Choose the Number : "
+
+        read INPUT_TYPE_DETAIL
+        export INPUT_TYPE_DETAIL=$INPUT_TYPE_DETAIL        
+    else
+        exit 1
+    fi
+
+
 }
 
 # Automatic menu
@@ -135,8 +156,7 @@ function FN_MANUAL_MENU(){
     ;;
     21)
         clear
-        FN_PRINT_TYPE
-       
+        FN_PRINT_TYPE      
 
         echo
         echo "############################"
