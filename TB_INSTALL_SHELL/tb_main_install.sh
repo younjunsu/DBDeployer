@@ -1,317 +1,261 @@
 #!/bin/sh
+
 ############################################################
 #
 # Program variables
 ############################################################
-# Configuration file path
-TB_CNF_INI_FILE="tb_cnf_ini.sh"
-TB_RESULT_FILE="./tb_files"
+# Initialization
+#export FN_PROFILE_RESULT_FILE="./tb_files/TIBERO_PROFILE_RESULT.txt"
+#echo "" > $FN_PROFILE_RESULT_FILE
+
+# Functions Parameters
+INPUT_INI_FILE=$1
+INPUT_TIBERO_TYPE=$2
+INPUT_TB_HOME=$3
+INPUT_TB_SID=$4
+INPUT_DB_NAME=$5
+INPUT_CM_SID=$6
 
 
-############################################################
-#
-# lists
-############################################################
-# Press key
-FN_PRINT_PRESS(){
-    echo "Press Enter Key to continue..."
+############################# Profile
+FN_BASE_PROFILE(){
+    echo "#############################"
+    echo "# TIBERO environment variable"
+    echo "#############################"
+    echo "#### SHELL"
+    echo "stty erase ^H"
+    echo "export PS1="[\`whoami\`@\`hostname\`:\$PWD]\$ ""
+    echo "export EDITOR=vim"
+    echo ""
+    echo "#### JAVA"
+    echo "#export JAVA_HOME="
+    echo ""
+    echo "#### SINGLE"
+    echo "export TB_SID=$INPUT_TB_SID"
+    echo "export TB_HOME=$INPUT_TB_HOME"
+    echo "export TB_PROF_DIR=\$TB_HOME/bin/prof"
+    echo "export LD_LIBRARY_PATH=\$TB_HOME/lib:$TB_HOME/client/lib"
+    echo "export LIBPATH=\$LD_LIBRARY_PATH"
+    echo "export SHLIB_PATH=\$LD_LIBRARY_PATH"
+    echo "export PATH\$PATH:\$TB_HOME/bin:\$TB_HOME/client/bin:\$JAVA_HOME/bin"
+    echo ""
+    echo ""
+    FN_TIBERO_ALIAS
 }
 
-# Type Select
-FN_PRINT_TYPE(){
-    echo "---------------------------"
-    echo "# TIBERO TYPE"
-    echo "# 1. SINGLE"
-    echo "# 2. TSC"
-    echo "# 3. TAC"
-    echo "# 4. TAS"
-    echo "# m. Mnaul menu screen"
-    echo "# press other key to quit"
-    echo "---------------------------"
-    printf "Choose the Number : "
-    read PRINT_TYPE_INPUT_TYPE
+
+
+FN_TSC_PROFILE(){
+    echo "#############################"
+    echo "# TIBERO environment variable"
+    echo "#############################"
+    echo "#### SHELL"
+    echo "stty erase ^H"
+    echo "export PS1="[\`whoami\`@\`hostname\`:\$PWD\]$""
+    echo "export EDITOR=vim"
+    echo ""
+    echo "#### JAVA"
+    echo "#export JAVA_HOME="
+    echo ""
+    echo "#### TSC (Tibero Standby Cluster)"
+    echo "export TB_SID=$INPUT_TB_SID"
+    echo "export CM_SID=$INPUT_CM_SID"
+    echo ""
+    echo "export TB_HOME=$INPUT_TB_HOME"
+    echo "export CM_HOME=\$TB_HOME"
+    echo "export TB_PROF_DIR=\$TB_HOME/bin/prof"
+    echo "export LD_LIBRARY_PATH=\$TB_HOME/lib:\$TB_HOME/client/lib"
+    echo "export LIBPATH=\$LD_LIBRARY_PATH"
+    echo "export SHLIB_PATH=\$LD_LIBRARY_PATH"
+    echo "export PATH=\$PATH:\$TB_HOME/bin:\$TB_HOME/client/bin:\$JAVA_HOME/bin"
+    echo ""
+    echo ""
+    FN_TIBERO_ALIAS
+}
+
+FN_TAC_PROFILE(){
+    #############################
+    # TIBERO environment variable
+    #############################
+    #### SHELL
+    stty erase ^H
+    export PS1="[`whoami`@`hostname`:\$PWD]$ "
+    export EDITOR=vim
+
+    #### JAVA
+    # 설치 시 필수로 확인.
+    #export JAVA_HOME=
+
+    #### TAC (Tibero Active Cluster)
+    ## TAC
+    #export TB_SID=<DB_NAME>0
+    #export TB_SID=<DB_NAME>1
+    #export CM_SID=cm0
+    #export CM_SID=cm1
+    #export CM_HOME=$TB_HOME
+
+    export TB_HOME=
+    export TB_PROF_DIR=$TB_HOME/bin/prof
+    export LD_LIBRARY_PATH=$TB_HOME/lib:$TB_HOME/client/lib
+    export LIBPATH=$LD_LIBRARY_PATH
+    export SHLIB_PATH=$LD_LIBRARY_PATH
+    export PATH=$PATH:$TB_HOME/bin:$TB_HOME/client/bin:$JAVA_HOME/bin
+
+}
+
+FN_TIBERO_ALIAS(){
+
+    echo "#### TIBERO Alias"
+    echo "alias tbhome='cd \$TB_HOME'"
+    echo "alias tbbin='cd \$TB_HOME/bin'"
+    echo "alias tblog='cd \$TB_HOME/instance/\$TB_SID/log'"
+    echo "alias tbcfg='cd \$TB_HOME/config'"
+    echo "alias tbcfgv='vi \$TB_HOME/config/\$TB_SID.tip'"
+    echo "alias tbcli='cd \$TB_HOME/client/config'"
+    echo "alias tbcliv='vi \$TB_HOME/client/config/tbdsn.tbr'"
+    echo "alias tm='\$HOME/tbinary/monitor/monitor'"
+    echo "alias tbi='cd \$HOME/tbinary'"
+}
+
+
+############################# TB_SID.tip
+BASE_TB_TIP(){
+    ############ TIBERO genernal
+    #### Must
+    DB_NAME=
+    LISTENER_PORT=8629
+    CONTROL_FILES=tbctl1/c1.ctl, tbctl2/c2.ctl
+    DB_CREATE_FILE_DEST=tbdata/*
+    LOG_ARCHIVE_DEST=tbarch/*
+    MAX_SESSION_COUNT=
+    TOTAL_SHM_SIZE=
+    MEMORY_TARGET=
+
+    ############ TFT Parameters
+    #### Must
+    USE_TS_QUOTA=N
+    AUTHENTICATION_TIMEOUT=100
+    DBLINK_CONN_TIMEOUT=100
+    TPR_SNAPSHOT_RETENTION=30
+    TPR_SNAPSHOT_TOP_SQL_CNT=10
+    GATHER_SQL_EXEC_TIME=Y
+    GATHER_SQL_PLAN_STAT=Y
+    SLOG_TOTAL_SIZE_LIMIT=1G
+    _SLOG_DISPLAY_YEAR=Y
+    AUDIT_SYS_OPERATIONS=Y
+    AUDIT_TRAIL=OS
+
+    #### Recommand
+    #BOOT_WITH_AUTO_DOWN_CLEAN=Y
+    #USE_RECYCLEBIN=Y
+    #LOG_DEFAULT_DEST=
+    #ACT_LOG_DEST=
+    #CALLSTACK_DUMP_DEST=
+    ## IMS224485 - 2022.01.27
+    #_STANDBY_NETWORK_TIMEOUT=90    
+}
+
+TSC_TB_TIP(){
+    ############ TSC (Tibero Standby Cluster)
+    #### Must
+    CM_PORT=28629
+    STANDBY_USE_OBSERVER=Y
+    LOG_REPLICATION_MODE=PERFORMANCE
+    LOCAL_CLUSTER_PORT=18629
+
+    ## Primary
+    #LOG_REPLICATION_DEST_1="<Standby IP>:8633 LGWR ASYNC"
+    #LOCAL_CLUSTER_ADDR=<Primary IP>
+
+    ## Standny
+    #LOG_REPLICATION_DEST_1="<Primary IP>:8633 LGWR ASYNC"
+    #LOCAL_CLUSTER_ADDR=<Standby IP>
+}
+
+TAC_TB_TIP(){
+    ############ TAC (Tibero Active Cluster)
+    #### Must
+    CLUSTER_DATABASE=Y
+    _USE_O_DIRECT=Y
+
+    ## cm0
+    #THREAD=0
+    #UNDO_TABLESPACE=UNDO0
+    #CM_NAME=cm0
+    #CM_PORT=28629
+    #LOCAL_CLUSTER_ADDR=<localhost IP>
+    #LOCAL_CLUSTER_PORT=18629
+
+    ## cm1
+    #THREAD=1
+    #UNDO_TABLESPACE=UNDO1
+    #CM_NAME=cm1
+    #CM_PORT=28629
+    #LOCAL_CLUSTER_ADDR=<localhost IP>
+    #LOCAL_CLUSTER_PORT=18629
+}
+
+############################# CM_SID.tip
+TSC_CM_TIP(){
+    ############ TSC (Tibero Standby Cluster)
+    #### Must
+    #CM_HEARTBEAT_EXPIRE=300
+    #CM_WATCHDOG_EXPIRE=290
+
+    ## Primary
+    #CM_NAME=primary
+    #CM_UI_PORT=28629
+    #CM_RESOURCE_FILE=<TB_HOME>/config/primary_res_file
+    ## Standby
+    #CM_NAME=standby
+    #CM_UI_PORT=28629
+    #CM_RESOURCE_FILE=<TB_HOME>/config/standby_res_file
+    ## Observer
+    #CM_NAME=observer
+    #CM_UI_PORT=38629
+    #CM_OBSERVER_PORT=9050
+    #CM_MODE_OBSERVER=Y
+    #### Recommand
+    #CM_ENABLE_FAST_NET_ERROR_DETECTION=Y
     echo
+}
+
+TAC_CM_TIP(){
+    ############ TAC (Tibero Active Cluster)
+    #### Must
+    ## cm0
+    #CM_NAME=cm0
+    #CM_UI_PORT=28629
+    #CM_RESOURCE_FILE=<TB_HOME>/config/cm0_res_file
+    ## cm1
+    #CM_NAME=cm1
+    #CM_UI_PORT=28629
+    #CM_RESOURCE_FILE=<TB_HOME>/config/cm1_res_file
+
+    #### Recommand
+    #CM_HEARTBEAT_EXPIRE=300
+    #CM_WATCHDOG_EXPIRE=290
+    #CM_ENABLE_FAST_NET_ERROR_DETECTION=Y
     echo
-    echo "---------------------------"
-    case $PRINT_TYPE_INPUT_TYPE in
-    1)
-        echo "# TYPE : SINGLE"
-        export PRINT_TYPE_INPUT_TYPE=$PRINT_TYPE_INPUT_TYPE
-    ;;
-    2)
-        echo "# TYPE : TSC"
-        export PRINT_TYPE_INPUT_TYPE=$PRINT_TYPE_INPUT_TYPE
-    ;;
-    3)
-        echo "# TYPE : TAC"
-       export PRINT_TYPE_INPUT_TYPE=$PRINT_TYPE_INPUT_TYPE
-    ;;
-    4)
-        echo "# TYPE : TAS"
-        export PRINT_TYPE_INPUT_TYPE=$PRINT_TYPE_INPUT_TYPE
-    ;;
-    m)
-        FN_MANUAL_MENU
-    ;;
-    *)
-        clear
-        echo "tb_install_shell.sh quit."
-        exit 1
-    ;;
-    esac
 }
 
-FN_PRINT_TYPE_DETAIL(){
-    PRINT_TYPE_DETAIL_TYPE=$PRINT_TYPE_INPUT_TYPE
-
-    if [ $TYPE == "2" ]
-    then
-        echo "---------------------------"
-        echo "# TIBERO TSC DETAIL TYPE"
-        echo "# 1. TSC Primary"
-        echo "# 2. TSC Standby"
-        echo "# 3. TSC Observer"
-        echo "# m. Mnaul menu screen"
-        echo "# press other key to quit"
-        echo "---------------------------"
-        printf "Choose the Number : "
-
-        read PRINT_TYPE_DETAIL_TYPE
-        export PRINT_TYPE_DETAIL_TYPE=$PRINT_TYPE_DETAIL_TYPE
-    elif [ $TYPE == "3" ]
-    then
-        echo "---------------------------"
-        echo "# TIBERO TAC DETAIL TYPE"
-        echo "# 1. TAC THREAD 0"
-        echo "# 2. TAC THREAD 1"
-        echo "# m. Mnaul menu screen"
-        echo "---------------------------"
-        printf "Choose the Number : "
-
-        read PRINT_TYPE_DETAIL_TYPE
-        export PRINT_TYPE_DETAIL_TYPE=$PRINT_TYPE_DETAIL_TYPE        
-    else
-        exit 1
-    fi
-}
-
-# Automatic menu
-FN_AUTOMATIC_MENU(){
-    echo "FN_AUTOMATIC_MENU"
-}
-FN_CALL_MANUAL_MENU(){
-    FN_MANUAL_MENU
-}
-
-# Manual menu
-FN_MANUAL_MENU(){
-    clear
-    echo " -----------------------------------------------------------------------------------"
-    echo "  1.TIBERO USER CREATE                      |  2.TIBERO User Profile                  "
-    echo " ---------------------------------------- + ----------------------------------------"
-    echo "  # 11 - MANUAL                             |  # 21 - MANUAL                            "
-    echo "                                            |                                         "
-    echo " -----------------------------------------------------------------------------------"
-    echo "  3.TIBERO Directory                        |  4.TIBERO TIP                           "
-    echo " ---------------------------------------- + ----------------------------------------"
-    echo "  # 31 - MANUAL                             |  # 41 - MANUAL                            "
-    echo "                                            |                                         "
-    echo " -----------------------------------------------------------------------------------"
-    echo "  5.TIBERO CREATE DATABASE                  |  6.TIBERO CM Resource                   "
-    echo " ---------------------------------------- + ----------------------------------------"
-    echo "  # 51 - MANUAL                             |  # 61 - MANUAL                            "
-    echo "                                            |                                         "
-    echo " -----------------------------------------------------------------------------------"
-    echo "  c  - Clear terminal                                                               "
-    echo "  r  - retry main menu                                                              "
-    echo "  press other key to quit                                                                  "
-    echo " -----------------------------------------------------------------------------------"
-    printf " Choose the Number or Command : "    
-
-    read INPUT_NUMBER
-    case $INPUT_NUMBER in
-    11)
-        clear
-        echo "-----------------------------------------------------------------"
-        echo "# /etc/group"
-        cat /etc/group |tail -n 5
-        echo "-----------------------------------------------------------------"
-        echo
-        printf "# GROUP NAME : "
-        read INPUT_GROUPNM
-        printf "# GROUP GID : "
-        read INPUT_GROUPGID
-        echo
-        echo "-----------------------------------------------------------------"
-        echo "# /etc/passwd"
-        cat /etc/passwd |tail -n 5
-        echo "-----------------------------------------------------------------"
-        echo
-        printf "# USER NAME : "
-        read INPUT_USERNM
-        printf "# USER UID : "
-        read INPUT_USERUID
-        printf "# USER HOME PATH : "
-        read INPUT_HOMEPATH
-        echo
-        echo
-        clear
-        if [ -z $INPUT_USERUID ] || [ -z $INPUT_GROUPGID ]
-        then
-            echo "-----------------------------------------------------------------"
-            echo "# OS USER/GROUP Result"
-            echo "-----------------------------------------------------------------"
-            echo "# LINUX | HP-UX | Solaris"
-            echo
-            echo "groupadd $INPUT_GROUPNM"
-            echo "useradd $INPUT_USERNM -d $INPUT_HOMEPATH -g $INPUT_GROUPNM"
-            echo
-            echo "-----------------------------------------------------------------"
-            echo "# AIX "
-            echo "mkgroup $INPUT_GROUPNM"
-            echo "useradd $INPUT_USERNM -d $INPUT_HOMEPATH -g $INPUT_GROUPNM"
-            echo "-----------------------------------------------------------------"
-            echo
-            echo
-            FN_PRINT_PRESS
-            read PRESS_KEY        
-        else
-            echo "-----------------------------------------------------------------"
-            echo "# USER/GROUP Result"
-            echo "-----------------------------------------------------------------"
-            echo "# LINUX | HP-UX | Solaris"
-            echo
-            echo "groupadd $INPUT_GROUPNM -g $INPUT_GROUPGID"
-            echo "useradd $INPUT_USERNM -d $INPUT_HOMEPATH -g $INPUT_GROUPNM -u $INPUT_USERUID"
-            echo
-            echo "-----------------------------------------------------------------"
-            echo "# AIX "
-            echo "mkgroup $INPUT_GROUPNM -A id=$INPUT_GROUPGID"
-            echo "useradd $INPUT_USERNM -d $INPUT_HOMEPATH -g $INPUT_GROUPNM -u $INPUT_USERUID"
-            echo "-----------------------------------------------------------------"
-            echo
-            echo
-            FN_PRINT_PRESS
-            read PRESS_KEY
-        fi
-        FN_CALL_MANUAL_MENU
-    ;;
-    21)
-        clear
-        FN_PRINT_TYPE      
-        echo "---------------------------"
-        printf "# USER NAME : "
-        read INPUT_USER
-        printf "# DB NAME : "
-        read INPUT_DBNM
-        printf "# CM_SID NAME : "
-        read INPUT_CMNM
-        printf "# TB_HOME PATH : "
-        read INPUT_TBHOME
-        echo
-        USER_HOME_PATH=`echo $USER_HOME_PATH |sed 's/=/ /g' |awk '{print $NF}'`
-        echo "-----------------------------------------------------------------"
-        echo "# .bash_profile"
-        echo
-        sh $TB_CNF_INI_FILE PROFILE $INPUT_TYPE $INPUT_TBHOME $INPUT_DBNM $INPUT_CMNM
-        echo "cat $TB_RESULT_FILE/TIBERO_PROFILE_RESULT.txt >> "$USER_HOME_PATH"/.bash_profile"
-        echo
-        echo "# Checking for command"
-        echo "cat "$USER_HOME_PATH"/.bash_profile"
-        echo
-        echo "-----------------------------------------------------------------"            
-        echo
-        echo "-----------------------------------------------------------------"
-        echo "# .profile"
-        echo
-        echo "cat ./tb_files/tb_profile.txt >> "$USER_HOME_PATH"/.profile"
-        echo
-        echo "# Checking for command"
-        echo "cat  "$USER_HOME_PATH"/.profile"
-        echo
-        echo "-----------------------------------------------------------------"
-        echo
-        echo
-        FN_PRINT_PRESS
-        read PRESS_KEY
-    ;;
-    31)
-        clear
-        FN_PRINT_TYPE
-
-        FN_PRINT_PRESS
-        read PRESS_KEY
-    ;;
-    41)
-        clear
-        FN_PRINT_TYPE
-
-        FN_PRINT_PRESS
-        read PRESS_KEY    
-    ;;
-    51)
-        clear
-        FN_PRINT_TYPE
-
-        FN_PRINT_PRESS
-        read PRESS_KEY
-    ;;
-    61)
-        clear
-        FN_PRINT_TYPE
-
-
-        FN_PRINT_PRESS
-        read PRESS_KEY
-    ;;
-    c|C)
-        clear
-        FN_MANUAL_MENU
-    ;;
-    r|R)
-        clear
-        FN_CHOICE_MENU
-    ;;
-    *)
-        clear
-        echo "tb_install_shell.sh quit."
-        exit 1
-    ;;
-    esac
-}
-
-# Main function
-FN_CHOICE_MENU(){
-    echo "* TIBERO Installation Shell Script"
-    echo "* This script is for TmaxTibero "Daejeon Office" only."
-    echo "-----------------------------------------------------------------"
-    echo "# 1 AUTO SCRIPT"
-    echo "# 2 MANUAL SCRIPT"
-    echo "# press other key to quit"
-    echo "-----------------------------------------------------------------"
-    read INPUT_NUMBER
-    case $INPUT_NUMBER in 
-    1)
-        FN_AUTO_MENU
-        exit 1
-        ;;
-    2)
-        while true
-        do
-            FN_MANUAL_MENU
-        done
-    ;;
-    *)
-        clear
-        echo "tb_install_shell.sh quit."
-        exit 1
-    ;;
-    esac
-}
-
-############################################################
-#
-# Main running
-############################################################
-clear
-FN_CHOICE_MENU 2>/dev/null
+if [ $INPUT_INI_FILE == "PROFILE" ] && [ $INPUT_TIBERO_TYPE == "1" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
+then
+    # SINGLE
+    FN_BASE_PROFILE
+elif [ $INPUT_INI_FILE == "PROFILE" ] && [ $INPUT_TIBERO_TYPE == "2" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
+then
+    # TSC
+    FN_TSC_PROFILE
+elif [ $INPUT_INI_FILE == "PROFILE" ] && [ $INPUT_TIBERO_TYPE == "3" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
+then
+    # TAC
+    echo
+elif [ $INPUT_INI_FILE == "PROFILE" ] && [ $INPUT_TIBERO_TYPE == "4" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
+then
+    # TAS
+    echo
+else
+    echo
+    exit 0
+fi
