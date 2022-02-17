@@ -5,43 +5,75 @@
 # Program variables
 ############################################################
 # Initialization
-export FN_PROFILE_RESULT_FILE="./tb_files/TIBERO_PROFILE_RESULT.txt"
-echo "" > $FN_PROFILE_RESULT_FILE
+#export FN_PROFILE_RESULT_FILE="./tb_files/TIBERO_PROFILE_RESULT.txt"
+#echo "" > $FN_PROFILE_RESULT_FILE
 
 # Functions Parameters
-INI_TYPE=$1
-TB_TPYE=$2
-TB_ENGPATH=$3
-TB_DBNAME=$4
-TB_CMNAME=$5
+INPUT_INI_FILE=$1
+INPUT_TIBERO_TYPE=$2
+INPUT_TB_HOME=$3
+INPUT_TB_SID=$4
+INPUT_DB_NAME=$5
+INPUT_CM_SID=$6
 
 
 ############################# Profile
-function FN_BASE_PROFILE(){
-    echo "" > $FN_PROFILE_RESULT_FILE
-    echo "#############################" >> $FN_PROFILE_RESULT_FILE
-    echo "# TIBERO environment variable" >> $FN_PROFILE_RESULT_FILE
-    echo "#############################" >> $FN_PROFILE_RESULT_FILE
-    echo "#### SHELL" >> $FN_PROFILE_RESULT_FILE
-    echo "stty erase ^H" >> $FN_PROFILE_RESULT_FILE
-    echo "export PS1="[\`whoami\`@\`hostname\`:\$PWD]\$ "" >> $FN_PROFILE_RESULT_FILE
-    echo "export EDITOR=vim" >> $FN_PROFILE_RESULT_FILE
-    echo "" >> $FN_PROFILE_RESULT_FILE
-    echo "#### JAVA" >> $FN_PROFILE_RESULT_FILE
-    echo "#export JAVA_HOME=" >> $FN_PROFILE_RESULT_FILE
-    echo "" >> $FN_PROFILE_RESULT_FILE
-    echo "#### SINGLE" >> $FN_PROFILE_RESULT_FILE
-    echo "export TB_SID=$TB_DBNAME" >> $FN_PROFILE_RESULT_FILE
-    echo "export TB_HOME=" >> $FN_PROFILE_RESULT_FILE
-    echo "export TB_PROF_DIR=\$TB_HOME/bin/prof" >> $FN_PROFILE_RESULT_FILE
-    echo "export LD_LIBRARY_PATH=\$TB_HOME/lib:$TB_HOME/client/lib" >> $FN_PROFILE_RESULT_FILE
-    echo "export LIBPATH=\$LD_LIBRARY_PATH" >> $FN_PROFILE_RESULT_FILE
-    echo "export SHLIB_PATH=\$LD_LIBRARY_PATH" >> $FN_PROFILE_RESULT_FILE
-    echo "export PATH\$PATH:\$TB_HOME/bin:\$TB_HOME/client/bin:\$JAVA_HOME/bin" >> $FN_PROFILE_RESULT_FILE
-    echo "" >> $FN_PROFILE_RESULT_FILE
+FN_BASE_PROFILE(){
+    echo "#############################"
+    echo "# TIBERO environment variable"
+    echo "#############################"
+    echo "#### SHELL"
+    echo "stty erase ^H"
+    echo "export PS1="[\`whoami\`@\`hostname\`:\$PWD]\$ ""
+    echo "export EDITOR=vim"
+    echo ""
+    echo "#### JAVA"
+    echo "#export JAVA_HOME="
+    echo ""
+    echo "#### SINGLE"
+    echo "export TB_SID=$INPUT_TB_SID"
+    echo "export TB_HOME=$INPUT_TB_HOME"
+    echo "export TB_PROF_DIR=\$TB_HOME/bin/prof"
+    echo "export LD_LIBRARY_PATH=\$TB_HOME/lib:$TB_HOME/client/lib"
+    echo "export LIBPATH=\$LD_LIBRARY_PATH"
+    echo "export SHLIB_PATH=\$LD_LIBRARY_PATH"
+    echo "export PATH\$PATH:\$TB_HOME/bin:\$TB_HOME/client/bin:\$JAVA_HOME/bin"
+    echo ""
+    echo ""
+    FN_TIBERO_ALIAS
 }
 
-function FN_TSC_PROFILE(){
+
+
+FN_TSC_PROFILE(){
+    echo "#############################"
+    echo "# TIBERO environment variable"
+    echo "#############################"
+    echo "#### SHELL"
+    echo "stty erase ^H"
+    echo "export PS1="[\`whoami\`@\`hostname\`:\$PWD\]$""
+    echo "export EDITOR=vim"
+    echo ""
+    echo "#### JAVA"
+    echo "#export JAVA_HOME="
+    echo ""
+    echo "#### TSC (Tibero Standby Cluster)"
+    echo "export TB_SID=$INPUT_TB_SID"
+    echo "export CM_SID=$INPUT_CM_SID"
+    echo ""
+    echo "export TB_HOME=$INPUT_TB_HOME"
+    echo "export CM_HOME=\$TB_HOME"
+    echo "export TB_PROF_DIR=\$TB_HOME/bin/prof"
+    echo "export LD_LIBRARY_PATH=\$TB_HOME/lib:\$TB_HOME/client/lib"
+    echo "export LIBPATH=\$LD_LIBRARY_PATH"
+    echo "export SHLIB_PATH=\$LD_LIBRARY_PATH"
+    echo "export PATH=\$PATH:\$TB_HOME/bin:\$TB_HOME/client/bin:\$JAVA_HOME/bin"
+    echo ""
+    echo ""
+    FN_TIBERO_ALIAS
+}
+
+FN_TAC_PROFILE(){
     #############################
     # TIBERO environment variable
     #############################
@@ -53,50 +85,6 @@ function FN_TSC_PROFILE(){
     #### JAVA
     # 설치 시 필수로 확인.
     #export JAVA_HOME=
-
-    #### TSC (Tibero Standby Cluster)
-    export TB_SID=
-    ## TSC
-    #export TB_SID=<DB_NAME>_p
-    #export TB_SID=<DB_NAME>_s
-    #export CM_SID=primary
-    #export CM_SID=standby
-    #export CM_SID=observer
-    #export CM_HOME=$TB_HOME
-
-    export TB_HOME=
-    export TB_PROF_DIR=$TB_HOME/bin/prof
-    export LD_LIBRARY_PATH=$TB_HOME/lib:$TB_HOME/client/lib
-    export LIBPATH=$LD_LIBRARY_PATH
-    export SHLIB_PATH=$LD_LIBRARY_PATH
-    export PATH=$PATH:$TB_HOME/bin:$TB_HOME/client/bin:$JAVA_HOME/bin
-
-    #### TIBERO alias
-    alias tbhome='cd $TB_HOME'
-    alias tbbin='cd $TB_HOME/bin'
-    alias tblog='cd $TB_HOME/instance/$TB_SID/log'
-    alias tbcfg='cd $TB_HOME/config'
-    alias tbcfgv='vi $TB_HOME/config/$TB_SID.tip'
-    alias tbcli='cd $TB_HOME/client/config'
-    alias tbcliv='vi $TB_HOME/client/config/tbdsn.tbr'
-    alias tm='$HOME/tbinary/monitor/monitor'
-    alias tbi='cd $HOME/tbinary'
-}
-
-function FN_TAC_PROFILE(){
-    #############################
-    # TIBERO environment variable
-    #############################
-    #### SHELL
-    stty erase ^H
-    export PS1="[`whoami`@`hostname`:\$PWD]$ "
-    export EDITOR=vim
-
-    #### JAVA
-    # 설치 시 필수로 확인.
-    #export JAVA_HOME=
-
-
 
     #### TAC (Tibero Active Cluster)
     ## TAC
@@ -113,29 +101,25 @@ function FN_TAC_PROFILE(){
     export SHLIB_PATH=$LD_LIBRARY_PATH
     export PATH=$PATH:$TB_HOME/bin:$TB_HOME/client/bin:$JAVA_HOME/bin
 
-
-    #### TIBERO alias
-    alias tbhome='cd $TB_HOME'
-    alias tbbin='cd $TB_HOME/bin'
-    alias tblog='cd $TB_HOME/instance/$TB_SID/log'
-    alias tbcfg='cd $TB_HOME/config'
-    alias tbcfgv='vi $TB_HOME/config/$TB_SID.tip'
-    alias tbcli='cd $TB_HOME/client/config'
-    alias tbcliv='vi $TB_HOME/client/config/tbdsn.tbr'
-    alias tm='$HOME/tbinary/monitor/monitor'
-    alias tbi='cd $HOME/tbinary'
 }
 
-function FN_PROSYNC_PROFILE(){
-    echo
+FN_TIBERO_ALIAS(){
+
+    echo "#### TIBERO Alias"
+    echo "alias tbhome='cd \$TB_HOME'"
+    echo "alias tbbin='cd \$TB_HOME/bin'"
+    echo "alias tblog='cd \$TB_HOME/instance/\$TB_SID/log'"
+    echo "alias tbcfg='cd \$TB_HOME/config'"
+    echo "alias tbcfgv='vi \$TB_HOME/config/\$TB_SID.tip'"
+    echo "alias tbcli='cd \$TB_HOME/client/config'"
+    echo "alias tbcliv='vi \$TB_HOME/client/config/tbdsn.tbr'"
+    echo "alias tm='\$HOME/tbinary/monitor/monitor'"
+    echo "alias tbi='cd \$HOME/tbinary'"
 }
 
-function FN_TAS_PROFILE(){
-    echo
-}
 
 ############################# TB_SID.tip
-function BASE_TB_TIP(){
+BASE_TB_TIP(){
     ############ TIBERO genernal
     #### Must
     DB_NAME=
@@ -171,7 +155,7 @@ function BASE_TB_TIP(){
     #_STANDBY_NETWORK_TIMEOUT=90    
 }
 
-function TSC_TB_TIP(){
+TSC_TB_TIP(){
     ############ TSC (Tibero Standby Cluster)
     #### Must
     CM_PORT=28629
@@ -188,7 +172,7 @@ function TSC_TB_TIP(){
     #LOCAL_CLUSTER_ADDR=<Standby IP>
 }
 
-function TAC_TB_TIP(){
+TAC_TB_TIP(){
     ############ TAC (Tibero Active Cluster)
     #### Must
     CLUSTER_DATABASE=Y
@@ -212,7 +196,7 @@ function TAC_TB_TIP(){
 }
 
 ############################# CM_SID.tip
-function TSC_CM_TIP(){
+TSC_CM_TIP(){
     ############ TSC (Tibero Standby Cluster)
     #### Must
     #CM_HEARTBEAT_EXPIRE=300
@@ -236,7 +220,7 @@ function TSC_CM_TIP(){
     echo
 }
 
-function TAC_CM_TIP(){
+TAC_CM_TIP(){
     ############ TAC (Tibero Active Cluster)
     #### Must
     ## cm0
@@ -255,24 +239,21 @@ function TAC_CM_TIP(){
     echo
 }
 
-
-
-
-if [ $INI_TYPE == "PROFILE" ] && [ $TB_TPYE == "1" ] && [ -n $TB_ENGPATH ] && [ -n $TB_DBNAME ] && [ -n $TB_CMNAME ]
+if [ $INPUT_INI_FILE == "PROFILE" ] && [ $INPUT_TIBERO_TYPE == "1" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
 then
     # SINGLE
     FN_BASE_PROFILE
-elif [ $INI_TYPE == "PROFILE1" ]
+elif [ $INPUT_INI_FILE == "PROFILE" ] && [ $INPUT_TIBERO_TYPE == "2" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
 then
     # TSC
-    echo
-elif [ $INI_TYPE == "PROFILE2" ]
-then
-    # TSC
-    echo
-elif [ $INI_TYPE == "PROFILE3" ]
+    FN_TSC_PROFILE
+elif [ $INPUT_INI_FILE == "PROFILE" ] && [ $INPUT_TIBERO_TYPE == "3" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
 then
     # TAC
+    echo
+elif [ $INPUT_INI_FILE == "PROFILE" ] && [ $INPUT_TIBERO_TYPE == "4" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
+then
+    # TAS
     echo
 else
     echo
