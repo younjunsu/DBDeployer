@@ -10,11 +10,11 @@
 
 # Functions Parameters
 INPUT_INI_FILE=$1
-INPUT_TIBERO_TYPE=$2
+INPUT_INI_TYPE=$2
 INPUT_TB_HOME=$3
 INPUT_TB_SID=$4
-INPUT_DB_NAME=$5
-INPUT_CM_SID=$6
+INPUT_CM_SID=$5
+
 
 
 ############################# Profile
@@ -239,22 +239,76 @@ TAC_CM_TIP(){
     echo
 }
 
-if [ $INPUT_INI_FILE == "PROFILE" ] && [ $INPUT_TIBERO_TYPE == "1" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
+if [ $INPUT_INI_TYPE == "PROFILE" ]
 then
-    # SINGLE
-    FN_BASE_PROFILE
-elif [ $INPUT_INI_FILE == "PROFILE" ] && [ $INPUT_TIBERO_TYPE == "2" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
+    if [ $INPUT_TIBERO_TYPE == "1" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
+    then
+        # SINGLE
+        FN_BASE_PROFILE
+    elif [ $INPUT_TIBERO_TYPE == "2" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ] && [ -n $INPUT_CM_SID ]
+    then
+        # TSC
+        FN_TSC_PROFILE
+    elif [ $INPUT_TIBERO_TYPE == "3" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ] && [ -n $INPUT_CM_SID ]
+    then
+        # TAC
+        FN_TAC_PROFILE
+    elif [ $INPUT_TIBERO_TYPE == "4" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ] && [ -n $INPUT_CM_SID ]
+    then
+        # TAS
+        FN_TAS_PROFILE
+        echo
+    else
+        echo 
+        exit 0
+    fi
+elif [ $INPUT_INI_TYPE == "" ]
 then
-    # TSC
-    FN_TSC_PROFILE
-elif [ $INPUT_INI_FILE == "PROFILE" ] && [ $INPUT_TIBERO_TYPE == "3" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
+    if [ $INPUT_TIBERO_TYPE == "1" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
+    then
+        # SINGLE
+        FN_BASE_PROFILE
+    elif [ $INPUT_TIBERO_TYPE == "2" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ] && [ -n $INPUT_CM_SID ]
+    then
+        # TSC
+        FN_TSC_PROFILE
+    elif [ $INPUT_TIBERO_TYPE == "3" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ] && [ -n $INPUT_CM_SID ]
+    then
+        # TAC
+        FN_TAC_PROFILE
+    elif [ $INPUT_TIBERO_TYPE == "4" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ] && [ -n $INPUT_CM_SID ]
+    then
+        # TAS
+        FN_TAS_PROFILE
+        echo
+    else
+        echo 
+        exit 0
+    fi
+elif [ $INPUT_INI_TYPE == "" ]
 then
-    # TAC
-    echo
-elif [ $INPUT_INI_FILE == "PROFILE" ] && [ $INPUT_TIBERO_TYPE == "4" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
-then
-    # TAS
-    echo
+    if [ $INPUT_TIBERO_TYPE == "1" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ]
+    then
+        # SINGLE
+        FN_BASE_PROFILE
+    elif [ $INPUT_TIBERO_TYPE == "2" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ] && [ -n $INPUT_CM_SID ]
+    then
+        # TSC
+        FN_TSC_PROFILE
+    elif [ $INPUT_TIBERO_TYPE == "3" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ] && [ -n $INPUT_CM_SID ]
+    then
+        # TAC
+        FN_TAC_PROFILE
+    elif [ $INPUT_TIBERO_TYPE == "4" ] && [ -n $INPUT_TB_HOME ] && [ -n $INPUT_TB_SID ] && [ -n $INPUT_CM_SID ]
+    then
+        # TAS
+        FN_TAS_PROFILE
+        echo
+    else
+        echo 
+        exit 0
+    fi
+
 else
     echo
     exit 0

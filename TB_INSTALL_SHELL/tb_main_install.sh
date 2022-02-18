@@ -91,6 +91,7 @@ FN_PRINT_TYPE_DETAIL(){
 
     case $PRINT_TYPE_INPUT_TYPE in
     1)
+        # SINGLE
         2>/dev/null
     ;;
     2)
@@ -292,8 +293,7 @@ FN_MANUAL_MENU(){
         echo
         echo "-----------------------------------------------------------------"
         echo
-        echo $TB_CNF_INI_FILE PROFILE $PRINT_TYPE_INPUT_TYPE $INPUT_TB_HOME_PATH $INPUT_TB_SID
-        sh $TB_CNF_INI_FILE PROFILE $PRINT_TYPE_INPUT_TYPE $INPUT_TB_HOME_PATH $INPUT_TB_SID
+        sh $TB_CNF_INI_FILE PROFILE $PRINT_TYPE_INPUT_TYPE $INPUT_TB_HOME_PATH $INPUT_TB_SID $INPUT_CM_NAME
         echo
         echo "-----------------------------------------------------------------"            
 
