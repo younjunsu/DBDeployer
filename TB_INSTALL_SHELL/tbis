@@ -274,15 +274,17 @@ FN_MANUAL_MENU(){
         echo "---------------------------"
         echo "Profile Manual Configuation"
         echo "---------------------------"
-        printf "# TB_SID : "
-        read export INPUT_TB_SID
+        printf "# DB_NAME : "
+        read INPUT_DB_NAME
+        export INPUT_DB_NAME=$INPUT_DB_NAME
         printf "# TB_HOME PATH : "
-        read export INPUT_TB_HOME_PATH
+        read INPUT_TB_HOME_PATH
+        export INPUT_TB_HOME_PATH=$INPUT_TB_HOME_PATH
         echo ""
         echo "-----------------------------------------------------------------"
-        echo
+        echo ""
         sh tbis_ini.sh USER_PROFILE $PRINT_TYPE_INPUT_TYPE $PRINT_TYPE_DETAIL_TYPE
-        echo
+        echo ""
         echo "-----------------------------------------------------------------"            
         echo ""
         FN_PRINT_PRESS
@@ -294,19 +296,48 @@ FN_MANUAL_MENU(){
         echo "---------------------------"
         echo "TB_SID.tip Manual Configuation"
         echo "---------------------------"        
-        printf "# TB_SID : "
-        read export INPUT_TB_SID        
+        printf "# DB_NAME : "
+        read INPUT_DB_NAME
+        export INPUT_DB_NAME=$INPUT_DB_NAME
         printf "# TB_HOME PATH : "
-        read export INPUT_TB_HOME_PATH        
-        printf "# CONTROL_FILES_PATH1 : "
-        read  export INPUT_CONTROL_FILES_PATH1        
-        printf "# CONTROL_FILES_PATH2 : "
-        export read  INPUT_CONTROL_FILES_PATH2
-        printf "# DB_CREATE_FILE_DEST : "
-        read export INPUT_DB_CREATE_FILE_DEST        
-        printf "# LOG_ARCHIVE_DEST : "
-        read export INPUT_LOG_ARCHIVE_DEST
-        echo
+        read INPUT_TB_HOME_PATH        
+        export INPUT_TB_HOME_PATH=$INPUT_TB_HOME_PATH
+        printf "# CONTROL_FILES_PATH1 Disk Partition : "
+        read INPUT_CONTROL_FILES_PATH1
+        export INPUT_CONTROL_FILES_PATH1=$INPUT_CONTROL_FILES_PATH1
+        printf "# CONTROL_FILES_PATH2 Disk Partition : "
+        read INPUT_CONTROL_FILES_PATH2
+        export INPUT_CONTROL_FILES_PATH2=$INPUT_CONTROL_FILES_PATH2
+        printf "# DB_CREATE_FILE_DEST Disk Partition : "
+        read INPUT_DB_CREATE_FILE_DEST
+        export INPUT_DB_CREATE_FILE_DEST=$INPUT_DB_CREATE_FILE_DEST
+        printf "# LOG_ARCHIVE_DEST Disk Partition : "
+        read INPUT_LOG_ARCHIVE_DEST
+        export INPUT_LOG_ARCHIVE_DEST=$INPUT_LOG_ARCHIVE_DEST
+        if [ $PRINT_TYPE_INPUT_TYPE == "1" ]
+        then
+            2>/dev/null
+        elif [ $PRINT_TYPE_INPUT_TYPE == "2" ]
+        then
+            printf "# Primary Interconnect IP : "
+            read INPUT_NODE1_INTER_IP
+            export INPUT_NODE1_INTER_IP=$INPUT_NODE1_INTER_IP
+            printf "# Standby Interconnect IP : "
+            read INPUT_NODE2_INTER_IP
+            export INPUT_NODE2_INTER_IP=$INPUT_NODE2_INTER_IP
+        elif [ $PRINT_TYPE_INPUT_TYPE == "3" ] && [ $PRINT_TYPE_DETAIL_TYPE == "1" ]
+        then
+            printf "# cm0 Interconnect IP : "
+            read INPUT_NODE1_INTER_IP
+            export INPUT_NODE1_INTER_IP=$INPUT_NODE1_INTER_IP
+        elif [ $PRINT_TYPE_INPUT_TYPE == "3" ] && [ $PRINT_TYPE_DETAIL_TYPE == "2" ]
+        then
+            printf "# cm1 Interconnect IP : "
+            read INPUT_NODE2_INTER_IP
+            export INPUT_NODE2_INTER_IP=$INPUT_NODE2_INTER_IP
+        fi
+
+        echo ""
         echo "-----------------------------------------------------------------"
         echo ""
         sh tbis_ini.sh TB_SID_TIP $PRINT_TYPE_INPUT_TYPE $PRINT_TYPE_DETAIL_TYPE
@@ -322,11 +353,13 @@ FN_MANUAL_MENU(){
         echo "---------------------------"
         echo "CM_SID.tip Manual Configuation"
         echo "---------------------------"        
-        printf "# TB_SID : "
-        read export INPUT_TB_SID
+        printf "# DB_NAME : "
+        read INPUT_DB_NAME
+        export INPUT_DB_NAME=$INPUT_DB_NAME
         printf "# TB_HOME PATH : "
-        read export INPUT_TB_HOME_PATH
-        echo
+        read INPUT_TB_HOME_PATH
+        export INPUT_TB_HOME_PATH=$INPUT_TB_HOME_PATH
+        echo ""
         echo "-----------------------------------------------------------------"
         echo ""
         sh tbis_ini.sh CM_SID_TIP $PRINT_TYPE_INPUT_TYPE $PRINT_TYPE_DETAIL_TYPE
