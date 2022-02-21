@@ -8,15 +8,11 @@
 #
 
 
-
 ############################################################
 #
 # Program variables
 ############################################################
 # Configuration file path
-TB_CNF_INI_FILE="tb_cnf_ini.sh"
-TB_RESULT_FILE="./tb_files"
-
 
 ############################################################
 #
@@ -92,7 +88,7 @@ FN_PRINT_TYPE_DETAIL(){
     case $PRINT_TYPE_INPUT_TYPE in
     1)
         # SINGLE
-        2>/dev/null
+        export PRINT_TYPE_DETAIL_TYPE="SINGLE"        
     ;;
     2)
         echo "---------------------------"
@@ -204,6 +200,7 @@ FN_MANUAL_MENU(){
             echo
             echo "-----------------------------------------------------------------"
             echo "# AIX "
+            echo
             echo "mkgroup $INPUT_GROUP_NAME"
             echo "useradd $INPUT_USER_NAME -d $INPUT_USER_HOME_PATH -g $INPUT_GROUP_NAME"
             echo "-----------------------------------------------------------------"
@@ -239,14 +236,15 @@ FN_MANUAL_MENU(){
             echo
             echo "groupadd $INPUT_GROUP_NAME"
             echo "useradd $INPUT_USER_NAME -d $INPUT_USER_HOME_PATH -g $INPUT_GROUP_NAME -u $INPUT_USER_UID"
-            echo
+            echo ""
             echo "-----------------------------------------------------------------"
             echo "# AIX "
+            echo ""
             echo "mkgroup $INPUT_GROUP_NAME"
             echo "useradd $INPUT_USER_NAME -d $INPUT_USER_HOME_PATH -g $INPUT_GROUP_NAME -u $INPUT_USER_UID"
             echo "-----------------------------------------------------------------"
-            echo
-            echo
+            echo ""
+            echo ""
             FN_PRINT_PRESS
             read PRESS_KEY
         else
@@ -280,20 +278,15 @@ FN_MANUAL_MENU(){
         #read INPUT_USER_NAME
         printf "# TB_SID : "
         read INPUT_TB_SID
-        
-        if [ $PRINT_TYPE_INPUT_TYPE == "1" ]
-        then
-            2>/dev/null
-        else
-            printf "# CM_SID NAME : "
-            read INPUT_CM_NAME
-        fi
         printf "# TB_HOME PATH : "
         read INPUT_TB_HOME_PATH
         echo
         echo "-----------------------------------------------------------------"
         echo
-        sh $TB_CNF_INI_FILE PROFILE $PRINT_TYPE_INPUT_TYPE $INPUT_TB_HOME_PATH $INPUT_TB_SID $INPUT_CM_NAME
+        sh tbis_ini.sh USER_PROFILE $PRINT_TYPE_INPUT_TYPE $PRINT_TYPE_DETAIL_TYPE $INPUT_TB_HOME_PATH $INPUT_TB_SID >> junsu.log
+
+
+        cat 
         echo
         echo "-----------------------------------------------------------------"            
 
@@ -345,6 +338,22 @@ FN_MANUAL_MENU(){
     esac
 }
 
+FN_SYSETM_CHECK(){
+    clear
+    echo "system check"
+    FN_PRINT_PRESS
+    read PRESS_KEY  
+    FN_MAIN_MENU
+
+}
+FN_INITAILIZATION(){
+    clear
+    echo "Initialization"
+    FN_PRINT_PRESS
+    read PRESS_KEY  
+    FN_MAIN_MENU
+}
+
 # Main function
 FN_MAIN_MENU(){
     clear
@@ -353,10 +362,13 @@ FN_MAIN_MENU(){
     echo "[*] Supported Version : Tibero 6 FS07 ↑"
     echo "-----------------------------------------------------------------"
     echo "# 1. AUTO"
-    echo "# 2. MANUAL"
+    echo "# 2. MANUAL"    
     echo "-----------------------------------------------------------------"
+    echo "# chk. System Check"
+    echo "# ini. Configurations Initialization"
     echo "# press other key to quit"
     echo "-----------------------------------------------------------------"
+    printf "Choose the Number : "
     read INPUT_NUMBER
     case $INPUT_NUMBER in 
     1)
@@ -368,6 +380,12 @@ FN_MAIN_MENU(){
         do
             FN_MANUAL_MENU
         done
+    ;;
+    ini)
+        FN_INITAILIZATION
+    ;;
+    chk)
+        FN_SYSETM_CHECK
     ;;
     *)
         clear
@@ -382,7 +400,7 @@ FN_MAIN_MENU(){
 # Program start
 ############################################################
 # Normal mode
-FN_MAIN_MENU 2>/dev/null
+FN_MAIN_MENU
 
 # Debug mode
 # FN_MAIN_MENU 
