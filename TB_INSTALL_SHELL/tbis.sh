@@ -274,38 +274,67 @@ FN_MANUAL_MENU(){
         echo "---------------------------"
         echo "Profile Manual Configuation"
         echo "---------------------------"
-        #printf "# USER NAME : "
-        #read INPUT_USER_NAME
         printf "# TB_SID : "
-        read INPUT_TB_SID
+        read export INPUT_TB_SID
         printf "# TB_HOME PATH : "
-        read INPUT_TB_HOME_PATH
-        echo
+        read export INPUT_TB_HOME_PATH
+        echo ""
         echo "-----------------------------------------------------------------"
         echo
-        sh tbis_ini.sh USER_PROFILE $PRINT_TYPE_INPUT_TYPE $PRINT_TYPE_DETAIL_TYPE $INPUT_TB_HOME_PATH $INPUT_TB_SID >> junsu.log
-
-
-        cat 
+        sh tbis_ini.sh USER_PROFILE $PRINT_TYPE_INPUT_TYPE $PRINT_TYPE_DETAIL_TYPE
         echo
         echo "-----------------------------------------------------------------"            
-
+        echo ""
         FN_PRINT_PRESS
         read PRESS_KEY
     ;;
     31)
         clear
         FN_PRINT_TYPE
-
+        echo "---------------------------"
+        echo "TB_SID.tip Manual Configuation"
+        echo "---------------------------"        
+        printf "# TB_SID : "
+        read export INPUT_TB_SID        
+        printf "# TB_HOME PATH : "
+        read export INPUT_TB_HOME_PATH        
+        printf "# CONTROL_FILES_PATH1 : "
+        read  export INPUT_CONTROL_FILES_PATH1        
+        printf "# CONTROL_FILES_PATH2 : "
+        export read  INPUT_CONTROL_FILES_PATH2
+        printf "# DB_CREATE_FILE_DEST : "
+        read export INPUT_DB_CREATE_FILE_DEST        
+        printf "# LOG_ARCHIVE_DEST : "
+        read export INPUT_LOG_ARCHIVE_DEST
+        echo
+        echo "-----------------------------------------------------------------"
+        echo ""
+        sh tbis_ini.sh TB_SID_TIP $PRINT_TYPE_INPUT_TYPE $PRINT_TYPE_DETAIL_TYPE
+        echo ""
+        echo "-----------------------------------------------------------------"            
+        echo ""
         FN_PRINT_PRESS
         read PRESS_KEY
     ;;
     41)
         clear
         FN_PRINT_TYPE
-
+        echo "---------------------------"
+        echo "CM_SID.tip Manual Configuation"
+        echo "---------------------------"        
+        printf "# TB_SID : "
+        read export INPUT_TB_SID
+        printf "# TB_HOME PATH : "
+        read export INPUT_TB_HOME_PATH
+        echo
+        echo "-----------------------------------------------------------------"
+        echo ""
+        sh tbis_ini.sh CM_SID_TIP $PRINT_TYPE_INPUT_TYPE $PRINT_TYPE_DETAIL_TYPE
+        echo ""
+        echo "-----------------------------------------------------------------"            
+        echo ""
         FN_PRINT_PRESS
-        read PRESS_KEY    
+        read PRESS_KEY  
     ;;
     51)
         clear

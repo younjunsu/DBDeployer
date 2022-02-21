@@ -12,9 +12,9 @@
 INPUT_INI_TYPE=$1
 INPUT_TB_TYPE=$2
 INPUT_TB_DETAIL_TYPE=$3
-INPUT_TB_HOME=$4
-INPUT_TB_SID=$5
-INPUT_TB_DB_NAME=$6
+#INPUT_TB_HOME=$4
+#INPUT_TB_SID=$5
+#INPUT_TB_DB_NAME=$6
 
 ############################# Profile
 FN_USER_PROFILE_ALIAS(){
@@ -61,15 +61,15 @@ FN_USER_PROFILE(){
         if [ $INPUT_TB_DETAIL_TYPE == "1" ]
         then
             echo "export CM_SID=primary"
-            echo "export CM_HOME=$TB_HOME"
+            echo "export CM_HOME=$INPUT_TB_HOME"
         elif [ $INPUT_TB_DETAIL_TYPE == "2" ]
         then
             echo "export CM_SID=standby"
-            echo "export CM_HOME=$TB_HOME"
+            echo "export CM_HOME=$INPUT_TB_HOME"
         elif [ $INPUT_TB_DETAIL_TYPE == "3" ]
         then
             echo "export CM_SID=observer"
-            echo "export CM_HOME=$TB_HOME"
+            echo "export CM_HOME=$INPUT_TB_HOME"
         else
             2>/dev/null
         fi
@@ -79,11 +79,11 @@ FN_USER_PROFILE(){
         if [ $INPUT_TB_DETAIL_TYPE == "1" ]
         then
             echo "export CM_SID=cm0"
-            echo "export CM_HOME=$TB_HOME"
+            echo "export CM_HOME=$INPUT_TB_HOME"
         elif [ $INPUT_TB_DETAIL_TYPE == "2" ]
         then
             echo "export CM_SID=cm1"
-            echo "export CM_HOME=$TB_HOME"
+            echo "export CM_HOME=$INPUT_TB_HOME"
         else
             2>dev/null
         fi
@@ -93,7 +93,8 @@ FN_USER_PROFILE(){
     else
         2>/dev/null
     fi
-    
+    echo ""
+    echo ""
     FN_USER_PROFILE_ALIAS
 }
 
@@ -103,13 +104,13 @@ FN_TB_SID_TIP(){
     echo "#### Must"
     echo "DB_NAME="
     echo "LISTENER_PORT=8629"
-    echo "CONTROL_FILES=tbctl1/c1.ctl, tbctl2/c2.ctl"
-    echo "DB_CREATE_FILE_DEST=tbdata/*"
-    echo "LOG_ARCHIVE_DEST=tbarch/*"
-    echo "MAX_SESSION_COUNT="
-    echo "TOTAL_SHM_SIZE="
-    echo "MEMORY_TARGET="
-
+    echo "CONTROL_FILES=$INPUT_CONTROL_FILES_PATH1/tbctl1/c1.ctl,$INPUT_CONTROL_FILES_PATH2/tbctl2/c2.ctl"
+    echo "DB_CREATE_FILE_DEST=$INPUT_DB_CREATE_FILE_DEST/tbdata"
+    echo "LOG_ARCHIVE_DEST=$INPUT_LOG_ARCHIVE_DEST"
+    echo "MAX_SESSION_COUNT=100"
+    echo "TOTAL_SHM_SIZE=2G"
+    echo "MEMORY_TARGET=4G"
+    echo ""
     echo "############ TFT Parameters"
     echo "#### Must"
     echo "USE_TS_QUOTA=N"
@@ -123,7 +124,7 @@ FN_TB_SID_TIP(){
     echo "_SLOG_DISPLAY_YEAR=Y"
     echo "AUDIT_SYS_OPERATIONS=Y"
     echo "AUDIT_TRAIL=OS"
-
+    echo ""
     echo "#### Recommand"
     echo "#BOOT_WITH_AUTO_DOWN_CLEAN=Y"
     echo "#USE_RECYCLEBIN=Y"
@@ -132,7 +133,8 @@ FN_TB_SID_TIP(){
     echo "#CALLSTACK_DUMP_DEST="
     echo "## IMS224485 - 2022.01.27"
     echo "#_STANDBY_NETWORK_TIMEOUT=90"
-
+    echo ""
+    echo ""
     if [ $INPUT_TB_TYPE == "1" ]
     then
         2>/dev/null
@@ -144,6 +146,7 @@ FN_TB_SID_TIP(){
         echo "STANDBY_USE_OBSERVER=Y"
         echo "LOG_REPLICATION_MODE=PERFORMANCE"
         echo "LOCAL_CLUSTER_PORT=18629"
+        echo ""
         if [ $INPUT_TB_DETAIL_TYPE == "1" ]
         then
             echo "## Primary"
@@ -151,7 +154,7 @@ FN_TB_SID_TIP(){
             echo "LOCAL_CLUSTER_ADDR=<Primary IP>"
         elif [ $INPUT_TB_DETAIL_TYPE == "2" ]
         then
-            echo "## Standny"
+            echo "## standby"
             echo "LOG_REPLICATION_DEST_1=\"<Primary IP>:8633 LGWR ASYNC\""
             echo "LOCAL_CLUSTER_ADDR=<Standby IP>"
         elif [ $INPUT_TB_DETAIL_TYPE == "3" ]
@@ -164,6 +167,7 @@ FN_TB_SID_TIP(){
         echo "#### Must"
         echo "CLUSTER_DATABASE=Y"
         echo "_USE_O_DIRECT=Y"
+        echo ""
         if [ $INPUT_TB_DETAIL_TYPE == "1" ]
         then
             echo "## cm0"
@@ -183,6 +187,8 @@ FN_TB_SID_TIP(){
             echo "LOCAL_CLUSTER_ADDR=<localhost IP>"
             echo "LOCAL_CLUSTER_PORT=18629"
         fi
+        echo ""
+        echo ""
     elif [ $InPUT_TB_TYPE == "4" ]
     then 
         2>/dev/null
@@ -200,45 +206,53 @@ FN_CM_SID_TIP(){
         echo "#### Must"
         echo "CM_HEARTBEAT_EXPIRE=300"
         echo "CM_WATCHDOG_EXPIRE=290"
+        echo ""
         if [ $INPUT_TB_DETAIL_TYPE == "1" ]
         then
             echo "## Primary"
             echo "CM_NAME=primary"
             echo "CM_UI_PORT=28629"
-            echo "CM_RESOURCE_FILE=<TB_HOME>/config/primary_res_file"
+            echo "CM_RESOURCE_FILE=$INPUT_TB_HOME/config/primary_res_file"
+            echo ""
         elif [ $INPUT_TB_DETAIL_TYPE == "2" ]
         then
             echo "## Standby"
             echo "CM_NAME=standby"
             echo "CM_UI_PORT=28629"
-            echo "CM_RESOURCE_FILE=<TB_HOME>/config/standby_res_file"
+            echo "CM_RESOURCE_FILE=$INPUT_TB_HOME/config/standby_res_file"
+            echo ""
         elif [ $INPUT_TB_DETAIL_TYPE == "3" ]
         then
             2>/dev/null
         fi
         echo "#### Recommand"
         echo "#CM_ENABLE_FAST_NET_ERROR_DETECTION=Y"
+        echo ""
     elif [ $INPUT_TB_TYPE == "3" ]
     then
         echo "############ TAC (Tibero Active Cluster)"
         echo "#### Must"
+        echo ""
         if [ $INPUT_TB_DETAIL_TYPE == "1" ]
         then
             echo "## Node1"
             echo "CM_NAME=cm0"
             echo "CM_UI_PORT=28629"
-            echo "CM_RESOURCE_FILE=<TB_HOME>/config/cm0_res_file"
+            echo "CM_RESOURCE_FILE=$INPUT_TB_HOME/config/cm0_res_file"
+            echo ""
         elif [ $INPUT_TB_DETAIL_TYPE == "2" ]
         then
             echo "## Node2"
             echo "CM_NAME=cm1"
             echo "CM_UI_PORT=28629"
-            echo "CM_RESOURCE_FILE=<TB_HOME>/config/cm1_res_file" 
+            echo "CM_RESOURCE_FILE=$INPUT_TB_HOME/config/cm1_res_file" 
+            echo ""
         fi
         echo "### Recommand"
         echo "CM_HEARTBEAT_EXPIRE=300"
         echo "CM_WATCHDOG_EXPIRE=290"
         echo "CM_ENABLE_FAST_NET_ERROR_DETECTION=Y"
+        echo ""
     elif [ $InPUT_TB_TYPE == "4" ]
     then 
         2>/dev/null
