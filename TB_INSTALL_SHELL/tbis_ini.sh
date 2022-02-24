@@ -17,6 +17,7 @@ INPUT_TB_DETAIL_TYPE=$3
 #INPUT_TB_DB_NAME=$6
 
 ############################# Profile
+# automatic - DO NOT CHANGE !!!
 FN_USER_PROFILE_ALIAS(){
     echo "#### TIBERO Alias"
     echo "alias tbhome='cd \$TB_HOME'"
