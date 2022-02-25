@@ -7,7 +7,7 @@
 # TSC
 # TAC
 TIBERO_TYPE=SINGLE
-
+echo "GIT"
 
 # SINGLE
 # empty
