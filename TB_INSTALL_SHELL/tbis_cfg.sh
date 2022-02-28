@@ -3,31 +3,38 @@
 #
 # user configuration
 ############################################################
-# SINGLE
-# TSC
-# TAC
-TIBERO_TYPE=SINGLE
-
-
-# SINGLE
-# empty
-# TSC
-# primary
-# standby
-# observer
-# TAC
-# cm0
-# cm1
-TIBERO_NODE=single
-
-export TB_SID=tibero
-export DB_NAME=tibero
-export TB_HOME=/home/tibero/tibero6
-export CM_NAME=
-export CM_HOME=
-
-
-
+#
+# TIBERO TYPE
+#TIBERO_TYPE=SINGLE
+TIBERO_TYPE=TSC
+#TIBERO_TYPE=TAC
+#
+# TIBERO NODE
+#TIBERO_NODE=SINGLE
+TIBERO_NODE=primary
+#TIBERO_NODE=standby
+#TIBERO_NODE=observer
+#TIBERO_NODE=cm0
+#TIBERO_NODE=cm1
+# 
+# TIBERO ENV
+TB_SID=tibero
+DB_NAME=tibero
+TB_HOME=/home/tibero/tibero6
+#
+#
+CONTROL_FILES1=/data
+CONTROL_FILES2=/tibero
+DB_CREATE_FILE_DEST=/data
+LOG_ARCHIVE_DEST=/data
+#
+#
+NODE1_INTER_IP=192.168.111.11
+NODE2_INTER_IP=192.168.111.12
+#
+# TSC 일 경우 다르면 ERROR
+NODE1_VIP_IP=192.168.111.13
+NODE2_VIP_IP=192.168.111.13
 
 
 ############################################################
@@ -35,17 +42,11 @@ export CM_HOME=
 # Program variables
 ############################################################
 # Initialization
-#export FN_PROFILE_RESULT_FILE="./tb_files/TIBERO_PROFILE_RESULT.txt"
-#echo "" > $FN_PROFILE_RESULT_FILE
+INPUT_INI_TYPE=TB_SID_TIP
 
 # Functions Parameters
-#INPUT_INI_TYPE=$1
-#INPUT_TB_TYPE=$2
-#INPUT_TB_DETAIL_TYPE=$3
-#INPUT_TB_HOME=$4
-#INPUT_DB_NAME=$5
-#INPUT_TB_DB_NAME=$6
-export CFG_TB_SID=$TB_SID
+
+
 ############################# Profile
 # automatic - DO NOT CHANGE !!!
 FN_USER_PROFILE_ALIAS(){
@@ -73,46 +74,46 @@ FN_USER_PROFILE(){
     echo "#### JAVA"
     echo "#export JAVA_HOME="
     echo ""
-    if [ $INPUT_TB_TYPE == "1" ]
+    if [ $TIBERO_TYPE == "SINGLE" ]
     then
         echo "#### SINGLE"
-        echo "export TB_SID=`echo $INPUT_DB_NAME`"
-        echo "export TB_HOME=$INPUT_TB_HOME_PATH"
-    elif [ $INPUT_TB_TYPE == "2" ]
+        echo "export TB_SID=`echo $DB_NAME`"
+        echo "export TB_HOME=$TB_HOME"
+    elif [ $TIBERO_TYPE == "TSC" ]
     then
         echo "#### TSC (Tibero Standby Cluster)"
-        if [ $INPUT_TB_DETAIL_TYPE == "1" ]
+        if [ $TIBERO_NODE == "primary" ]
         then
-            echo "export TB_SID=`echo $INPUT_DB_NAME`_p"
-            echo "export TB_HOME=$INPUT_TB_HOME_PATH"
+            echo "export TB_SID=`echo $DB_NAME`_p"
+            echo "export TB_HOME=$TB_HOME"
             echo "export CM_SID=primary"
             echo "export CM_HOME=\$TB_HOME"
-        elif [ $INPUT_TB_DETAIL_TYPE == "2" ]
+        elif [ $TIBERO_NODE == "standby" ]
         then
-            echo "export TB_SID=`echo $INPUT_DB_NAME`_s"
-            echo "export TB_HOME=$INPUT_TB_HOME_PATH"
+            echo "export TB_SID=`echo $DB_NAME`_s"
+            echo "export TB_HOME=$TB_HOME"
             echo "export CM_SID=standby"
             echo "export CM_HOME=\$TB_HOME"
-        elif [ $INPUT_TB_DETAIL_TYPE == "3" ]
+        elif [ $TIBERO_NODE == "observer" ]
         then
             echo "export CM_SID=observer"
             echo "export CM_HOME=\$TB_HOME"
         else
             2>/dev/null
         fi
-    elif [ $INPUT_TB_TYPE == "3" ]
+    elif [ $TIBERO_TYPE == "TAC" ]
     then
         echo "#### TAC (Tibero Active Cluster)"
-        if [ $INPUT_TB_DETAIL_TYPE == "1" ]
+        if [ $TIBERO_NODE == "cm0" ]
         then
-            echo "export TB_SID=`echo $INPUT_DB_NAME`0"
-            echo "export TB_HOME=$INPUT_TB_HOME_PATH"
+            echo "export TB_SID=`echo $DB_NAME`0"
+            echo "export TB_HOME=$TB_HOME"
             echo "export CM_SID=cm0"
             echo "export CM_HOME=\$TB_HOME"
-        elif [ $INPUT_TB_DETAIL_TYPE == "2" ]
+        elif [ $TIBERO_NODE == "cm1" ]
         then
-            echo "export TB_SID=`echo $INPUT_DB_NAME`1"
-            echo "export TB_HOME=$INPUT_TB_HOME_PATH"
+            echo "export TB_SID=`echo $DB_NAME`1"
+            echo "export TB_HOME=$TB_HOME"
             echo "export CM_SID=cm1"
             echo "export CM_HOME=\$TB_HOME"
         else
@@ -125,7 +126,7 @@ FN_USER_PROFILE(){
         echo "export SHLIB_PATH=\$LD_LIBRARY_PATH"
         echo "export PATH\$PATH:\$TB_HOME/bin:\$TB_HOME/client/bin:\$JAVA_HOME/bin"
         echo ""
-    elif [ $InPUT_TB_TYPE == "4" ]
+    elif [ $TIBERO_TYPE == "TAS" ]
     then
         2>/dev/null
     else
@@ -140,11 +141,11 @@ FN_USER_PROFILE(){
 FN_TB_SID_TIP(){
     echo "############ TIBERO genernal"
     echo "#### Must"
-    echo "DB_NAME=$INPUT_DB_NAME"
+    echo "DB_NAME=$DB_NAME"
     echo "LISTENER_PORT=8629"
-    echo "CONTROL_FILES=$INPUT_CONTROL_FILES_PATH1/tbctl1/c1.ctl,$INPUT_CONTROL_FILES_PATH2/tbctl2/c2.ctl"
-    echo "DB_CREATE_FILE_DEST=$INPUT_DB_CREATE_FILE_DEST/tbdata"
-    echo "LOG_ARCHIVE_DEST=$INPUT_LOG_ARCHIVE_DEST/tbarch"
+    echo "CONTROL_FILES=$CONTROL_FILES1/tbctl1/c1.ctl,$CONTROL_FILES2/tbctl2/c2.ctl"
+    echo "DB_CREATE_FILE_DEST=$DB_CREATE_FILE_DEST/tbdata"
+    echo "LOG_ARCHIVE_DEST=$LOG_ARCHIVE_DEST/tbarch"
     echo "MAX_SESSION_COUNT=100"
     echo "TOTAL_SHM_SIZE=2G"
     echo "MEMORY_TARGET=4G"
@@ -173,10 +174,10 @@ FN_TB_SID_TIP(){
     echo "#_STANDBY_NETWORK_TIMEOUT=90"
     echo ""
     echo ""
-    if [ $INPUT_TB_TYPE == "1" ]
+    if [ $TIBERO_TYPE == "SINGLE" ]
     then
         2>/dev/null
-    elif [ $INPUT_TB_TYPE == "2" ]
+    elif [ $TIBERO_TYPE == "TSC" ]
     then
         echo "############ TSC (Tibero Standby Cluster)"
         echo "#### Must"
@@ -185,49 +186,49 @@ FN_TB_SID_TIP(){
         echo "LOG_REPLICATION_MODE=PERFORMANCE"
         echo "LOCAL_CLUSTER_PORT=18629"
         echo ""
-        if [ $INPUT_TB_DETAIL_TYPE == "1" ]
+        if [ $TIBERO_NODE == "primary" ]
         then
             echo "## Primary"
-            echo "LOG_REPLICATION_DEST_1=\"$INPUT_NODE2_INTER_IP:8633 LGWR ASYNC\""
-            echo "LOCAL_CLUSTER_ADDR=$INPUT_NODE1_INTER_IP"
-        elif [ $INPUT_TB_DETAIL_TYPE == "2" ]
+            echo "LOG_REPLICATION_DEST_1=\"$NODE2_INTER_IP:8633 LGWR ASYNC\""
+            echo "LOCAL_CLUSTER_ADDR=$NODE1_INTER_IP"
+        elif [ $TIBERO_NODE == "standby" ]
         then
             echo "## standby"
-            echo "LOG_REPLICATION_DEST_1=\"$INPUT_NODE1_INTER_IP:8633 LGWR ASYNC\""
-            echo "LOCAL_CLUSTER_ADDR=$INPUT_NODE2_INTER_IP"
-        elif [ $INPUT_TB_DETAIL_TYPE == "3" ]
+            echo "LOG_REPLICATION_DEST_1=\"$NODE1_INTER_IP:8633 LGWR ASYNC\""
+            echo "LOCAL_CLUSTER_ADDR=$NODE2_INTER_IP"
+        elif [ $TIBERO_NODE == "observer" ]
         then
             2>/dev/null
         fi
-    elif [ $INPUT_TB_TYPE == "3" ]
+    elif [ $TIBERO_TYPE == "TAC" ]
     then
         echo "############ TAC (Tibero Active Cluster)"
         echo "#### Must"
         echo "CLUSTER_DATABASE=Y"
         echo "_USE_O_DIRECT=Y"
         echo ""
-        if [ $INPUT_TB_DETAIL_TYPE == "1" ]
+        if [ $TIBERO_NODE == "cm0" ]
         then
             echo "## cm0"
             echo "THREAD=0"
             echo "UNDO_TABLESPACE=UNDO0"
             echo "CM_NAME=cm0"
             echo "CM_PORT=28629"
-            echo "LOCAL_CLUSTER_ADDR=$INPUT_NODE1_INTER_IP"
+            echo "LOCAL_CLUSTER_ADDR=$NODE1_INTER_IP"
             echo "LOCAL_CLUSTER_PORT=18629"
-        elif [ $INPUT_TB_DETAIL_TYPE == "2" ]
+        elif [ $TIBERO_NODE == "cm1" ]
         then
             echo "## cm1"
             echo "THREAD=1"
             echo "UNDO_TABLESPACE=UNDO1"
             echo "CM_NAME=cm1"
             echo "CM_PORT=28629"
-            echo "LOCAL_CLUSTER_ADDR=$INPUT_NODE2_INTER_IP"
+            echo "LOCAL_CLUSTER_ADDR=$NODE2_INTER_IP"
             echo "LOCAL_CLUSTER_PORT=18629"
         fi
         echo ""
         echo ""
-    elif [ $InPUT_TB_TYPE == "4" ]
+    elif [ $TIBERO_TYPE == "4" ]
     then 
         2>/dev/null
     fi
@@ -235,55 +236,55 @@ FN_TB_SID_TIP(){
 
 ############################# CM_SID.tip
 FN_CM_SID_TIP(){
-    if [ $INPUT_TB_TYPE == "1" ]
+    if [ $TIBERO_TYPE == "SINGLE" ]
     then
         2>/dev/null
-    elif [ $INPUT_TB_TYPE == "2" ]
+    elif [ $TIBERO_TYPE == "TSC" ]
     then
         echo "############ TSC (Tibero Standby Cluster)"
         echo "#### Must"
         echo "CM_HEARTBEAT_EXPIRE=300"
         echo "CM_WATCHDOG_EXPIRE=290"
         echo ""
-        if [ $INPUT_TB_DETAIL_TYPE == "1" ]
+        if [ $TIBERO_NODE == "primary" ]
         then
             echo "## Primary"
             echo "CM_NAME=primary"
             echo "CM_UI_PORT=28629"
-            echo "CM_RESOURCE_FILE=$INPUT_TB_HOME/config/primary_res_file"
+            echo "CM_RESOURCE_FILE=$TB_HOME/config/primary_res_file"
             echo ""
-        elif [ $INPUT_TB_DETAIL_TYPE == "2" ]
+        elif [ $TIBERO_NODE == "standby" ]
         then
             echo "## Standby"
             echo "CM_NAME=standby"
             echo "CM_UI_PORT=28629"
-            echo "CM_RESOURCE_FILE=$INPUT_TB_HOME/config/standby_res_file"
+            echo "CM_RESOURCE_FILE=$TB_HOME/config/standby_res_file"
             echo ""
-        elif [ $INPUT_TB_DETAIL_TYPE == "3" ]
+        elif [ $TIBERO_NODE == "observer" ]
         then
             2>/dev/null
         fi
         echo "#### Recommand"
         echo "#CM_ENABLE_FAST_NET_ERROR_DETECTION=Y"
         echo ""
-    elif [ $INPUT_TB_TYPE == "3" ]
+    elif [ $TIBERO_TYPE == "TAC" ]
     then
         echo "############ TAC (Tibero Active Cluster)"
         echo "#### Must"
         echo ""
-        if [ $INPUT_TB_DETAIL_TYPE == "1" ]
+        if [ $TIBERO_NODE == "cm0" ]
         then
             echo "## Node1"
             echo "CM_NAME=cm0"
             echo "CM_UI_PORT=28629"
-            echo "CM_RESOURCE_FILE=$INPUT_TB_HOME/config/cm0_res_file"
+            echo "CM_RESOURCE_FILE=$TB_HOME/config/cm0_res_file"
             echo ""
-        elif [ $INPUT_TB_DETAIL_TYPE == "2" ]
+        elif [ $TIBERO_NODE == "cm1" ]
         then
             echo "## Node2"
             echo "CM_NAME=cm1"
             echo "CM_UI_PORT=28629"
-            echo "CM_RESOURCE_FILE=$INPUT_TB_HOME/config/cm1_res_file" 
+            echo "CM_RESOURCE_FILE=$TB_HOME/config/cm1_res_file" 
             echo ""
         fi
         echo "### Recommand"
@@ -291,7 +292,7 @@ FN_CM_SID_TIP(){
         echo "CM_WATCHDOG_EXPIRE=290"
         echo "CM_ENABLE_FAST_NET_ERROR_DETECTION=Y"
         echo ""
-    elif [ $InPUT_TB_TYPE == "4" ]
+    elif [ $TIBERO_TYPE == "TAS" ]
     then 
         2>/dev/null
     fi
