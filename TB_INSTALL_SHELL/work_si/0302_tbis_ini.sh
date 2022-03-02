@@ -5,20 +5,20 @@
 ############################################################
 #
 # TIBERO TYPE
-TIBERO_TYPE=SINGLE
+#TIBERO_TYPE=SINGLE
 #TIBERO_TYPE=TSC
-#TIBERO_TYPE=TAC
+TIBERO_TYPE=TAC
 #
 # TIBERO NODE
-TIBERO_NODE=SINGLE
+#TIBERO_NODE=SINGLE
 #TIBERO_NODE=primary
 #TIBERO_NODE=standby
 #TIBERO_NODE=observer
-#TIBERO_NODE=cm0
+TIBERO_NODE=cm0
 #TIBERO_NODE=cm1
 # 
 # TIBERO ENV
-TB_SID=tibero
+TB_SID=tibero0
 DB_NAME=tibero
 TB_HOME=/tibero/tibero6
 #
@@ -29,12 +29,15 @@ DB_CREATE_FILE_DEST=/tibero/tbdata
 LOG_ARCHIVE_DEST=/tibero/tbdata
 #
 #
-#NODE1_INTER_IP=192.168.111.11
+NODE1_INTER_IP=192.168.41.220
 #NODE2_INTER_IP=192.168.111.12
 #
 # TSC 일 경우 다르면 ERROR
 #NODE1_VIP_IP=192.168.111.13
 #NODE2_VIP_IP=192.168.111.13
+
+IFNAME1=enp0s8
+#IFNAME2=
 
 
 ############################################################
@@ -305,30 +308,73 @@ echo "CREATE DATABASE"
 echo "USER sys IDENTIFIED BY tibero"
 echo "CHARACTER SET UTF8"
 echo "LOGFILE"
-echo "GROUP 0 ('$DB_CREATE_FILE_DEST/system/redo001.redo','$DB_CREATE_FILE_DEST/system/redo002.redo') SIZE 300M,"
-echo "GROUP 1 ('$DB_CREATE_FILE_DEST/system/redo011.redo','$DB_CREATE_FILE_DEST/system/redo012.redo') SIZE 300M,"
-echo "GROUP 2 ('$DB_CREATE_FILE_DEST/system/redo021.redo','$DB_CREATE_FILE_DEST/system/redo022.redo') SIZE 300M,"
-echo "GROUP 3 ('$DB_CREATE_FILE_DEST/system/redo031.redo','$DB_CREATE_FILE_DEST/system/redo032.redo') SIZE 300M,"
-echo "GROUP 4 ('$DB_CREATE_FILE_DEST/system/redo041.redo','$DB_CREATE_FILE_DEST/system/redo042.redo') SIZE 300M"
+echo "GROUP 0 ('$DB_CREATE_FILE_DEST/system/redo001.redo','$DB_CREATE_FILE_DEST/system/redo002.redo') SIZE 100M,"
+echo "GROUP 1 ('$DB_CREATE_FILE_DEST/system/redo011.redo','$DB_CREATE_FILE_DEST/system/redo012.redo') SIZE 100M,"
+echo "GROUP 2 ('$DB_CREATE_FILE_DEST/system/redo021.redo','$DB_CREATE_FILE_DEST/system/redo022.redo') SIZE 100M,"
+echo "GROUP 3 ('$DB_CREATE_FILE_DEST/system/redo031.redo','$DB_CREATE_FILE_DEST/system/redo032.redo') SIZE 100M,"
+echo "GROUP 4 ('$DB_CREATE_FILE_DEST/system/redo041.redo','$DB_CREATE_FILE_DEST/system/redo042.redo') SIZE 100M"
 echo "MAXDATAFILES 1024"
 echo "MAXLOGFILES 100"
 echo "MAXLOGMEMBERS 8 "
 echo "--MAXARCHIVELOG 500"
 echo "--MAXLOGHISTORY 500"
 echo "ARCHIVELOG"
-echo "  datafile '$DB_CREATE_FILE_DEST/system/system001.dtf' size 2G autoextend off"
+echo "  datafile '$DB_CREATE_FILE_DEST/system/system001.dtf' size 100M autoextend off"
 echo "  SYSSUB"
-echo "  datafile '$DB_CREATE_FILE_DEST/system/tpr_ts001.dtf' size 1G autoextend off"
+echo "  datafile '$DB_CREATE_FILE_DEST/system/tpr_ts001.dtf' size 100M autoextend off"
 echo "default tablespace USR"
-echo "  datafile '$DB_CREATE_FILE_DEST/system/usr001.dtf' size 1G autoextend off"
+echo "  datafile '$DB_CREATE_FILE_DEST/system/usr001.dtf' size 100M autoextend off"
 echo "  extent management local UNIFORM SIZE 1M"
 echo "default temporary tablespace TEMP"
-echo "  tempfile '$DB_CREATE_FILE_DEST/system/temp001.dtf' size 1G autoextend off"
+echo "  tempfile '$DB_CREATE_FILE_DEST/system/temp001.dtf' size 100M autoextend off"
 echo "  extent management local AUTOALLOCATE"
-echo "undo tablespace UNDO"
-echo "  datafile '$DB_CREATE_FILE_DEST/system/undo001.dtf' size 1G autoextend off"
+echo "undo tablespace UNDO0"
+echo "  datafile '$DB_CREATE_FILE_DEST/system/undo001.dtf' size 100M autoextend off"
 echo "  extent management local UNIFORM SIZE 1M"
 echo ";"
+}
+FN_ADD_CRE_DATABASE(){
+echo "create undo tablespace UNDO1 datafile '$DB_CREATE_FILE_DEST/system/undo002.dtf' size 1G autoextend off;"
+echo "alter database add logfile thread 1 group 5 ('$DB_CREATE_FILE_DEST/system/redo051.redo','$DB_CREATE_FILE_DEST/system/redo052.redo') SIZE 100M;"
+echo "alter database add logfile thread 1 group 6 ('$DB_CREATE_FILE_DEST/system/redo061.redo','$DB_CREATE_FILE_DEST/system/redo062.redo') SIZE 100M;"
+echo "alter database add logfile thread 1 group 7 ('$DB_CREATE_FILE_DEST/system/redo071.redo','$DB_CREATE_FILE_DEST/system/redo072.redo') SIZE 100M;"
+echo "alter database add logfile thread 1 group 8 ('$DB_CREATE_FILE_DEST/system/redo081.redo','$DB_CREATE_FILE_DEST/system/redo082.redo') SIZE 100M;"
+echo "alter database add logfile thread 1 group 9 ('$DB_CREATE_FILE_DEST/system/redo091.redo','$DB_CREATE_FILE_DEST/system/redo092.redo') SIZE 100M;"
+echo "alter database enable public thread 1;"
+}
+
+
+
+############################# CM 
+FN_CM_RESOURCE(){
+    if [ $TIBERO_TYPE == "SINGLE" ]
+    then
+        2>/dev/null
+    elif [ $TIBERO_TYPE == "TSC" ]
+    then
+        2>/dev/null
+    elif [ $TIBERO_TYPE == "TAC" ]
+    then
+        if [ $TIBERO_NODE == "cm0" ]
+        then
+            echo "cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno 29000"
+            echo "cmrctl add network --name pub0 --nettype public --ifname $IFNAME1"
+            echo "cmrctl add cluster --name cls0 --incnet net0 --pubnet pub0 --cfile $DB_CREATE_FILE_DEST/CM/CMFILE"
+            echo "cmrctl start cluster --name cls0"
+            echo "cmrctl add service --name $DB_NAME --cname cls0 --type db"
+            echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
+            #echo "cmrctl add vip --name < vip0 > --svcname <DB_NAME> --ipaddr <vip_ip>/<vip_ip 3octet>.255 --bcast <broadcast>"
+        elif [ $TIBERO_NODE == "cm1" ]
+        then
+            echo "cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno 29000"
+            echo "cmrctl add network --name pub1 --nettype public --ifname $IFNAME1"
+            echo "cmrctl add cluster --name cls0 --incnet net1 --pubnet pub1 --cfile $DB_CREATE_FILE_DEST/CM/CMFILE"
+            echo "cmrctl start cluster --name cls0"
+            echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
+            #echo "cmrctl add vip --name < vip1 > --svcname <DB_NAME> --ipaddr <vip_ip>/<vip_ip 3octet>.255 --bcast <broadcast>"
+            fi
+    fi
+    
 }
 
 ############################# MANUAL
@@ -344,6 +390,12 @@ CM_SID_TIP)
     ;;
 CRE_DATABASE)
     FN_CRE_DATABASE
+    ;;
+CM_RESOURCE)
+    FN_CM_RESOURCE
+    ;;
+ADD_CRE_DATABASE)
+    FN_ADD_CRE_DATABASE
     ;;
 *)
 exit
