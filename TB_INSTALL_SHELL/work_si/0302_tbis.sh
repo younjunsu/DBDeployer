@@ -425,7 +425,7 @@ FN_INITAILIZATION(){
 
 
 # Type Select (auto)
-AUTO_PRINT_TYPE(){
+AUTO_PRINT_TYPE(){ 
     clear
     echo "---------------------------"
     echo "# 1. DB INSTALL"
@@ -438,8 +438,8 @@ AUTO_PRINT_TYPE(){
     echo
     echo
     
-    case $PRINT_TYPE_INPUT_TYPE in
-    1)
+    case $PRINT_TYPE_INPUT_TYPE in 
+    1) 
         ###### PROFILE
         clear
         export INPUT_INI_TYPE=USER_PROFILE
@@ -448,64 +448,63 @@ AUTO_PRINT_TYPE(){
         
         echo "---------------------------"
         echo "# TYPE : $TIBERO_TYPE"
+        echo "---------------------------"
         sh tbis_ini.sh USER_PROFILE > bash_profile
         cat bash_profile > $HOME/.bash_profile
         . $HOME/.bash_profile
         echo " "
-        echo "PROFILE CRAET ... ok"
-
-                
-        ###### TIP FILE 
-        if [ $PRINT_TYPE_INPUT_TYPE == "1" ]
-        then
-            2>/dev/null
-        elif [ $PRINT_TYPE_INPUT_TYPE == "2" ]
-        then
-            printf "# Primary Interconnect IP : "
-            read INPUT_NODE1_INTER_IP
-            export INPUT_NODE1_INTER_IP=$INPUT_NODE1_INTER_IP
-            printf "# Standby Interconnect IP : "
-            read INPUT_NODE2_INTER_IP
-            export INPUT_NODE2_INTER_IP=$INPUT_NODE2_INTER_IP
-        elif [ $PRINT_TYPE_INPUT_TYPE == "3" ] && [ $PRINT_TYPE_DETAIL_TYPE == "1" ]
-        then
-            printf "# cm0 Interconnect IP : "
-            read INPUT_NODE1_INTER_IP
-            export INPUT_NODE1_INTER_IP=$INPUT_NODE1_INTER_IP
-        elif [ $PRINT_TYPE_INPUT_TYPE == "3" ] && [ $PRINT_TYPE_DETAIL_TYPE == "2" ]
-        then
-            printf "# cm1 Interconnect IP : "
-            read INPUT_NODE2_INTER_IP
-            export INPUT_NODE2_INTER_IP=$INPUT_NODE2_INTER_IP
-        fi
+        echo "PROFILE CREATE ... ok"
         echo " "
 
         
+        ###### TIP FILE
         export INPUT_INI_TYPE=TB_SID_TIP
         sh tbis_ini.sh TB_SID_TIP > $TB_SID.tip
         mv $TB_HOME/config/$TB_SID.tip $TB_HOME/config/$TB_SID.tip_bak > /dev/null 2>&1
         cat $TB_SID.tip > $TB_HOME/config/$TB_SID.tip
+        
+        if [ $TIBERO_TYPE == "TSC" ]
+        then
+            echo ""
+        elif [ $TIBERO_TYPE == "TAC" ]
+        then
+            if [ $TIBERO_NODE == "cm0" ]
+            then
+            export INPUT_INI_TYPE=CM_SID_TIP
+            sh tbis_ini.sh CM_SID_TIP > $TIBERO_NODE.tip
+            cat $TIBERO_NODE.tip > $TB_HOME/config/$TIBERO_NODE.tip
+            elif [ $TIBERO_NODE == "cm1"]
+            then
+            export INPUT_INI_TYPE=CM_SID_TIP
+            sh tbis_ini.sh CM_SID_TIP > $TIBERO_NODE.tip
+            cat $TIBERO_NODE.tip > $TB_HOME/config/$TIBERO_NODE.tip
+            fi
+        fi
         echo "TIP FILE CREATE ... ok"
         echo " "
 
         ###### CRE DATABASE 
         export INPUT_INI_TYPE=CRE_DATABASE
         sh tbis_ini.sh CRE_DATABASE > cre_db.sql
-        cat /dev/null > $TB_HOME/client/config/tbdsn.tbr
+        cat /dev/null > $TB_HOME/client/config/tbdsn.tbr > /dev/null 2>&1
+      
 
         ###### TIBERO BOOT
         mkdir -p $DB_CREATE_FILE_DEST/system
-        cat /dev/null > $TB_HOME/client/config/tbdsn.tbr > /dev/null 2>&1
+        cat /dev/null > $TB_HOME/client/config/tbdsn.tbr
         sh $TB_HOME/config/gen_tip.sh > /dev/null 2>&1
+        sed -i "s/(DB_NAME=.*/(DB_NAME=$DB_NAME)/g" $TB_HOME/client/config/tbdsn.tbr #테스트를 위한 임시 설정 변경 예정
 
-       tbboot nomount
-         tbsql sys/tibero @cre_db.sql <<EOF
-       quit
+        if [ $TIBERO_TYPE == "SINGLE" ]
+        then
+            tbboot nomount > /dev/null 2>&1
+            tbsql sys/tibero @cre_db.sql > /dev/null 2>&1 <<EOF
+            quit
 EOF
         echo "CREATE DATABASE ... ok"
-
-        tbboot
-        sh $TB_HOME/scripts/system.sh <<EOF
+        echo " "
+        tbboot > /dev/null 2>&1
+        sh $TB_HOME/scripts/system.sh > /dev/null 2>&1 <<EOF
         tibero
         syscat
         Y
@@ -513,9 +512,48 @@ EOF
         Y
         Y
 EOF
-        echo "TBBOOT"
+        elif [ $TIBERO_TYPE == "TSC" ]
+        then
+            echo ""
+        elif [ $TIBERO_TYPE == "TAC" ]
+        then
+            if [ $TIBERO_NODE == "cm0" ]
+            then
+                tbcm -b > /dev/null 2>&1
+                mkdir -p $DB_CREATE_FILE_DEST/CM
+                export INPUT_INI_TYPE=CM_RESOURCE
+                sh tbis_ini.sh CM_RESOURCE > $TIBERO_NODE\_resource
+                sh $TIBERO_NODE\_resource > /dev/null 2>&1
+                echo "CM0 RESOURCE ... ok"
+                echo ""
+                tbboot nomount  > /dev/null 2>&1
+                tbsql sys/tibero @cre_db.sql > /dev/null 2>&1 <<EOF
+                quit
+EOF
+                echo "CREATE DATABASE ... ok"
+                echo " "
+                tbboot > /dev/null 2>&1
+                export INPUT_INI_TYPE=ADD_CRE_DATABASE
+                sh tbis_ini.sh ADD_CRE_DATABASE > add_cre_db.sql
+                tbsql sys/tibero @add_cre_db.sql > /dev/null 2>&1 << EOF
+                quit
+EOF
+                sh $TB_HOME/scripts/system.sh > /dev/null 2>&1 <<EOF
+                tibero
+                syscat
+                Y
+                Y
+                Y
+                Y
+EOF
+            elif [ $TIBERO_NODE == "cm1"]
+            then
+            echo ""
+            fi
+        fi
+        echo "TIBERO BOOT ... ok"
 
-
+        echo " "
         FN_PRINT_PRESS
         read FN_PRINT_PRESS
     ;;
