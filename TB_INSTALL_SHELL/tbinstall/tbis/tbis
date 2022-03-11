@@ -1,0 +1,109 @@
+#!/bin/sh
+
+############################################################
+#
+# Program history
+############################################################
+# Created by. Daejeon Office
+# 2022.03.18 Version : Park Si Hyung, Yoon Jun Su
+#
+
+############################################################
+#
+# Program variables
+############################################################
+# Configuration file path
+TBIS_AUTO_CFGFILE="tbis/tbis.cfg"
+TBIS_AUTO_LOGFILE="tbis/tbis.log"
+cd ..
+echo "############### TBIS LOG" > $TBIS_AUTO_LOGFILE
+date +%F_%T >> $TBIS_AUTO_LOGFILE
+echo >> $TBIS_AUTO_LOGFILE
+echo >> $TBIS_AUTO_LOGFILE
+
+
+############################################################
+#
+# Function lists
+############################################################
+
+FN_AUTO_ENGINE(){
+    tar -xvzf tbis/binary/tibero*.tar.gz 1>$TBIS_AUTO_LOGFILE 2>$TBIS_AUTO_LOGFILE
+}
+
+FN_AUTO_TBINARY(){
+    tar -xvf tbis/binary/tbinary*.tar 1>$TBIS_AUTO_LOGFILE 2>$TBIS_AUTO_LOGFILE
+}
+
+FN_AUTO_INSTALL(){
+    # cfg parsing
+    TIBERO_DIRECTORY=`cat $TBIS_AUTO_CFGFILE |grep  TIBERO_DIRECTORY |awk -F= {'print $2'}`
+    TIBERO_ENGINE=`cat $TBIS_AUTO_CFGFILE |grep  TIBERO_ENGINE |awk -F= {'print $2'}`
+    TIBERO_TBINARY=`cat $TBIS_AUTO_CFGFILE |grep  TIBERO_TBINARY |awk -F= {'print $2'}`
+    
+    if [ $TIBERO_DIRECTORY == "Y" ] || [ $TIBERO_DIRECTORY == "y" ]
+    then
+        echo "# TIBERO Directory create "
+        FN_AUTO_DIRECTORY
+        echo "# TIBERO Directory Success"
+    fi
+
+    if [ $TIBERO_ENGINE == "Y" ] || [ $TIBERO_ENGINE == "y" ]
+    then
+        echo "# TIBERO Engine Create"
+        FN_AUTO_ENGINE
+        echo "# TIBERO Engine Success"
+    fi
+
+    if [ $TIBERO_TBINARY == "Y" ] || [ $TIBERO_TBINARY == "y" ]
+    then
+        echo "# TIBERO tbinary Create"
+        FN_AUTO_TBINARY
+        echo "# TIBERO tbinary Success"
+    fi
+    
+    #sh tbis.cfg USER_PROFILE
+    #sh tbis.cfg TB_SID_TIP
+    #sh tbis.cfg CM_SID_TIP
+}
+
+FN_MAIN_MENU(){
+    clear
+    echo "[*] TIBERO Installation Shell Script"
+    echo "[*] This script is for TmaxTibero "Daejeon Office" only."
+    echo "[*] Supported Version : Tibero 6 FS07 ↑"
+    echo "-----------------------------------------------------------------"
+    echo "# 1. Auto installation"
+    echo "-----------------------------------------------------------------"
+    echo "# chk. System Check"
+    echo "# ini. Configurations Initialization"
+    echo "# press other key to quit"
+    echo "-----------------------------------------------------------------"
+    printf "Choose the Number : "
+    read INPUT_NUMBER
+    case $INPUT_NUMBER in
+    1)
+
+        FN_AUTO_INSTALL        
+    ;;
+    2)
+        echo "2"
+    ;;
+    3)
+        echo "3"
+    ;;
+    *)
+        clear
+        echo "tbis quit."
+        exit
+    ;;
+    esac
+}
+
+############################################################
+#
+# Program start
+############################################################
+# run
+FN_MAIN_MENU 
+
