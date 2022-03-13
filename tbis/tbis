@@ -16,8 +16,14 @@ TBIS_AUTO_CFGFILE="tbis.cfg"
 TBIS_AUTO_LOGFILE="tbis.log"
 TBIS_AUTO_SQLFILE="tbis.sql"
 
+TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
+if [ -f $TBIS_AUTO_LOGFILE ]
+then
+    mv $TBIS_AUTO_LOGFILE "$TBIS_AUTO_LOGFILE"_"$TBIS_AUTO_TIME"
+fi
+
 echo "############### tbis LOG" > $TBIS_AUTO_LOGFILE
-date +%F_%T >> $TBIS_AUTO_LOGFILE
+echo $TBIS_AUTO_TIME >> $TBIS_AUTO_LOGFILE
 echo >> $TBIS_AUTO_LOGFILE
 echo >> $TBIS_AUTO_LOGFILE
 
