@@ -1,0 +1,23 @@
+[*] TIBERO Auto installation Tools Configuration Checking STEP
+-----------------------------------------------------------------
+# System Check
+- OS USER : tb
+- OS HOME : /home/tb
+-----------------------------------------------------------------
+# TIBERO Binary
+- engine : /home/tb/tibero6
+- tbinary : /home/tb/tibero6/tbinary
+-----------------------------------------------------------------
+# TIBERO DATABASE
+- TIBERO TYPE : SINGLE
+- CHARSET : UTF8
+-----------------------------------------------------------------
+# TIBERO Configuration Files
+- cat tbis.cfg : TIBERO Total Configuration File
+- cat tbis.sql : CREATE DATABASE SQL File
+-----------------------------------------------------------------
+
+continue ? ( [Y]es / [N]o / [S]kip ) : 
+ tbis Progress> Engine
+
+continue ? ( [Y]es / [N]o / [S]kip ) : 

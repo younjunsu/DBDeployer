@@ -14,6 +14,8 @@
 # Configuration file path
 TBIS_AUTO_CFGFILE="tbis.cfg"
 TBIS_AUTO_LOGFILE="tbis.log"
+TBIS_AUTO_SQLFILE="tbis.sql"
+
 echo "############### tbis LOG" > $TBIS_AUTO_LOGFILE
 date +%F_%T >> $TBIS_AUTO_LOGFILE
 echo >> $TBIS_AUTO_LOGFILE
@@ -25,19 +27,83 @@ echo >> $TBIS_AUTO_LOGFILE
 ############################################################
 FN_AUTO_PROGRESS_CHECK(){
     echo
-    pritnf "continue ? ( [Y]es / [N]o / [S]kip ) : "
-
+    printf "continue ? ( [Y]es / [N]o / [S]kip ) : "
+    read INPUT_YESNO
+    case $INPUT_YESNO in
+        "YES"|"Yes"|"yes"|"y"|"Y")
+            YESNO=YES
+            break;;
+        "NO"|"No"|"no"|"n"|"N")
+            exit;;
+        "SKIP"|"Skip"|"S"|"s")
+            YESNO=SKIP
+            break;;
+    esac
+    echo
 }
 
-FN_AUTO_CHOICE(){
-    echo    
-}
 FN_AUTO_ENGINE(){    
-    tar -xvzf ../binary/tibero*.tar.gz -C $USER_HOME 1>$TBIS_AUTO_LOGFILE 2>$TBIS_AUTO_LOGFILE
+    # Engine install
+    if [ $TIBERO_ENGINE == "Y" ] || [ $TIBERO_ENGINE == "y" ]
+    then
+        echo " tbis Progress> Engine"
+        
+        FN_AUTO_PROGRESS_CHECK
+        
+        tar -xvzf ../binary/tibero*.tar.gz -C $USER_HOME 1>$TBIS_AUTO_LOGFILE 2>$TBIS_AUTO_LOGFILE
+        #echo " tbis Progress> Engine Success"
+    fi
+    
 }
+
 
 FN_AUTO_TBINARY(){
-    tar -xvf ../binary/tbinary*.tar -C $USER_HOME 1>$TBIS_AUTO_LOGFILE 2>$TBIS_AUTO_LOGFILE
+    if [ $TIBERO_TBINARY == "Y" ] || [ $TIBERO_TBINARY == "y" ]
+    then
+        echo " tbis Progress> tbinary Create"
+        
+        FN_AUTO_PROGRESS_CHECK
+
+        tar -xvf ../binary/tbinary*.tar -C $USER_HOME 1>$TBIS_AUTO_LOGFILE 2>$TBIS_AUTO_LOGFILE
+        echo " tbis Progress> tbinary Success"
+    fi
+    
+}
+
+FN_AUTO_CREATEDB(){
+    echo
+}
+
+FN_AUTO_PROFILE()
+{
+    # PROFILE
+    echo " tbis Progress> Profile Create" 
+    TIBERO_BASHPROFILE=`cat $USER_HOME/.bash_profile |grep -v "^$" |head -n 1 `
+    TIBERO_PROFILE=`cat $USER_HOME/.profile |grep -v "^$" |head -n 1 `
+    
+    FN_AUTO_PROGRESS_CHECK
+
+    if [ -z $TIBERO_PROFILE ]
+    then   
+        sh tbis.cfg USER_PROFILE >> $USER_HOME/.bash_profile
+    elif [ -z $TIBERO_BASHPROFILE ]
+    then
+        sh tbis.cfg USER_PROFILE >> $USER_HOME/.profile
+    fi
+    echo " tbis Progress> Profile Success"    
+}
+FN_AUTO_LICENSE(){
+    # License copy applying
+    if [ -z $TIBERO_LICENSE ]
+    then
+        echo " tbis Error>../binary/license.xml file check"
+        exit
+    else
+        echo " tbis Progress> license apply Create"    
+        FN_AUTO_PROGRESS_CHECK
+        cp ../binary/license.xml $TB_HOME/license/license.xml
+        echo " tbis Progress> license apply Success"        
+    fi
 }
 
 FN_AUTO_SINGLE(){
@@ -50,6 +116,21 @@ FN_AUTO_TSC(){
 
 FN_AUTO_TAC(){
     echo
+}
+FN_AUTO_TB_SID_TIP(){
+    TB_SID=tibero
+    echo "$TB_HOME/config/$TB_SID.tip"    
+    #TB_SID=`cat $OS_HOME/.bash_profile`
+    echo " tbis Progress> TB_SID TIP File Apply Create"
+    FN_AUTO_PROGRESS_CHECK
+    sh tbis.cfg TB_SID_TIP > $TB_HOME/config/$TB_SID.tip
+    echo " tbis Progress> TB_SID TIP File Apply Success"
+}
+FN_AUTO_CM_SID_TIP(){
+    echo " tbis Progress> CM_SID TIP File Apply Create"
+    FN_AUTO_PROGRESS_CHECK
+    #sh tbis.cfg CM_SID_TIP
+    echo " tbis Progress> CM_SID TIP File Apply Success"
 }
 
 FN_AUTO_INSTALL(){
@@ -94,69 +175,22 @@ FN_AUTO_INSTALL(){
     echo "- cat tbis.cfg : TIBERO Total Configuration File"
     echo "- cat tbis.sql : CREATE DATABASE SQL File"
     echo "-----------------------------------------------------------------"
-    printf "running check : " 
-    read INPUT_RUN_CHK
-   
+    
+    FN_AUTO_PROGRESS_CHECK
+    
     if [ $USER_HOME -z ]
     then
-        echo " tbis Error> user home checking "
+        echo " tbis Error> User home checking "
         exit
     fi
-
-    if [ $TIBERO_ENGINE == "Y" ] || [ $TIBERO_ENGINE == "y" ]
-    then
-        echo " tbis Progress> Engine Create"
-        FN_AUTO_ENGINE
-        echo " tbis Progress> Engine Success"
-    fi
-
-    if [ $TIBERO_TBINARY == "Y" ] || [ $TIBERO_TBINARY == "y" ]
-    then
-        echo " tbis Progress> tbinary Create"
-        FN_AUTO_TBINARY
-        echo " tbis Progress> tbinary Success"
-    fi
-
-    # PROFILE
-    echo " tbis Progress> Profile Create" 
-    TIBERO_BASHPROFILE=`cat $USER_HOME/.bash_profile |grep -v "^$" |head -n 1 `
-    TIBERO_PROFILE=`cat $USER_HOME/.profile |grep -v "^$" |head -n 1 `
-
-    if [ -z $TIBERO_PROFILE ]
-    then   
-        sh tbis.cfg USER_PROFILE >> $USER_HOME/.bash_profile
-    elif [ -z $TIBERO_BASHPROFILE ]
-    then
-        sh tbis.cfg USER_PROFILE >> $USER_HOME/.profile
-    fi
-    echo " tbis Progress> Profile Success"    
-
-
-# License copy applying
-    if [ -z $TIBERO_LICENSE ]
-    then
-        echo " tbis Error>../binary/license.xml file check"
-        exit
-    else
-        echo " tbis Progress> license apply Create"    
-        cp ../binary/license.xml $TB_HOME/license/license.xml
-        echo " tbis Progress> license apply Success"        
-    fi
-    
   
-    TB_SID=tibero
-    echo "$TB_HOME/config/$TB_SID.tip"    
-    #TB_SID=`cat $OS_HOME/.bash_profile`
-    echo " tbis Progress> TB_SID TIP File Apply Create"
-    sh tbis.cfg TB_SID_TIP > $TB_HOME/config/$TB_SID.tip
-    echo " tbis Progress> TB_SID TIP File Apply Success"
-
-    echo " tbis Progress> CM_SID TIP File Apply Create"
-    #sh tbis.cfg CM_SID_TIP
-    echo " tbis Progress> CM_SID TIP File Apply Success"
+    FN_AUTO_ENGINE
+    FN_AUTO_TBINARY
+    FN_AUTO_LICENSE
+    FN_AUTO_PROFILE
 
     # Owner Change Files
-    #chwon -R $USER:$USER $USER_HOME
+    # chwon -R $USER:$USER $USER_HOME
 
 }
 
@@ -187,7 +221,7 @@ FN_MAIN_MENU(){
     ;;
     *)
         clear
-        echo "tbis quit."
+        echo "tbis exit."
         exit
     ;;
     esac
