@@ -23,6 +23,12 @@ echo >> $TBIS_AUTO_LOGFILE
 #
 # Function lists
 ############################################################
+FN_AUTO_PROGRESS_CHECK(){
+    echo
+    pritnf "continue ? ( [Y]es / [N]o / [S]kip ) : "
+
+}
+
 FN_AUTO_CHOICE(){
     echo    
 }
@@ -149,8 +155,8 @@ FN_AUTO_INSTALL(){
     #sh tbis.cfg CM_SID_TIP
     echo " tbis Progress> CM_SID TIP File Apply Success"
 
-# Owner Change Files
-    chwon -R $USER:$USER $USER_HOME
+    # Owner Change Files
+    #chwon -R $USER:$USER $USER_HOME
 
 }
 
