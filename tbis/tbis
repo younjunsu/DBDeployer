@@ -69,7 +69,6 @@ FN_AUTO_ENGINE(){
     
 }
 
-
 FN_AUTO_TBINARY(){
     if [ $TIBERO_TBINARY == "Y" ] || [ $TIBERO_TBINARY == "y" ]
     then
@@ -88,8 +87,7 @@ FN_AUTO_TBINARY(){
     fi
 }
 
-FN_AUTO_PROFILE()
-{
+FN_AUTO_PROFILE(){
     echo
     echo "############################################################"
     echo "# tbis Progress> Profile " 
@@ -189,15 +187,31 @@ FN_AUTO_SINGLE(){
 }
 
 FN_AUTO_TSC(){
-    export TB_SID=`echo "$DB_NAME"_p`
-    export TB_SID=`echo "$DB_NAME"_s`
+    if [ $TIBERO_NODE == "primary" ] 
+    then
+        export TB_SID=`echo "$DB_NAME"_p`
+    elif [ $TIBERO_NODE == "standby" ]
+    then
+        export TB_SID=`echo "$DB_NAME"_s`
+    elif [ $TIBERO_NODE == "observer" ]
+    then
+        export TB_SID="Observer Not TB_SID"
+    fi
 }
 
 FN_AUTO_TAC(){
-    export TB_SID=`echo "$DB_NAME"0`
-    export TB_SID=`echo "$DB_NAME"1`
+    if [ $TIBERO_NODE == "cm0" ]
+    then
+        export TB_SID=`echo "$DB_NAME"0`
+    elif [ $TIBERO_NODE == "cm1" ]
+    then
+        export TB_SID=`echo "$DB_NAME"1`
+    fi
 }
 
+FN_AUTO_CM_RESOURCE(){
+
+}
 
 FN_AUTO_CHANGE_OWNER(){
     # Owner Change Files
@@ -270,8 +284,7 @@ FN_AUTO_SYSTEM_SHELL(){
     fi    
 }
 
-
-FN_AUTO_INSTALL(){   
+FN_AUTO_INSTALL_CHECK(){
     . ./tbis.cfg
 
     TIBERO_LICENSE=`cat ../binary/license.xml |grep license |head -n 1 `
@@ -279,36 +292,37 @@ FN_AUTO_INSTALL(){
     echo "-----------------------------------------------------------------"
     echo "# System Check"
     echo "- OS USER : $USER_NAME"
-    echo "- OS USER GROUP : $USER_GROUP"
+    echo "- OS USER GROUP : $GROUP_NAME"
     echo "- OS HOME : $USER_HOME"
     echo "-----------------------------------------------------------------"
     echo "# TIBERO Binary"
     if [ -n $TIBERO_ENGINE ]
     then
-        echo "- engine : $TB_HOME"
+        echo "- Engine PATH : $TB_HOME"
     fi  
 
     if [ -n $TIBERO_TBINARY ]
     then
-        echo "- tbinary : $TB_HOME/tbinary"
+        echo "- tbinary PATH : $TB_HOME/tbinary"
     fi
     echo "-----------------------------------------------------------------"
     echo "# TIBERO DATABASE"
     if [ $TIBERO_TYPE == "SINGLE" ]
     then
-        echo "- TIBERO TYPE : SINGLE"
+        echo "- TYPE : SINGLE"
         FN_AUTO_SINGLE
     elif [ $TIBERO_TYPE == "TSC" ]
     then
-        echo "- TIBERO TYPE : TSC"
-        echo "- TIBERO NODE : $TIBERO_NODE"
+        echo "- TYPE : TSC"
+        echo "- NODE : $TIBERO_NODE"
         FN_AUTO_TSC
     elif [ $TIBERO_TYPE == "TAC" ]
     then
-        echo "- TIBERO TYPE : TAC"
-        echo "- TIBERO NODE : $TIBERO_NODE"
+        echo "- TYPE : TAC"
+        echo "- NODE : $TIBERO_NODE"
         FN_AUTO_TAC
     fi
+
     echo "- TB_SID : $TB_SID"
     echo "- CM_SID : $TIBERO_NODE"
     echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
@@ -325,8 +339,12 @@ FN_AUTO_INSTALL(){
         echo " tbis message> User home checking "
         exit
     fi
+}
 
+FN_AUTO_INSTALL(){   
     ############# In Progress
+    FN_AUTO_LOGFILE
+    FN_AUTO_INSTALL_CHECK
     FN_AUTO_ENGINE
     FN_AUTO_TBINARY
     FN_AUTO_LICENSE
@@ -387,7 +405,6 @@ FN_MAIN_MENU(){
     case $INPUT_NUMBER in
     1)
         clear
-        FN_AUTO_LOGFILE
         FN_AUTO_INSTALL |tee $TBIS_AUTO_LOGFILE
         exit;;
     2)
