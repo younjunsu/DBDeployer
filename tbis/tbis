@@ -40,13 +40,11 @@ FN_AUTO_PROGRESS_CHECK(){
     read INPUT_YESNO
     case $INPUT_YESNO in
         "YES"|"Yes"|"yes"|"y"|"Y")
-            YESNO=YES
-            break;;
+            YESNO=YES;;
         "NO"|"No"|"no"|"n"|"N")
             exit;;
         "SKIP"|"Skip"|"S"|"s")
-            YESNO=SKIP
-            break;;
+            YESNO=SKIP;;
     esac
     echo
 }
@@ -63,9 +61,10 @@ FN_AUTO_ENGINE(){
         echo "tar -xvzf ../binary/tibero*.tar.gz -C $USER_HOME"
         echo
         FN_AUTO_PROGRESS_CHECK
-        
-        tar -xvzf ../binary/tibero*.tar.gz -C $USER_HOME
-        
+        if [ $YESNO == "YES" ]
+        then
+            tar -xvzf ../binary/tibero*.tar.gz -C $USER_HOME
+        fi     
     fi
     
 }
@@ -82,7 +81,10 @@ FN_AUTO_TBINARY(){
         echo "tar -xvf ../binary/tbinary*.tar -C $USER_HOME"
         echo
         FN_AUTO_PROGRESS_CHECK
-        tar -xvf ../binary/tbinary*.tar -C $USER_HOME
+        if [ $YESNO == "YES" ]
+        then
+            tar -xvf ../binary/tbinary*.tar -C $USER_HOME
+        fi  
     fi
 }
 
@@ -93,19 +95,18 @@ FN_AUTO_PROFILE()
     echo "# tbis Progress> Profile " 
     echo "############################################################"
     echo
-    #TIBERO_BASHPROFILE=`ls  $USER_HOME/.bash_profile |grep -v "^$" |head -n 1 `
-    TIBERO_BASHPROFILE=$USER_HOME/.bash_profile
-    #TIBERO_PROFILE=`cat $USER_HOME/.profile |grep -v "^$" |head -n 1 `
-    TIBERO_PROFILE=$USER_HOME/.profile
-    
     FN_AUTO_PROGRESS_CHECK
-
-    if [ -z $TIBERO_PROFILE ]
-    then   
-        sh tbis.cfg USER_PROFILE >> $USER_HOME/.bash_profile
-    elif [ -z $TIBERO_BASHPROFILE ]
+    if [ $YESNO == "YES" ]
     then
-        sh tbis.cfg USER_PROFILE >> $USER_HOME/.profile
+        TIBERO_BASHPROFILE=`ls $USER_HOME/.bash_profile`
+        TIBERO_PROFILE=`ls $USER_HOME/.profile`
+        if [ -z $TIBERO_PROFILE ]
+        then   
+            sh tbis.cfg USER_PROFILE >> $USER_HOME/.bash_profile
+        elif [ -z $TIBERO_BASHPROFILE ]
+        then
+            sh tbis.cfg USER_PROFILE >> $USER_HOME/.profile
+        fi
     fi
 }
 
@@ -115,7 +116,7 @@ FN_AUTO_LICENSE(){
         echo
         echo "# tbis Error>../binary/license.xml file"
         echo
-        FN_AUTO_PROGRESS_CHECK
+        exit
     else
         echo
         echo "############################################################"
@@ -125,8 +126,10 @@ FN_AUTO_LICENSE(){
         echo "cp ../binary/license.xml $TB_HOME/license/license.xml"
         echo
         FN_AUTO_PROGRESS_CHECK
-        
-        cp ../binary/license.xml $TB_HOME/license/license.xml   
+        if [ $YESNO == "YES" ]
+        then
+            cp ../binary/license.xml $TB_HOME/license/license.xml   
+        fi
         
     fi
 }
@@ -134,27 +137,51 @@ FN_AUTO_LICENSE(){
 FN_AUTO_TB_SID_TIP(){
     echo
     echo "############################################################"
-    echo "# tbis Progress> TB_SID TIP File Apply Create"
+    echo "# tbis Progress> TB_SID TIP File"
     echo "############################################################"
     echo
     echo "sh tbis.cfg TB_SID_TIP > $TB_HOME/config/$TB_SID.tip"
     echo
-    FN_AUTO_PROGRESS_CHECK
-    sh tbis.cfg TB_SID_TIP > $TB_HOME/config/$TB_SID.tip
-    
+    FN_AUTO_PROGRESS_CHECK        
+    if [ $YESNO == "YES" ]
+    then
+        sh tbis.cfg TB_SID_TIP > $TB_HOME/config/$TB_SID.tip        
+    fi
 }
 
 FN_AUTO_CM_SID_TIP(){
     echo
     echo "############################################################"
-    echo "# tbis Progress> CM_SID TIP File Apply Create"
+    echo "# tbis Progress> CM_SID TIP File"
     echo "############################################################"
     echo
     echo "sh tbis.cfg CM_SID_TIP > $TB_HOME/config/$TIBERO_NODE.tip"
     echo
     FN_AUTO_PROGRESS_CHECK
-    sh tbis.cfg CM_SID_TIP > $TB_HOME/config/$TIBERO_NODE.tip
-    
+    if [ $YESNO == "YES" ]
+    then
+        if [ $TIBERO_TYPE == "SINGLE" ]
+        then
+            echo "SINGLE"
+        else
+            sh tbis.cfg CM_SID_TIP > $TB_HOME/config/$TIBERO_NODE.tip
+        fi
+    fi
+}
+
+FN_AUTO_TBDSN(){
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> TBDSN"
+    echo "############################################################"
+    echo
+    echo "sh tbis.cfg FN_TB_DSN > $TB_HOME/client/cofnig/tbdsn.tbr"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    if [ $YESNO == "YES" ]
+    then
+        sh tbis.cfg TB_DSN > $TB_HOME/client/config/tbdsn.tbr
+    fi
 }
 
 FN_AUTO_SINGLE(){
@@ -172,14 +199,51 @@ FN_AUTO_TAC(){
 }
 
 
-FN_AUTO_CREATEDB(){
+FN_AUTO_CHANGE_OWNER(){
+    # Owner Change Files
+    echo "############################################################"
+    echo "#  tbis Progress> Change Owner"
+    echo "############################################################"
     echo
+    echo "chwon -R $USER_NAME:$GROUP_NAME $USER_HOME"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    if [ $YESNO == "YES" ]
+    then
+        chown -R $USER_NAME:$GROUP_NAME $USER_HOME
+    fi
+    
+}
+
+FN_AUTO_TB_BOOT(){
+    echo "############################################################"
+    echo "#  tbis Progress> tbboot nomount"
+    echo "############################################################"
+    echo
+    echo "su - $USER_NAME -c \"tbboot nomount\""
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    if [ $YESNO == "YES" ]
+    then
+        TIBERO_PROCESS=`ps -ef |grep tbsvr |grep -v grep`
+        if [ -z $TIBERO_PROCESS ]
+        then
+            su - $USER_NAME -c "tbboot nomount"
+        else
+            ps -ef |grep tbsvr |grep -v grep
+        fi
+    fi
+}
+
+FN_AUTO_CREATEDB(){
+    su - tibero -c "tbsql sys/tibero 
+    
 }
 
 
-
-FN_AUTO_INSTALL(){
+FN_AUTO_INSTALL(){   
     . ./tbis.cfg
+
     TIBERO_LICENSE=`cat ../binary/license.xml |grep license |head -n 1 `
     echo "[*] TIBERO Auto installation Tools Configuration Checking STEP"
     echo "-----------------------------------------------------------------"
@@ -217,7 +281,7 @@ FN_AUTO_INSTALL(){
     fi
     echo "- TB_SID : $TB_SID"
     echo "- CM_SID : $TIBERO_NODE"
-    echo "- CHARSET : $CHARSET"
+    echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
     echo "-----------------------------------------------------------------"
     echo "# TIBERO Configuration Files"
     echo "- cat tbis.cfg : TIBERO Total Configuration File"
@@ -231,18 +295,19 @@ FN_AUTO_INSTALL(){
         echo " tbis Error> User home checking "
         exit
     fi
-  
-  
+
+    ############# In Progress
     FN_AUTO_ENGINE
     FN_AUTO_TBINARY
     FN_AUTO_LICENSE
     FN_AUTO_PROFILE
     FN_AUTO_TB_SID_TIP
     FN_AUTO_CM_SID_TIP
-
-    # Owner Change Files
-    # chwon -R $USER:$USER $USER_HOME
-
+    FN_AUTO_TBDSN
+    FN_AUTO_CHANGE_OWNER
+    FN_AUTO_TB_BOOT
+    FN_AUTO_CREATEDB
+    ############
 }
 
 FN_MAIN_MENU(){

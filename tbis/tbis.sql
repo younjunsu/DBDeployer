@@ -1,7 +1,7 @@
-CREATE DATABASE "tibero" 
+CREATE DATABASE 
 USER sys IDENTIFIED BY 'tibero' 
 MAXDATAFILES 256
-CHARACTER SET UTF8 
+CHARACTER SET UTF8
 LOGFILE 
 GROUP 0 ('system/redo001.redo','system/redo002.redo') SIZE 300M,
 GROUP 1 ('system/redo011.redo','system/redo012.redo') SIZE 300M,
@@ -13,9 +13,9 @@ MAXLOGMEMBERS 8
 --MAXARCHIVELOG 500
 --MAXLOGHISTORY 500
 ARCHIVELOG
-	DATAFILE 'system/system001.dtf' SIZE 2G 	DEFAULT 
-	TEMPORARY TABLESPACE TEMP TEMPFILE 'system/temp001.dtf' SIZE 1G 
-	UNDO TABLESPACE UNDO DATAFILE 'system/undo001.dtf' SIZE 1G 
-	DEFAULT TABLESPACE USR DATAFILE 'system/usr001.dtf' SIZE 1G
-	-- TPR 추가(system 디렉토리 구분 시 TPR 필수로 들어가야함)
+    DATAFILE 'system/system001.dtf' SIZE 2G 	DEFAULT 
+    TEMPORARY TABLESPACE TEMP TEMPFILE 'system/temp001.dtf' SIZE 1G 
+    UNDO TABLESPACE UNDO DATAFILE 'system/undo001.dtf' SIZE 1G 
+    DEFAULT TABLESPACE USR DATAFILE 'system/usr001.dtf' SIZE 1G
+    -- TPR 추가(system 디렉토리 구분 시 TPR 필수로 들어가야함)
 ;
