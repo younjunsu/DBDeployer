@@ -15,7 +15,7 @@
 TBIS_AUTO_LOGFILE="tbis.log"
 TBIS_AUTO_CFGFILE="tbis.cfg"
 TBIS_AUTO_SQLFILE="tbis.sql"
-
+TBIS_CWD_PATH=`pwd`
 ############################################################
 #
 # Function lists
@@ -114,7 +114,7 @@ FN_AUTO_LICENSE(){
     if [ -z $TIBERO_LICENSE ]
     then
         echo
-        echo "# tbis Error>../binary/license.xml file"
+        echo "# tbis message>../binary/license.xml file"
         echo
         exit
     else
@@ -217,10 +217,10 @@ FN_AUTO_CHANGE_OWNER(){
 
 FN_AUTO_TB_BOOT(){
     echo "############################################################"
-    echo "#  tbis Progress> tbboot nomount"
+    echo "#  tbis Progress> tbboot"
     echo "############################################################"
     echo
-    echo "su - $USER_NAME -c \"tbboot nomount\""
+    echo "su - $USER_NAME -c \"tbboot\""
     echo
     FN_AUTO_PROGRESS_CHECK
     if [ $YESNO == "YES" ]
@@ -228,7 +228,7 @@ FN_AUTO_TB_BOOT(){
         TIBERO_PROCESS=`ps -ef |grep tbsvr |grep -v grep`
         if [ -z $TIBERO_PROCESS ]
         then
-            su - $USER_NAME -c "tbboot nomount"
+            su - $USER_NAME -c "tbboot"
         else
             ps -ef |grep tbsvr |grep -v grep
         fi
@@ -236,8 +236,38 @@ FN_AUTO_TB_BOOT(){
 }
 
 FN_AUTO_CREATEDB(){
-    su - tibero -c "tbsql sys/tibero 
-    
+    echo "############################################################"
+    echo "#  tbis Progress> CREATE DATABASE"
+    echo "############################################################"
+    echo
+    echo "@$TBIS_CWD_PATH/tbis.sql"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    if [ $YESNO == "YES" ]
+    then    
+        su - tibero_tbis -c "
+            tbsql -s sys/tibero <<EOF
+            @$TBIS_CWD_PATH/tbis.sql
+            exit
+            EOF
+        "
+    fi
+}
+
+FN_AUTO_SYSTEM_SHELL(){
+    echo "############################################################"
+    echo "#  tbis Progress> system.sh"
+    echo "############################################################"
+    echo
+    echo "su - tibero_tbis -c \"sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y\""
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    if [ $YESNO == "YES" ]
+    then    
+        su - tibero_tbis -c "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
+    fi    
 }
 
 
@@ -292,7 +322,7 @@ FN_AUTO_INSTALL(){
     
     if [ -z $USER_HOME  ]
     then
-        echo " tbis Error> User home checking "
+        echo " tbis message> User home checking "
         exit
     fi
 
@@ -307,8 +337,36 @@ FN_AUTO_INSTALL(){
     FN_AUTO_CHANGE_OWNER
     FN_AUTO_TB_BOOT
     FN_AUTO_CREATEDB
+    FN_AUTO_TB_BOOT
+    FN_AUTO_SYSTEM_SHELL
     ############
 }
+
+FN_AUTO_CFG(){
+    echo " -----------------------------------------------------------------------------------"
+    echo "  1.TIBERO USER CREATE                      |  2.TIBERO User Profile                  "
+    echo " ---------------------------------------- + ----------------------------------------"
+    echo "  # 11 - MANUAL                             |  # 21 - MANUAL                            "
+    echo "                                            |                                         "
+    echo " -----------------------------------------------------------------------------------"
+    echo "  3.TIBERO Directory                        |  4.TIBERO TIP                           "
+    echo " ---------------------------------------- + ----------------------------------------"
+    echo "  # 31 - MANUAL                             |  # 41 - MANUAL                            "
+    echo "                                            |                                         "
+    echo " -----------------------------------------------------------------------------------"
+    echo "  5.TIBERO CREATE DATABASE                  |  6.TIBERO CM Resource                   "
+    echo " ---------------------------------------- + ----------------------------------------"
+    echo "  # 51 - MANUAL                             |  # 61 - MANUAL                            "
+    echo "                                            |                                         "
+    echo " -----------------------------------------------------------------------------------"
+    echo "  c  - Clear terminal                                                               "
+    echo "  r  - retry main menu                                                              "
+    echo "  press other key to quit                                                                  "
+    echo " -----------------------------------------------------------------------------------"
+    printf " Choose the Number or Command : "
+    read INPUT_NUMBER
+}
+
 
 FN_MAIN_MENU(){
     clear
@@ -317,6 +375,8 @@ FN_MAIN_MENU(){
     echo "[*] Supported Version : Tibero 6 FS07 ↑"
     echo "-----------------------------------------------------------------"
     echo "# 1. Auto installation"
+    echo "# 2. Auto installation "
+    echo "# 3. Auto Configuration Text"
     echo "-----------------------------------------------------------------"
     echo "# chk. System Check"
     echo "# ini. Configurations Initialization"
@@ -329,18 +389,18 @@ FN_MAIN_MENU(){
         clear
         FN_AUTO_LOGFILE
         FN_AUTO_INSTALL |tee $TBIS_AUTO_LOGFILE
-    ;;
+        exit;;
     2)
-        echo "2"
-    ;;
+        echo "2";;
     3)
-        echo "3"
-    ;;
+        while true
+        do
+            FN_AUTO_CFG
+        done;;
     *)
         clear
-        echo "tbis exit."
-        exit
-    ;;
+        echo "tbis message> program quit."
+        exit;;
     esac
 }
 
@@ -349,5 +409,5 @@ FN_MAIN_MENU(){
 # Program start
 ############################################################
 # run
-FN_MAIN_MENU 
+FN_MAIN_MENU
 #FN_MAIN_MENU
