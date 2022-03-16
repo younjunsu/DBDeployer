@@ -480,6 +480,36 @@ FN_AUTO_SYSTEM_SHELL(){
     fi    
 }
 
+FN_AUTO_ARCHIVE_DIR(){
+    if [ $TIBERO_TYPE == "SINGLE" ]
+    then
+        mkdir -p $LOG_ARCHIVE_DEST/tbarch
+    elif [ $TIBERO_TYPE == "TSC" ]
+    then
+        2>/dev/null
+        if [ $TIBERO_NODE == "observer" ]
+        then
+            2>/dev/null
+        elif [ $TIBERO_NODE == "primary" ]
+        then
+            mkdir -p $LOG_ARCHIVE_DEST/tbarch
+        fi
+    elif [ $TIBERO_TYPE == "TAC" ]
+    then
+        2>/dev/null
+        if [ $TIBERO_NODE == "cm0" ]
+        then
+            mkdir -p $LOG_ARCHIVE_DEST/tbarch0
+        elif [ $TIbERO_NODE == "cm1" ]
+        then
+            mkdir -p $LOG_ARCHIVE_DEST/tbarch0
+        fi
+    fi
+    chown -R $USE_NAME:$GROUP_NAME $LOG_ARCHIVE_DES
+}
+
+
+
 FN_AUTO_INSTALL_CHECK(){
     clear
     . ./tbis.cfg
@@ -609,7 +639,9 @@ FN_AUTO_TAC_CFG(){
     echo "#  tbis Progress> TAC Configuration"
     echo "############################################################"
     echo
-    echo "ALTER DATABASE STANDBY CONTROLFILE;"
+    echo "CREATE UNDO1 TABLESPACE"
+    echo "THREAD 1 REDO CREATE"
+    echo "THREAD 1 ENABLE"
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
@@ -739,8 +771,10 @@ FN_AUTO_INSTALL(){
                 2>/dev/null
             fi
             FN_AUTO_CHANGE_OWNER
+            FN_AUTO_TB_BOOT NORMAL
         fi
     fi
+    FN_AUTO_ARCHIVE_DIR
     FN_AUTO_SUCCESS
     
     TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
