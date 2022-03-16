@@ -254,10 +254,17 @@ FN_AUTO_CM_RESOURCE(){
             echo
             if [ $TIBERO_NODE == "cm0" ]
             then
-                echo
+                su - $USER_NAME -c "cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno 29000"
+                su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --cfile /SHARE_FILES/TEST_DATA/TAC/CMFILE"
+                su - $USER_NAME -c "cmrctl start cluster --name cls0"
+                su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --type db"
+                su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
             elif [ $TIBERO_NODE == "cm1" ]
             then
-                echo
+                su - $USER_NAME -c "cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno 29000"
+                su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net1  --cfile /SHARE_FILES/TEST_DATA/TAC/CMFILE"
+                su - $USER_NAME -c "cmrctl start cluster --name cls0"
+                su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
             fi
         fi
     fi
@@ -504,6 +511,35 @@ FN_AUTO_SUCCESS(){
     echo
 }
 
+FN_AUTO_TAC_CFG(){
+    echo "############################################################"
+    echo "#  tbis Progress> TAC Configuration"
+    echo "############################################################"
+    echo
+    echo "ALTER DATABASE STANDBY CONTROLFILE;"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    if [ $YESNO == "YES" ]
+    then  
+        su - $USER_NAME -c "
+            tbsql -s sys/tibero <<EOF
+            create undo tablespace UNDO1 datafile 'system/undo1001.dtf' size 1G autoextend off; 
+            alter database add logfile thread 1 group 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') size 300m;
+            alter database add logfile thread 1 group 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') size 300m;
+            alter database add logfile thread 1 group 7 ('$DB_CREATE_FILE_DEST/tbdata/system/redo071.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo072.redo') size 300m;
+            alter database add logfile thread 1 group 8 ('$DB_CREATE_FILE_DEST/tbdata/system/redo081.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo082.redo') size 300m;
+            alter database add logfile thread 1 group 9 ('$DB_CREATE_FILE_DEST/tbdata/system/redo091.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo092.redo') size 300m;
+            alter database enable public thread 1;
+            exit
+            EOF
+        "
+    fi
+}
+
+ 
+
+
 FN_AUTO_INSTALL(){   
     chmod 655 tbis.log
     TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
@@ -564,14 +600,28 @@ FN_AUTO_INSTALL(){
         fi
     elif [ $TIBERO_TYPE == "TAC" ]
     then
-        FN_AUTO_LICENSE
-        FN_AUTO_CM_SID_TIP
-        FN_AUTO_CHANGE_OWNER
-        FN_AUTO_CM_BOOT
-        FN_AUTO_CM_RESOURCE
-        FN_AUTO_CHANGE_OWNER
-        FN_AUTO_TB_BOOT
-        FN_AUTO_SYSTEM_SHELL
+        if [ $TIBERO_NODE == "cm0" ]
+        then
+            FN_AUTO_LICENSE
+            FN_AUTO_CM_SID_TIP
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_CM_BOOT
+            FN_AUTO_CM_RESOURCE
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_TB_BOOT NOMOUNT
+            FN_AUTO_CREATEDB
+            FN_AUTO_TB_BOOT NORMAL
+            FN_AUTO_SYSTEM_SHELL
+            FN_AUTO_TAC_CFG
+        elif [ $TIBERO_NODE == "cm1" ]
+        then
+            FN_AUTO_LICENSE
+            FN_AUTO_CM_SID_TIP
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_CM_BOOT
+            FN_AUTO_CM_RESOURCE
+            FN_AUTO_CHANGE_OWNER
+        fi
     fi
     FN_AUTO_SUCCESS
     
