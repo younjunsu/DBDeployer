@@ -455,6 +455,7 @@ FN_AUTO_CREATEDB(){
             exit
             EOF
         "
+        mkdir -p $LOG_ARCHIVE_DEST
         echo
         echo
         sleep 1
@@ -466,13 +467,13 @@ FN_AUTO_SYSTEM_SHELL(){
     echo "#  tbis Progress> system.sh"
     echo "############################################################"
     echo
-    echo "su - tibero_tbis -c \"sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y\""
+    echo "su - $USER_NAME -c \"sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y\""
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
     if [ $YESNO == "YES" ]
     then    
-        su - tibero_tbis -c "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
+        su - $USER_NAME -c "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
         echo
         echo
         sleep 1
@@ -600,6 +601,7 @@ FN_AUTO_SUCCESS(){
     echo "############################################################"
     echo
     echo
+    
 }
 
 FN_AUTO_TAC_CFG(){
