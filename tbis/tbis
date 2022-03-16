@@ -43,6 +43,8 @@ FN_AUTO_PROGRESS_CHECK(){
                 exit;;
             "SKIP"|"Skip"|"S"|"s")
                 YESNO=SKIP;;
+            *)
+                exit;;
         esac
         echo
     fi
@@ -93,6 +95,8 @@ FN_AUTO_PROFILE(){
     echo "# tbis Progress> Profile " 
     echo "############################################################"
     echo
+    echo ".bash_profile or .profile configuration"
+    echo
     FN_AUTO_PROGRESS_CHECK
     if [ $YESNO == "YES" ]
     then
@@ -100,6 +104,7 @@ FN_AUTO_PROFILE(){
         TIBERO_PROFILE=$USER_HOME/.profile
         if [ -f $TIBERO_PROFILE ]
         then
+            echo ""
             TIBERO_PROFILE_CHECK=$TIBERO_PROFILE
             sh tbis.cfg USER_PROFILE >> $USER_HOME/.profile
         elif [ -f $TIBERO_BASHPROFILE ]
@@ -217,6 +222,19 @@ FN_AUTO_TAC(){
     fi
 }
 
+FN_AUTO_PROGRESS_PROFILE(){
+    TIBERO_BASHPROFILE=$USER_HOME/.bash_profile
+    TIBERO_PROFILE=$USER_HOME/.profile
+
+    if [ -f $TIBERO_PROFILE ]
+    then
+        TIBERO_PROFILE_CHECK=$TIBERO_PROFILE
+    elif [ -f $TIBERO_BASHPROFILE ]
+    then
+        TIBERO_PROFILE_CHECK=$TIBERO_BASHPROFILE
+    fi
+}
+
 FN_AUTO_CM_RESOURCE(){
     echo
     echo "############################################################"
@@ -226,6 +244,8 @@ FN_AUTO_CM_RESOURCE(){
     sh tbis.cfg CM_RESOURCE
     echo
     FN_AUTO_PROGRESS_CHECK
+    FN_AUTO_PROGRESS_PROFILE
+    . $TIBERO_PROFILE_CHECK
     if [ $YESNO == "YES" ]
     then
         if [ $TIBERO_TYPE == "TSC" ]
@@ -241,7 +261,7 @@ FN_AUTO_CM_RESOURCE(){
                     cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK
                 else
                     cmrctl add network --name pub0 --nettype public --ifname $NODE1_VIP_ETH
-                    cmrctl add cluster --name cls0 --incnet net0 --nettype pub0 --cfile $TB_HOME/config/CMFILE_cls0
+                    cmrctl add cluster --name cls0 --incnet net0 --pubnet pub0 --cfile $TB_HOME/config/CMFILE_cls0
                     cmrctl start cluster --name cls0
                     cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050
                     cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK   
@@ -258,7 +278,7 @@ FN_AUTO_CM_RESOURCE(){
                         cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK
                     else
                         cmrctl add network --name pub1 --nettype public --ifname $NODE2_VIP_ETH
-                        cmrctl add cluster --name cls1 --incnet net1 --nettype pub1 --cfile $TB_HOME/config/CMFILE_cls1
+                        cmrctl add cluster --name cls1 --incnet net1 --pubnet pub1 --cfile $TB_HOME/config/CMFILE_cls1
                         cmrctl start cluster --name cls1
                         cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050
                         cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK   
@@ -309,11 +329,14 @@ FN_AUTO_CM_RESOURCE(){
 }
 
 FN_AUTO_CM_BOOT(){
+    CM_BOOT_OPTION=$1
     echo
     echo "############################################################"
     echo "# tbis Progress> tbcm boot "    
     echo "############################################################"
     echo
+    echo "tbcm boot $CM_BOOT_OPTION"
+    echo 
     FN_AUTO_PROGRESS_CHECK
     echo
     if [ $YESNO == "YES" ]
@@ -322,15 +345,38 @@ FN_AUTO_CM_BOOT(){
         then
             su - $USER_NAME -c "tbcmobs -b"
         else
-            if [ -z $NODE1_VIP_ETH ]
+            if [ $CM_BOOT_OPTION == "ROOT" ]
             then
-                su - $USER_NAME -c "tbcm -b"
-            elif [ -n $NODE1_VIP_ETH ]
-            then
-                . .$TIBERO_PROFILE_CHECK
+                FN_AUTO_PROGRESS_PROFILE
+                . $TIBERO_PROFILE_CHECK
                 tbcm -b
-                echo "VIP"
+            else
+                su - $USER_NAME -c "tbcm -b"
             fi
+        fi
+    fi
+}
+
+FN_AUTO_CM_DOWN(){
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> tbcm down "    
+    echo "############################################################"
+    echo
+    echo "tbcm down"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    CM_DOWN_OPTION=$1
+    if [ $YESNO == "YES" ]
+    then
+        if [ $CM_DOWN_OPTION == "ROOT" ]
+        then
+            FN_AUTO_PROGRESS_PROFILE
+            . $TIBERO_PROFILE_CHECK
+            tbcm -b
+        else
+            su - $USER_NAME -c "tbcm -b"
         fi
     fi
 }
@@ -352,13 +398,13 @@ FN_AUTO_CHANGE_OWNER(){
 }
 
 FN_AUTO_TB_BOOT(){
+    TB_BOOT_OPTION=$1
     echo "############################################################"
     echo "#  tbis Progress> tbboot"
     echo "############################################################"
     echo
-    echo "su - $USER_NAME -c \"tbboot $TB_BOOT_OPTION\""
+    echo "su - $USER_NAME -c \"tbboot" $TB_BOOT_OPTION\"""
     echo
-    TB_BOOT_OPTION=$1
 
     FN_AUTO_PROGRESS_CHECK
     if [ $YESNO == "YES" ]
@@ -377,14 +423,19 @@ FN_AUTO_TB_BOOT(){
 }
 
 FN_AUTO_TB_DOWN(){
+    TB_DOWN_OPTION=$1
     echo "############################################################"
     echo "#  tbis Progress> tbdown"
     echo "############################################################"
     echo
-    echo "su - $USER_NAME -c \"tbdown $TB_DOWN_OPTION\""
+    echo "su - $USER_NAME -c \"tbboot" $TB_DOWN_OPTION\"""
     echo
-    TB_DOWN_OPTION=$1
-    su - $USER_NAME -c "tbdown $TB_DOWN_OPTION"
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    if [ $YESNO == "YES" ]
+    then  
+        su - $USER_NAME -c "tbdown $TB_DOWN_OPTION"
+    fi
 }
 
 FN_AUTO_CREATEDB(){
@@ -499,17 +550,15 @@ FN_AUTO_INSTALL_CHECK(){
     fi
 }
 
-
-
 FN_AUTO_TSC_COPY(){
     echo "############################################################"
-    echo "#  tbis Progress> DF COPY to Target node"
+    echo "#  tbis Progress> CF/DF/ARCH COPY to Target node"
     echo "############################################################"
     echo
-    echo "scp -r $CONTROL_FILE_PATH1/tbctl1 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH1/tbctl1"
-    echo "scp -r $CONTROL_FILE_PATH2/tbctl2 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH2/tbctl2"
-    echo "scp -r $DB_CREATE_FILE_DEST/tbdata "$USER_NAME"@"$NODE2_INTER_IP":$DB_CREATE_FILE_DEST/tbdata"
-    echo "scp -r $LOG_ARCHIVE_DEST/tbarch "$USER_NAME"@"$NODE2_INTER_IP":$LOG_ARCHIVE_DEST/tbarch"
+    echo "scp -P $SFTP_PORT -r $CONTROL_FILE_PATH1/tbctl1 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH1/tbctl1"
+    echo "scp -P $SFTP_PORT -r $CONTROL_FILE_PATH2/tbctl2 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH2/tbctl2"
+    echo "scp -P $SFTP_PORT -r $DB_CREATE_FILE_DEST/tbdata "$USER_NAME"@"$NODE2_INTER_IP":$DB_CREATE_FILE_DEST/tbdata"
+    echo "scp -P $SFTP_PORT -r $LOG_ARCHIVE_DEST/tbarch "$USER_NAME"@"$NODE2_INTER_IP":$LOG_ARCHIVE_DEST/tbarch"
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
@@ -545,9 +594,9 @@ FN_AUTO_TSC_CFG(){
 
 FN_AUTO_SUCCESS(){
     echo "############################################################"
+    echo "#  tbis Progress> finaly step done"
     echo "# TIBERO_TYPE : $TIBERO_TYPE"
     echo "# TIBERO_NODE : $TIBERO_NODE"
-    echo "#  tbis Progress> finaly step done"
     echo "############################################################"
     echo
     echo
@@ -611,8 +660,15 @@ FN_AUTO_INSTALL(){
             FN_AUTO_LICENSE
             FN_AUTO_CM_SID_TIP
             FN_AUTO_CHANGE_OWNER
-            FN_AUTO_CM_BOOT
+            FN_AUTO_CM_BOOT ROOT
             FN_AUTO_CM_RESOURCE
+            if [ -z $NODE1_VIP_ETH]
+            then
+                FN_AUTO_CM_DOWN
+                FN_AUTO_CM_BOOT
+            else
+                2>/dev/null
+            fi
             FN_AUTO_CHANGE_OWNER
             FN_AUTO_TB_BOOT NOMOUNT
             FN_AUTO_CREATEDB
@@ -625,12 +681,18 @@ FN_AUTO_INSTALL(){
             FN_AUTO_LICENSE
             FN_AUTO_CM_SID_TIP
             FN_AUTO_CHANGE_OWNER
-            FN_AUTO_CM_BOOT
+            FN_AUTO_CM_BOOT ROOT
             FN_AUTO_CM_RESOURCE
+            if [ -z $NODE2_VIP_ETH]
+            then
+                FN_AUTO_CM_DOWN
+                FN_AUTO_CM_BOOT
+            else
+                2>/dev/null
+            fi            
             FN_AUTO_TB_BOOT MOUNT
             FN_AUTO_TSC_CFG
             FN_AUTO_TB_DOWN IMMEDIATE
-            echo
         elif [ $TIBERO_NODE == "observer" ]
         then
             FN_AUTO_CM_SID_TIP
@@ -644,8 +706,15 @@ FN_AUTO_INSTALL(){
             FN_AUTO_LICENSE
             FN_AUTO_CM_SID_TIP
             FN_AUTO_CHANGE_OWNER
-            FN_AUTO_CM_BOOT
+            FN_AUTO_CM_BOOT ROOT
             FN_AUTO_CM_RESOURCE
+            if [ -z $NODE1_VIP_ETH]
+            then
+                FN_AUTO_CM_DOWN
+                FN_AUTO_CM_BOOT
+            else
+                2>/dev/null
+            fi
             FN_AUTO_CHANGE_OWNER
             FN_AUTO_TB_BOOT NOMOUNT
             FN_AUTO_CREATEDB
@@ -657,8 +726,15 @@ FN_AUTO_INSTALL(){
             FN_AUTO_LICENSE
             FN_AUTO_CM_SID_TIP
             FN_AUTO_CHANGE_OWNER
-            FN_AUTO_CM_BOOT
+            FN_AUTO_CM_BOOT ROOT
             FN_AUTO_CM_RESOURCE
+            if [ -z $NODE2_VIP_ETH]
+            then
+                FN_AUTO_CM_DOWN
+                FN_AUTO_CM_BOOT
+            else
+                2>/dev/null
+            fi
             FN_AUTO_CHANGE_OWNER
         fi
     fi
@@ -698,7 +774,6 @@ FN_AUTO_CFG(){
     read INPUT_NUMBER
 }
 
-
 FN_MAIN_MENU(){
     clear
     echo "[*] TIBERO Installation Shell Script"
@@ -706,8 +781,8 @@ FN_MAIN_MENU(){
     echo "[*] Supported Version : Tibero 6 FS07 ↑"
     echo "-----------------------------------------------------------------"
     echo "# 1. Auto installation"
-    echo "# 2. Auto installation "
-    echo "# 3. Auto Configuration Text"
+    echo "# 2. Features to be implemented "
+    echo "# 3. Features to be implemented"
     echo "-----------------------------------------------------------------"
     echo "# chk. System Check"
     echo "# ini. Configurations Initialization"
@@ -741,5 +816,5 @@ FN_MAIN_MENU(){
 # Program start
 ############################################################
 # run
-FN_MAIN_MENU 
+FN_MAIN_MENU 2>/dev/null
 #FN_MAIN_MENU
