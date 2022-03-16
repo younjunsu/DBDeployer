@@ -595,7 +595,7 @@ FN_AUTO_TSC_CFG(){
 
 FN_AUTO_SUCCESS(){
     echo "############################################################"
-    echo "#  tbis Progress> finaly step done"
+    echo "#  tbis Progress> last step done"
     echo "# TIBERO_TYPE : $TIBERO_TYPE"
     echo "# TIBERO_NODE : $TIBERO_NODE"
     echo "############################################################"
