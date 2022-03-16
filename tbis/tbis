@@ -692,6 +692,7 @@ FN_AUTO_INSTALL(){
             else
                 2>/dev/null
             fi            
+            FN_AUTO_CHANGE_OWNER
             FN_AUTO_TB_BOOT MOUNT
             FN_AUTO_TSC_CFG
             FN_AUTO_TB_DOWN IMMEDIATE
