@@ -99,12 +99,15 @@ FN_AUTO_PROFILE(){
         TIBERO_BASHPROFILE=$USER_HOME/.bash_profile
         TIBERO_PROFILE=$USER_HOME/.profile
         if [ -f $TIBERO_PROFILE ]
-        then   
+        then
+            TIBERO_PROFILE_CHECK=$TIBERO_PROFILE
             sh tbis.cfg USER_PROFILE >> $USER_HOME/.profile
         elif [ -f $TIBERO_BASHPROFILE ]
         then
+            TIBERO_PROFILE_CHECK=$TIBERO_BASHPROFILE
             sh tbis.cfg USER_PROFILE >> $USER_HOME/.bash_profile
         fi
+
     fi
 }
 
@@ -229,42 +232,77 @@ FN_AUTO_CM_RESOURCE(){
         then
             if [ $TIBERO_NODE == "primary" ]
             then
-                echo
+                cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno 29000
                 if [ -z $NODE1_VIP_ETH ]
                 then
-                    su - $USER_NAME -c "cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno 29000"
-                    su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --cfile $TB_HOME/config/CMFILE_cls0"
-                    su - $USER_NAME -c "cmrctl start cluster --name cls0"
-                    su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050"
-                    su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $USER_HOME/.bash_profile"
+                    cmrctl add cluster --name cls0 --incnet net0 --cfile $TB_HOME/config/CMFILE_cls0
+                    cmrctl start cluster --name cls0
+                    cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050
+                    cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK
+                else
+                    cmrctl add network --name pub0 --nettype public --ifname $NODE1_VIP_ETH
+                    cmrctl add cluster --name cls0 --incnet net0 --nettype pub0 --cfile $TB_HOME/config/CMFILE_cls0
+                    cmrctl start cluster --name cls0
+                    cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050
+                    cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK   
+                    cmrctl add vip --name vip0 --svcname $DB_NAME --ipaddr $NODE1_VIP_IP
                 fi
             elif [ $TIBERO_NODE == "standby" ]
             then
-                    su - $USER_NAME -c "cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno 29000"
-                    su - $USER_NAME -c "cmrctl add cluster --name cls1 --incnet net1 --cfile $TB_HOME/config/CMFILE_cls1"
-                    su - $USER_NAME -c "cmrctl start cluster --name cls1"
-                    su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050"
-                    su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $USER_HOME/.bash_profile"
+                cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno 29000
+                    if [ -z $NODE2_VIP_ETH ]
+                    then
+                        cmrctl add cluster --name cls1 --incnet net1 --cfile $TB_HOME/config/CMFILE_cls1
+                        cmrctl start cluster --name cls1
+                        cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050
+                        cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK
+                    else
+                        cmrctl add network --name pub1 --nettype public --ifname $NODE2_VIP_ETH
+                        cmrctl add cluster --name cls1 --incnet net1 --nettype pub1 --cfile $TB_HOME/config/CMFILE_cls1
+                        cmrctl start cluster --name cls1
+                        cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050
+                        cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK   
+                        cmrctl add vip --name vip1 --svcname $DB_NAME --ipaddr $NODE2_VIP_IP
+                    fi
             elif [ $TIBERO_NODE == "observer" ]
             then
                 2>/dev/null
             fi
         elif [ $TIBERO_TYPE == "TAC" ]
         then
-            echo
+            2>/dev/null
             if [ $TIBERO_NODE == "cm0" ]
             then
-                su - $USER_NAME -c "cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno 29000"
-                su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --cfile /SHARE_FILES/TEST_DATA/TAC/CMFILE"
-                su - $USER_NAME -c "cmrctl start cluster --name cls0"
-                su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --type db"
-                su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
+                cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno 29000
+                if [ -z $NODE1_VIP_ETH ]
+                then
+                    cmrctl add cluster --name cls0 --incnet net0 --cfile $CFILE_PATH/CMFILE
+                    cmrctl start cluster --name cls0
+                    cmrctl add service --name $DB_NAME --cname cls0 --type db
+                    cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME
+                else
+                    cmrctl add network --name pub0 --nettype public --ifname $NODE1_VIP_ETH
+                    cmrctl add cluster --name cls0 --incnet net0 --pubnet pub0 --cfile $CFILE_PATH/CMFILE
+                    cmrctl start cluster --name cls0
+                    cmrctl add service --name $DB_NAME --cname cls0 --type db
+                    cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME
+                    cmrctl add vip --name vip0 --svcname $DB_NAME --ipaddr $NODE1_VIP_IP
+                fi
             elif [ $TIBERO_NODE == "cm1" ]
             then
-                su - $USER_NAME -c "cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno 29000"
-                su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net1  --cfile /SHARE_FILES/TEST_DATA/TAC/CMFILE"
-                su - $USER_NAME -c "cmrctl start cluster --name cls0"
-                su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
+                 cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno 29000
+                if [ -z $NODE2_VIP_ETH ]
+                then
+                    cmrctl add cluster --name cls0 --incnet net1  --cfile $CFILE_PATH/CMFILE
+                    cmrctl start cluster --name cls0
+                    cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME                          
+                else
+                    cmrctl add network --name pub1 --nettype public --ifname $NODE2_VIP_ETH
+                    cmrctl add cluster --name cls0 --incnet net1 --pubnet pub1 --cfile $CFILE_PATH/CMFILE
+                    cmrctl start cluster --name cls0
+                    cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME
+                    cmrctl add vip --name vip1 --svcname $DB_NAME --ipaddr $NODE2_VIP_IP             
+                fi
             fi
         fi
     fi
@@ -289,6 +327,7 @@ FN_AUTO_CM_BOOT(){
                 su - $USER_NAME -c "tbcm -b"
             elif [ -n $NODE1_VIP_ETH ]
             then
+                . .$TIBERO_PROFILE_CHECK
                 tbcm -b
                 echo "VIP"
             fi
@@ -335,6 +374,17 @@ FN_AUTO_TB_BOOT(){
             ps -ef |grep tbsvr |grep -v grep
         fi
     fi
+}
+
+FN_AUTO_TB_DOWN(){
+    echo "############################################################"
+    echo "#  tbis Progress> tbdown"
+    echo "############################################################"
+    echo
+    echo "su - $USER_NAME -c \"tbdown $TB_DOWN_OPTION\""
+    echo
+    TB_DOWN_OPTION=$1
+    su - $USER_NAME -c "tbdown $TB_DOWN_OPTION"
 }
 
 FN_AUTO_CREATEDB(){
@@ -449,16 +499,7 @@ FN_AUTO_INSTALL_CHECK(){
     fi
 }
 
-FN_AUTO_TB_DOWN(){
-    echo "############################################################"
-    echo "#  tbis Progress> tbdown"
-    echo "############################################################"
-    echo
-    echo "su - $USER_NAME -c \"tbdown $TB_DOWN_OPTION\""
-    echo
-    TB_DOWN_OPTION=$1
-    su - $USER_NAME -c "tbdown $TB_DOWN_OPTION"
-}
+
 
 FN_AUTO_TSC_COPY(){
     echo "############################################################"
@@ -480,6 +521,7 @@ FN_AUTO_TSC_COPY(){
         scp -P $SFTP_PORT -r $LOG_ARCHIVE_DEST/tbarch "$USER_NAME"@"$NODE2_INTER_IP":$LOG_ARCHIVE_DEST/tbarch
     fi    
 }
+
 FN_AUTO_TSC_CFG(){
     echo "############################################################"
     echo "#  tbis Progress> Target TSC Configuration"
@@ -536,9 +578,6 @@ FN_AUTO_TAC_CFG(){
         "
     fi
 }
-
- 
-
 
 FN_AUTO_INSTALL(){   
     chmod 655 tbis.log
