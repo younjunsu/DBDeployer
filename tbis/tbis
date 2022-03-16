@@ -393,6 +393,7 @@ FN_AUTO_CHANGE_OWNER(){
     if [ $YESNO == "YES" ]
     then
         chown -R $USER_NAME:$GROUP_NAME $USER_HOME
+        chown -R $USER_NAME:$GROUP_NAME $LOG_ARCHIVE_DEST
     fi
     
 }
@@ -456,6 +457,7 @@ FN_AUTO_CREATEDB(){
             EOF
         "
         mkdir -p $LOG_ARCHIVE_DEST
+
         echo
         echo
         sleep 1
