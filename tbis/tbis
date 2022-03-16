@@ -21,6 +21,7 @@ TBIS_CWD_PATH=`pwd`
 # Function lists
 ############################################################
 FN_AUTO_LOGFILE(){
+    TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
     if [ -f $TBIS_AUTO_LOGFILE ]
     then
         mv $TBIS_AUTO_LOGFILE "$TBIS_AUTO_LOGFILE"_"$TBIS_AUTO_TIME"
@@ -142,7 +143,12 @@ FN_AUTO_TB_SID_TIP(){
     FN_AUTO_PROGRESS_CHECK        
     if [ $YESNO == "YES" ]
     then
-        sh tbis.cfg TB_SID_TIP > $TB_HOME/config/$TB_SID.tip        
+        if [ $TIBERO_NODE == "observer" ]
+        then
+            2>/dev/null
+        else
+            sh tbis.cfg TB_SID_TIP > $TB_HOME/config/$TB_SID.tip        
+        fi
     fi
 }
 
@@ -230,7 +236,7 @@ FN_AUTO_CM_RESOURCE(){
                     su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --cfile $TB_HOME/config/CMFILE_cls0"
                     su - $USER_NAME -c "cmrctl start cluster --name cls0"
                     su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050"
-                    su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $USER_HOME/"
+                    su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $USER_HOME/.bash_profile"
                 fi
             elif [ $TIBERO_NODE == "standby" ]
             then
@@ -238,7 +244,7 @@ FN_AUTO_CM_RESOURCE(){
                     su - $USER_NAME -c "cmrctl add cluster --name cls1 --incnet net1 --cfile $TB_HOME/config/CMFILE_cls1"
                     su - $USER_NAME -c "cmrctl start cluster --name cls1"
                     su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050"
-                    su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $USER_HOME/"
+                    su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $USER_HOME/.bash_profile"
             elif [ $TIBERO_NODE == "observer" ]
             then
                 2>/dev/null
@@ -335,7 +341,7 @@ FN_AUTO_CREATEDB(){
     echo
     if [ $YESNO == "YES" ]
     then    
-        su - tibero_tbis -c "
+        su - $USER_NAME -c "
             tbsql -s sys/tibero <<EOF
             @$TBIS_CWD_PATH/tbis.sql
             exit
@@ -441,7 +447,7 @@ FN_AUTO_TB_DOWN(){
     echo "#  tbis Progress> tbdown"
     echo "############################################################"
     echo
-    echo "su - $USER_NAME -c \"tbdown $TB_DOWN_OPTION \""
+    echo "su - $USER_NAME -c \"tbdown $TB_DOWN_OPTION\""
     echo
     TB_DOWN_OPTION=$1
     su - $USER_NAME -c "tbdown $TB_DOWN_OPTION"
@@ -468,8 +474,26 @@ FN_AUTO_TSC_COPY(){
     fi    
 }
 FN_AUTO_TSC_CFG(){
+    echo "############################################################"
+    echo "#  tbis Progress> Target TSC Configuration"
+    echo "############################################################"
     echo
+    echo "ALTER DATABASE STANDBY CONTROLFILE;"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    if [ $YESNO == "YES" ]
+    then   
+        su - $USER_NAME -c "
+            tbsql -s sys/tibero <<EOF
+            ALTER DATABASE STANDBY CONTROLFILE;
+            exit
+            EOF
+        "
+        sleep 1
+    fi
 }
+
 FN_AUTO_SUCCESS(){
     echo "############################################################"
     echo "# TIBERO_TYPE : $TIBERO_TYPE"
@@ -493,13 +517,13 @@ FN_AUTO_INSTALL(){
     FN_AUTO_INSTALL_CHECK 
     FN_AUTO_ENGINE
     FN_AUTO_TBINARY
-    FN_AUTO_LICENSE
     FN_AUTO_PROFILE
     FN_AUTO_TB_SID_TIP
     FN_AUTO_TBDSN
     
     if [ $TIBERO_TYPE == "SINGLE" ]
     then
+        FN_AUTO_LICENSE
         FN_AUTO_CHANGE_OWNER
         FN_AUTO_TB_BOOT NOMOUNT
         FN_AUTO_CREATEDB
@@ -509,6 +533,7 @@ FN_AUTO_INSTALL(){
     then
         if [ $TIBERO_NODE == "primary" ]
         then
+            FN_AUTO_LICENSE
             FN_AUTO_CM_SID_TIP
             FN_AUTO_CHANGE_OWNER
             FN_AUTO_CM_BOOT
@@ -522,8 +547,14 @@ FN_AUTO_INSTALL(){
             FN_AUTO_TSC_COPY
         elif [ $TIBERO_NODE == "standby" ]
         then
-            #FN_AUTO_TB_BOOT
+            FN_AUTO_LICENSE
+            FN_AUTO_CM_SID_TIP
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_CM_BOOT
+            FN_AUTO_CM_RESOURCE
+            FN_AUTO_TB_BOOT MOUNT
             FN_AUTO_TSC_CFG
+            FN_AUTO_TB_DOWN IMMEDIATE
             echo
         elif [ $TIBERO_NODE == "observer" ]
         then
@@ -533,6 +564,7 @@ FN_AUTO_INSTALL(){
         fi
     elif [ $TIBERO_TYPE == "TAC" ]
     then
+        FN_AUTO_LICENSE
         FN_AUTO_CM_SID_TIP
         FN_AUTO_CHANGE_OWNER
         FN_AUTO_CM_BOOT
