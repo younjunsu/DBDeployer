@@ -589,20 +589,22 @@ FN_AUTO_INSTALL_CHECK(){
     echo "# TIBERO DATABASE"
     if [ $TIBERO_TYPE == "SINGLE" ]
     then
-        echo "- TYPE : SINGLE"
+        echo "- TYPE : $TIBERO_TYPE"
+        echo "- NODE : $TIBERO_NODE"
         FN_AUTO_SINGLE
     elif [ $TIBERO_TYPE == "TSC" ]
     then
-        echo "- TYPE : TSC"
+        echo "- TYPE : $TIBERO_TYPE"
         echo "- NODE : $TIBERO_NODE"
         FN_AUTO_TSC
     elif [ $TIBERO_TYPE == "TAC" ]
     then
-        echo "- TYPE : TAC"
+        echo "- TYPE : $TIBERO_TYPE"
         echo "- NODE : $TIBERO_NODE"
         FN_AUTO_TAC
     else
-        echo "- TYPE : none"
+        echo "- TYPE : $TIBERO_TYPE"
+        echo "- NODE : $TIBERO_NODE"
     fi
 
     echo "- TB_SID : $TB_SID"
