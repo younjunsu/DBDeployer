@@ -604,7 +604,7 @@ FN_AUTO_INSTALL_CHECK(){
     else
         echo "- TYPE : none"
     fi
-    
+
     echo "- TB_SID : $TB_SID"
     echo "- CM_SID : $TIBERO_NODE"
     echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
@@ -851,11 +851,41 @@ FN_AUTO_CNF_CHECK(){
         echo
     elif [ $TIBERO_TYPE == "TSC" ]
     then
-        echo
+        2>/dev/null
+        if [ -z $NODE1_INTER_IP ]
+        then
+            echo "tbis message> tbis.cfg - NODE1_INTER_IP check"
+            exit
+        fi
+
+        if [ -z $NODE2_INTER_IP ]
+        then
+            echo "tbis message> tbis.cfg - NODE2_INTER_IP check"
+            exit    
+        fi
     elif [ $TIBERO_TYPE == "TAC" ]
     then
-        echo
-    elif [ -z $TIBERO_TYPE] || [ -z $TIBERO_NODE ]
+        2>/dev/null
+        if [ -z $NODE1_INTER_IP ]
+        then
+            echo "tbis message> tbis.cfg - NODE1_INTER_IP check"
+            exit
+        fi
+
+        if [ -z $NODE2_INTER_IP ]
+        then
+            echo "tbis message> tbis.cfg - NODE2_INTER_IP check"
+            exit    
+        fi
+
+        if [ -z $CFILE_PATH ]
+        then
+            echo "tbis message> tbis.cfg - CFILE_PATH check"
+            exit    
+        fi
+
+
+    elif [ -z $TIBERO_TYPE] && [ -z $TIBERO_NODE ]
     then
         echo "tbis message> tbis.cfg - TIBERO_TYPE check"
         exit
