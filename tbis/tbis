@@ -570,7 +570,7 @@ FN_AUTO_INSTALL_CHECK(){
     TIBERO_LICENSE=`cat ../binary/license.xml |grep license |head -n 1 `
     echo "[*] TIBERO Auto installation Tools Configuration Checking STEP"
     echo "-----------------------------------------------------------------"
-    echo "# System Check"
+    echo "# OS"
     echo "- OS USER : $USER_NAME"
     echo "- OS USER GROUP : $GROUP_NAME"
     echo "- OS HOME : $USER_HOME"
@@ -606,6 +606,12 @@ FN_AUTO_INSTALL_CHECK(){
     echo "- TB_SID : $TB_SID"
     echo "- CM_SID : $TIBERO_NODE"
     echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
+    echo "-----------------------------------------------------------------"
+    echo "# TIBERO DATABASE Directory"
+    echo "- CONTROL_FILE_PATH1 : $CONTROL_FILE_PATH1"
+    echo "- CONTROL_FILE_PATH2 : $CONTROL_FILE_PATH2"
+    echo "- DB_CREATE_FILE_DEST : $DB_CREATE_FILE_DEST"
+    echo "- LOG_ARCHIVE_DEST : $LOG_ARCHIVE_DEST"
     echo "-----------------------------------------------------------------"
     echo "# TIBERO Configuration Files"
     echo "- cat tbis.cfg : TIBERO Configuration File"
@@ -837,6 +843,23 @@ FN_AUTO_INSTALL(){
 
 FN_AUTO_CNF_CHECK(){
 
+    # 
+    if [ $TIBERO_TYPE == "SINGLE" ]
+    then
+        echo
+    elif [ $TIBERO_TYPE == "TSC" ]
+    then
+        echo
+    elif [ $TIBERO_TYPE == "TAC" ]
+    then
+        echo
+    elif [ -z $TIBERO_TYPE]
+    then
+        echo "tbis message> tbis.cfg - TIBERO_TYPE check"
+        exit
+    fi
+
+    #
     if [ -z $USER_NAME ]
     then
         echo "tbis message> tbis.cfg - USER_NAME check"
@@ -867,6 +890,7 @@ FN_AUTO_CNF_CHECK(){
         exit
     fi
 
+    #
     if [ -z $CONTROL_FILE_PATH1 ]
     then
         echo "tbis message> tbis.cfg - CONTROL_FILE_PATH1 check"
@@ -888,21 +912,6 @@ FN_AUTO_CNF_CHECK(){
     if [ -z $LOG_ARCHIVE_DEST ]
     then
         echo "tbis message> tbis.cfg - LOG_ARCHIVE_DEST check"
-        exit
-    fi
-
-    if [ $TIBERO_TYPE == "SINGLE" ]
-    then
-        echo
-    elif [ $TIBERO_TYPE == "TSC" ]
-    then
-        echo
-    elif [ $TIBERO_TYPE == "TAC" ]
-    then
-        echo
-    elif [ -z $TIBERO_TYPE]
-    then
-        echo "tbis message> tbis.cfg - TIBERO_TYPE check"
         exit
     fi
 }
