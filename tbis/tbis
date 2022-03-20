@@ -846,6 +846,7 @@ FN_AUTO_CNF_CHECK(){
     if [ -z $USER_HOME ]
     then
         echo "tbis message> tbis.cfg - USER_HOME check"
+        exit
     fi
 
     if [ -z $GROUP_NAME ]
@@ -899,6 +900,10 @@ FN_AUTO_CNF_CHECK(){
     elif [ $TIBERO_TYPE == "TAC" ]
     then
         echo
+    elif [ -z $TIBERO_TYPE]
+    then
+        echo "tbis message> tbis.cfg - TIBERO_TYPE check"
+        exit
     fi
 }
 FN_CONF_MENU(){
