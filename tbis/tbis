@@ -601,8 +601,10 @@ FN_AUTO_INSTALL_CHECK(){
         echo "- TYPE : TAC"
         echo "- NODE : $TIBERO_NODE"
         FN_AUTO_TAC
+    else
+        echo "- TYPE : none"
     fi
-
+    
     echo "- TB_SID : $TB_SID"
     echo "- CM_SID : $TIBERO_NODE"
     echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
@@ -853,7 +855,7 @@ FN_AUTO_CNF_CHECK(){
     elif [ $TIBERO_TYPE == "TAC" ]
     then
         echo
-    elif [ -z $TIBERO_TYPE]
+    elif [ -z $TIBERO_TYPE] || [ -z $TIBERO_NODE ]
     then
         echo "tbis message> tbis.cfg - TIBERO_TYPE check"
         exit
