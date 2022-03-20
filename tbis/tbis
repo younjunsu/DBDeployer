@@ -626,12 +626,6 @@ FN_AUTO_INSTALL_CHECK(){
     esac
     echo
     ###
-
-    if [ -z $USER_HOME  ]
-    then
-        echo " tbis message> User home checking "
-        exit
-    fi
 }
 
 FN_AUTO_TSC_COPY(){
@@ -903,6 +897,7 @@ FN_AUTO_CNF_CHECK(){
     then
         echo
     elif [ $TIBERO_TYPE == "TAC" ]
+    then
         echo
     fi
 }
