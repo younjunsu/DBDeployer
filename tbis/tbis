@@ -5,7 +5,7 @@
 ############################################################
 # Created by. Daejeon Office
 # 2022.03.18 Version : Park Si Hyung, Yoon Jun Su
-# 
+#
 
 ############################################################
 #
@@ -16,6 +16,7 @@ TBIS_AUTO_LOGFILE="tbis.log"
 TBIS_AUTO_CFGFILE="tbis.cfg"
 TBIS_AUTO_SQLFILE="tbis.sql"
 TBIS_CWD_PATH=`pwd`
+
 ############################################################
 #
 # Function lists
@@ -65,7 +66,14 @@ FN_AUTO_ENGINE(){
         FN_AUTO_PROGRESS_CHECK
         if [ $YESNO == "YES" ]
         then
-            tar -xvzf ../binary/tibero*.tar.gz -C $USER_HOME
+            FILE_CHECK=`ls ../binary/tibero*.tar.gz`
+            if [ -f $FILE_CHECK ]
+            then
+                tar -xvzf ../binary/tibero*.tar.gz -C $USER_HOME
+            else
+                echo "tbis message> tibero engine install file check"
+                exit
+            fi
         fi     
     fi
     
@@ -84,7 +92,14 @@ FN_AUTO_TBINARY(){
         FN_AUTO_PROGRESS_CHECK
         if [ $YESNO == "YES" ]
         then
-            tar -xvf ../binary/tbinary*.tar -C $USER_HOME
+            FILE_CHECK=`ls ../binary/tbinary*.tar`
+            if [ -f $FILE_CHECK ]
+            then
+                tar -xvf  -C $USER_HOME
+            else
+                echo "tbis message> tibero tbinary file check"
+                exit
+            fi
         fi  
     fi
 }
@@ -111,8 +126,10 @@ FN_AUTO_PROFILE(){
         then
             TIBERO_PROFILE_CHECK=$TIBERO_BASHPROFILE
             sh tbis.cfg USER_PROFILE >> $USER_HOME/.bash_profile
+        else
+            echo "tbis message> .bash_profile or .profile file check"
+            exit
         fi
-
     fi
 }
 
@@ -134,7 +151,15 @@ FN_AUTO_LICENSE(){
         FN_AUTO_PROGRESS_CHECK
         if [ $YESNO == "YES" ]
         then
-            cp ../binary/license.xml $TB_HOME/license/license.xml   
+            FILE_CHECK=`ls ../binary/license.xml $TB_HOME/license/license.xml`
+            if [ -f $FILE_CHECK ]
+            then
+                cp ../binary/license.xml $TB_HOME/license/license.xml
+            else
+                echo "tbis message> tibero license file check"
+                exit
+            fi
+
         fi
         
     fi
@@ -151,6 +176,12 @@ FN_AUTO_TB_SID_TIP(){
     FN_AUTO_PROGRESS_CHECK        
     if [ $YESNO == "YES" ]
     then
+        if [ -z $TB_SID]
+        then
+          echo "tbis message> \$TB_SID check"
+          exit
+        fi
+
         if [ $TIBERO_NODE == "observer" ]
         then
             2>/dev/null
@@ -171,6 +202,12 @@ FN_AUTO_CM_SID_TIP(){
     FN_AUTO_PROGRESS_CHECK
     if [ $YESNO == "YES" ]
     then
+        if [ -z $CM_SID]
+        then
+          echo "tbis message> \$CM_SID check"
+          exit
+        fi
+
         if [ $TIBERO_TYPE == "SINGLE" ]
         then
             echo "SINGLE"
@@ -191,6 +228,13 @@ FN_AUTO_TBDSN(){
     FN_AUTO_PROGRESS_CHECK
     if [ $YESNO == "YES" ]
     then
+        
+        if [ -z $TB_HOME]
+        then
+          echo "tbis message> \$TB_HOME check"
+          exit
+        fi
+
         sh tbis.cfg TB_DSN > $TB_HOME/client/config/tbdsn.tbr
     fi
 }
@@ -325,8 +369,9 @@ FN_AUTO_CM_RESOURCE(){
                 fi
             fi
         fi
+        sleep 1
     fi
-    sleep 1
+    
 }
 
 FN_AUTO_CM_BOOT(){
@@ -355,8 +400,9 @@ FN_AUTO_CM_BOOT(){
                 su - $USER_NAME -c "tbcm -b"
             fi
         fi
+        sleep 1 
     fi
-    sleep 1 
+    
 }
 
 FN_AUTO_CM_DOWN(){
@@ -380,8 +426,9 @@ FN_AUTO_CM_DOWN(){
         else
             su - $USER_NAME -c "tbcm -b"
         fi
+        sleep 1
     fi
-    sleep 1
+ 
 }
 
 FN_AUTO_CHANGE_OWNER(){
@@ -412,18 +459,20 @@ FN_AUTO_TB_BOOT(){
     FN_AUTO_PROGRESS_CHECK
     if [ $YESNO == "YES" ]
     then
-        TIBERO_PROCESS=`ps -ef |grep tbsvr |grep -v grep`
+        TIBERO_PROCESS=`ps -ef |grep tbsvr |grep $USER_NAME |grep -v grep`
         if [ -z $TIBERO_PROCESS ]
         then
             su - $USER_NAME -c "tbboot $TB_BOOT_OPTION"
             echo
             echo
-            sleep 1 
         else
-            ps -ef |grep tbsvr |grep -v grep
+            echo "tbis message> tibero Process check"
+            exit
+            ps -ef |grep tbsvr |grep $USER_NAME |grep -v grep
         fi
+        sleep 1
     fi
-    sleep 1
+    
 }
 
 FN_AUTO_TB_DOWN(){
@@ -439,8 +488,9 @@ FN_AUTO_TB_DOWN(){
     if [ $YESNO == "YES" ]
     then  
         su - $USER_NAME -c "tbdown $TB_DOWN_OPTION"
+        sleep 1
     fi
-    sleep 1
+    
 }
 
 FN_AUTO_CREATEDB(){
@@ -448,7 +498,7 @@ FN_AUTO_CREATEDB(){
     echo "#  tbis Progress> CREATE DATABASE"
     echo "############################################################"
     echo
-    echo "@$TBIS_CWD_PATH/tbis.sql"
+    echo "Execution SQL FILE : $TBIS_CWD_PATH/tbis.sql"
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
@@ -528,7 +578,7 @@ FN_AUTO_INSTALL_CHECK(){
     echo "# TIBERO Binary"
     if [ -n $TIBERO_ENGINE ]
     then
-        echo "- Engine PATH : $TB_HOME"
+        echo "- TB_HOME PATH : $TB_HOME"
     fi  
 
     if [ -n $TIBERO_TBINARY ]
@@ -558,7 +608,7 @@ FN_AUTO_INSTALL_CHECK(){
     echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
     echo "-----------------------------------------------------------------"
     echo "# TIBERO Configuration Files"
-    echo "- cat tbis.cfg : TIBERO Total Configuration File"
+    echo "- cat tbis.cfg : TIBERO Configuration File"
     echo "- cat tbis.sql : CREATE DATABASE SQL File"
     echo "-----------------------------------------------------------------"
     
@@ -676,7 +726,8 @@ FN_AUTO_INSTALL(){
     echo "# Start time : $TBIS_START_TIME"
 
     ############# In Progress
-    FN_AUTO_INSTALL_CHECK 
+    FN_AUTO_INSTALL_CHECK
+    FN_AUTO_CNF_CHECK 
     FN_AUTO_ENGINE
     FN_AUTO_TBINARY
     FN_AUTO_PROFILE
@@ -790,6 +841,71 @@ FN_AUTO_INSTALL(){
     ############
 }
 
+FN_AUTO_CNF_CHECK(){
+
+    if [ -z $USER_NAME ]
+    then
+        echo "tbis message> tbis.cfg - USER_NAME check"
+        exit
+    fi
+
+    if [ -z $USER_HOME ]
+    then
+        echo "tbis message> tbis.cfg - USER_HOME check"
+    fi
+
+    if [ -z $GROUP_NAME ]
+    then
+        echo "tbis message> tbis.cfg - GROUP_NAME check"
+        exit
+    fi
+
+    if [ -z $DB_NAME ]
+    then
+        echo "tbis message> tbis.cfg - DB_NAME check"
+        exit
+    fi
+
+    if [ -z $TB_HOME ]
+    then
+        echo "tbis message> tbis.cfg - TB_HOME check"
+        exit
+    fi
+
+    if [ -z $CONTROL_FILE_PATH1 ]
+    then
+        echo "tbis message> tbis.cfg - CONTROL_FILE_PATH1 check"
+        exit
+    fi
+
+    if [ -z $CONTROL_FILE_PATH2 ]
+    then
+        echo "tbis message> tbis.cfg - CONTROL_FILE_PATH2 check"
+        exit
+    fi
+
+    if [ -z $DB_CREATE_FILE_DEST ]
+    then
+        echo "tbis message> tbis.cfg - DB_CREATE_FILE_DEST check"
+        exit
+    fi
+
+    if [ -z $LOG_ARCHIVE_DEST ]
+    then
+        echo "tbis message> tbis.cfg - LOG_ARCHIVE_DEST check"
+        exit
+    fi
+
+    if [ $TIBERO_TYPE == "SINGLE" ]
+    then
+        echo
+    elif [ $TIBERO_TYPE == "TSC" ]
+    then
+        echo
+    elif [ $TIBERO_TYPE == "TAC" ]
+        echo
+    fi
+}
 FN_CONF_MENU(){
     echo " -----------------------------------------------------------------------------------"
     echo "  1.TIBERO USER CREATE                      |  2.TIBERO User Profile                  "
@@ -822,8 +938,6 @@ FN_MAIN_MENU(){
     echo "[*] Supported Version : Tibero 6 FS07 ↑"
     echo "-----------------------------------------------------------------"
     echo "# 1. Auto installation"
-    echo "# 2. Features to be implemented "
-    echo "# 3. Features to be implemented"
     echo "-----------------------------------------------------------------"
     echo "# chk. System Check"
     echo "# ini. Configurations Initialization"
@@ -837,13 +951,6 @@ FN_MAIN_MENU(){
         FN_AUTO_LOGFILE
         FN_AUTO_INSTALL |tee $TBIS_AUTO_LOGFILE 
         exit;;
-    2)
-        echo "2";;
-    3)
-        while true
-        do
-            FN_CONF_MENU
-        done;;
     *)
         clear
         echo "tbis message> program quit."
