@@ -847,7 +847,16 @@ FN_AUTO_INSTALL(){
 
 FN_AUTO_CNF_CHECK(){
     # 
-    if [ $TIBERO_TYPE == "SINGLE" ]
+
+    if [ -z $TIBERO_TYPE]
+    then
+        echo "tbis message> tbis.cfg - TIBERO_TYPE check"
+        exit
+    elif [ -z $TIBERO_NODE ]
+    then
+        echo "tbis message> tbis.cfg - TIBERO_NODE check"
+        exit
+    elif [ $TIBERO_TYPE == "SINGLE" ]
     then
         if [ $TIBERO_NODE != "SINGLE" ]
         then
@@ -899,15 +908,6 @@ FN_AUTO_CNF_CHECK(){
             echo "tbis message> tbis.cfg - CFILE_PATH check"
             exit    
         fi
-
-    elif [ -z $TIBERO_TYPE]
-    then
-        echo "tbis message> tbis.cfg - TIBERO_TYPE check"
-        exit
-    elif [ -z $TIBERO_NODE ]
-    then
-        echo "tbis message> tbis.cfg - TIBERO_NODE check"
-        exit
     fi
 
     #
