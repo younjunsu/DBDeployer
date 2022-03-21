@@ -857,7 +857,7 @@ FN_AUTO_CNF_CHECK(){
         fi
     elif [ $TIBERO_TYPE == "TSC" ]
     then
-        if [ $TIBERO_NODE == "SINGLE" ] || [ $TIBERO_NODE == "cm0" ] || [ $TIBERO_NODE == "cm1" ]
+        if [ -z $TIBERO_NODE ] && [ $TIBERO_NODE == "SINGLE" ] || [ $TIBERO_NODE == "cm0" ] || [ $TIBERO_NODE == "cm1" ]
         then
             echo "tbis message> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
             exit
@@ -878,7 +878,7 @@ FN_AUTO_CNF_CHECK(){
     then
         2>/dev/null
 
-        if [ $TIBERO_NODE == "SINGLE" ] && [ $TIBERO_NODE == "observer" ] && [ $TIBERO_NODE == "primary" ] && [ $TIBERO_NODE == "standby" ] && [ -z $TIBERO_NODE ]
+        if [ -z $TIBERO_NODE ] && [ $TIBERO_NODE == "SINGLE" ] && [ $TIBERO_NODE == "observer" ] && [ $TIBERO_NODE == "primary" ] && [ $TIBERO_NODE == "standby" ]
         then
             echo "tbis message> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
             exit
