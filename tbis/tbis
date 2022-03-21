@@ -134,34 +134,25 @@ FN_AUTO_PROFILE(){
 }
 
 FN_AUTO_LICENSE(){
-    if [ -z $TIBERO_LICENSE ]
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> license "    
+    echo "############################################################"
+    echo
+    echo "cp ../binary/license.xml $TB_HOME/license/license.xml"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    if [ $YESNO == "YES" ]
     then
-        echo
-        echo "# tbis message>../binary/license.xml file"
-        echo
-        exit
-    else
-        echo
-        echo "############################################################"
-        echo "# tbis Progress> license "    
-        echo "############################################################"
-        echo
-        echo "cp ../binary/license.xml $TB_HOME/license/license.xml"
-        echo
-        FN_AUTO_PROGRESS_CHECK
-        if [ $YESNO == "YES" ]
+        FILE_CHECK=`ls ../binary/license.xml $TB_HOME/license/license.xml`
+        if [ -f $FILE_CHECK ]
         then
-            FILE_CHECK=`ls ../binary/license.xml $TB_HOME/license/license.xml`
-            if [ -f $FILE_CHECK ]
-            then
-                cp ../binary/license.xml $TB_HOME/license/license.xml
-            else
-                echo "tbis message> tibero license file check"
-                exit
-            fi
-
+            cp ../binary/license.xml $TB_HOME/license/license.xml
+        else
+            echo "tbis message> tibero license file check"
+            exit
         fi
-        
+
     fi
 }
 
@@ -995,8 +986,6 @@ FN_MAIN_MENU(){
     echo "-----------------------------------------------------------------"
     echo "# 1. Auto installation"
     echo "-----------------------------------------------------------------"
-    echo "# chk. System Check"
-    echo "# ini. Configurations Initialization"
     echo "# press other key to quit"
     echo "-----------------------------------------------------------------"
     printf "Choose the Number : "
