@@ -846,8 +846,7 @@ FN_AUTO_INSTALL(){
 }
 
 FN_AUTO_CNF_CHECK(){
-    # 
-
+    # tbis.cfg Parameter Check
     if [ -z $TIBERO_TYPE]
     then
         echo "tbis message> tbis.cfg - TIBERO_TYPE check"
@@ -865,7 +864,7 @@ FN_AUTO_CNF_CHECK(){
         fi
     elif [ $TIBERO_TYPE == "TSC" ]
     then
-        if [ -z $TIBERO_NODE ] && [ $TIBERO_NODE == "SINGLE" ] || [ $TIBERO_NODE == "cm0" ] || [ $TIBERO_NODE == "cm1" ]
+        if [ $TIBERO_NODE == "SINGLE" ] || [ $TIBERO_NODE == "cm0" ] || [ $TIBERO_NODE == "cm1" ]
         then
             echo "tbis message> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
             exit     
@@ -884,8 +883,7 @@ FN_AUTO_CNF_CHECK(){
         fi
     elif [ $TIBERO_TYPE == "TAC" ]
     then
-        2>/dev/null
-        if [ $TIBERO_NODE == "SINGLE" ] && [ $TIBERO_NODE == "observer" ] && [ $TIBERO_NODE == "primary" ] && [ $TIBERO_NODE == "standby" ]
+        if [ $TIBERO_NODE == "SINGLE" ] || [ $TIBERO_NODE == "observer" ] || [ $TIBERO_NODE == "primary" ] || [ $TIBERO_NODE == "standby" ]
         then
             echo "tbis message> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
             exit
@@ -910,7 +908,6 @@ FN_AUTO_CNF_CHECK(){
         fi
     fi
 
-    #
     if [ -z $USER_NAME ]
     then
         echo "tbis message> tbis.cfg - USER_NAME check"
@@ -941,7 +938,6 @@ FN_AUTO_CNF_CHECK(){
         exit
     fi
 
-    #
     if [ -z $CONTROL_FILE_PATH1 ]
     then
         echo "tbis message> tbis.cfg - CONTROL_FILE_PATH1 check"
