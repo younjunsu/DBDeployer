@@ -861,6 +861,10 @@ FN_AUTO_CNF_CHECK(){
         then
             echo "tbis message> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
             exit
+        elif  [ -z $TIBERO_NODE ] 
+        then
+            echo "tbis message> tbis.cfg - TIBERO_NODE check "
+            exit            
         fi
 
         if [ -z $NODE1_INTER_IP ]
@@ -878,9 +882,13 @@ FN_AUTO_CNF_CHECK(){
     then
         2>/dev/null
 
-        if [ -z $TIBERO_NODE ] && [ $TIBERO_NODE == "SINGLE" ] && [ $TIBERO_NODE == "observer" ] && [ $TIBERO_NODE == "primary" ] && [ $TIBERO_NODE == "standby" ]
+        if [ $TIBERO_NODE == "SINGLE" ] && [ $TIBERO_NODE == "observer" ] && [ $TIBERO_NODE == "primary" ] && [ $TIBERO_NODE == "standby" ]
         then
             echo "tbis message> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
+            exit
+        elif  [ -z $TIBERO_NODE ] 
+        then
+            echo "tbis message> tbis.cfg - TIBERO_NODE check "
             exit
         fi
 
