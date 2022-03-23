@@ -549,7 +549,7 @@ FN_AUTO_ARCHIVE_DIR(){
         then
             ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch0`
             mkdir -p $ARCHIVE_LOG_FILE_PATH
-        elif [ $TIbERO_NODE == "cm1" ]
+        elif [ $TIBERO_NODE == "cm1" ]
         then
             ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch1`
             mkdir -p ARCHIVE_LOG_FILE_PATH
