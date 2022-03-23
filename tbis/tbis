@@ -767,21 +767,24 @@ FN_AUTO_INSTALL(){
     FN_AUTO_ENGINE
     FN_AUTO_TBINARY
     FN_AUTO_PROFILE
-    FN_AUTO_TB_SID_TIP
-    FN_AUTO_TBDSN
     
     if [ $TIBERO_TYPE == "SINGLE" ]
     then
+        FN_AUTO_TB_SID_TIP
+        FN_AUTO_TBDSN
         FN_AUTO_LICENSE
         FN_AUTO_CHANGE_OWNER
         FN_AUTO_TB_BOOT NOMOUNT
         FN_AUTO_CREATEDB
         FN_AUTO_TB_BOOT NORMAL
         FN_AUTO_SYSTEM_SHELL
+        FN_AUTO_ARCHIVE_DIR
     elif [ $TIBERO_TYPE == "TSC" ]
     then
         if [ $TIBERO_NODE == "primary" ]
         then
+            FN_AUTO_TB_SID_TIP
+            FN_AUTO_TBDSN
             FN_AUTO_LICENSE
             FN_AUTO_CM_SID_TIP
             FN_AUTO_CHANGE_OWNER
@@ -801,8 +804,11 @@ FN_AUTO_INSTALL(){
             FN_AUTO_SYSTEM_SHELL
             FN_AUTO_TB_DOWN IMMEDIATE
             FN_AUTO_TSC_COPY
+            FN_AUTO_ARCHIVE_DIR
         elif [ $TIBERO_NODE == "standby" ]
         then
+            FN_AUTO_TB_SID_TIP
+            FN_AUTO_TBDSN
             FN_AUTO_LICENSE
             FN_AUTO_CM_SID_TIP
             FN_AUTO_CHANGE_OWNER
@@ -819,6 +825,7 @@ FN_AUTO_INSTALL(){
             FN_AUTO_TB_BOOT MOUNT
             FN_AUTO_TSC_CFG
             FN_AUTO_TB_DOWN IMMEDIATE
+            FN_AUTO_ARCHIVE_DIR
         elif [ $TIBERO_NODE == "observer" ]
         then
             FN_AUTO_CM_SID_TIP
@@ -829,6 +836,8 @@ FN_AUTO_INSTALL(){
     then
         if [ $TIBERO_NODE == "cm0" ]
         then
+            FN_AUTO_TB_SID_TIP
+            FN_AUTO_TBDSN
             FN_AUTO_LICENSE
             FN_AUTO_CM_SID_TIP
             FN_AUTO_CHANGE_OWNER
@@ -847,8 +856,11 @@ FN_AUTO_INSTALL(){
             FN_AUTO_TB_BOOT NORMAL
             FN_AUTO_SYSTEM_SHELL
             FN_AUTO_TAC_CFG
+            FN_AUTO_ARCHIVE_DIR
         elif [ $TIBERO_NODE == "cm1" ]
         then
+            FN_AUTO_TB_SID_TIP
+            FN_AUTO_TBDSN
             FN_AUTO_LICENSE
             FN_AUTO_CM_SID_TIP
             FN_AUTO_CHANGE_OWNER
@@ -863,9 +875,10 @@ FN_AUTO_INSTALL(){
             fi
             FN_AUTO_CHANGE_OWNER
             FN_AUTO_TB_BOOT NORMAL
+            FN_AUTO_ARCHIVE_DIR
         fi
     fi
-    FN_AUTO_ARCHIVE_DIR
+    
     FN_AUTO_SUCCESS
     
     TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
