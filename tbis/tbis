@@ -879,6 +879,7 @@ FN_AUTO_INSTALL(){
 
 FN_AUTO_CNF_CHECK(){
     # tbis.cfg Parameter Check
+
     if [ -z $TIBERO_TYPE]
     then
         echo "tbis message> tbis.cfg - TIBERO_TYPE check"
@@ -902,16 +903,21 @@ FN_AUTO_CNF_CHECK(){
             exit     
         fi
 
-        if [ -z $NODE1_INTER_IP ]
+        if [ $TIBERO_NODE == "observer" ]
         then
-            echo "tbis message> tbis.cfg - NODE1_INTER_IP check"
-            exit
-        fi
+            2>/dev/null
+        else
+            if [ -z $NODE1_INTER_IP ]
+            then
+                echo "tbis message> tbis.cfg - NODE1_INTER_IP check"
+                exit
+            fi
 
-        if [ -z $NODE2_INTER_IP ]
-        then
-            echo "tbis message> tbis.cfg - NODE2_INTER_IP check"
-            exit    
+            if [ -z $NODE2_INTER_IP ]
+            then
+                echo "tbis message> tbis.cfg - NODE2_INTER_IP check"
+                exit    
+            fi
         fi
     elif [ $TIBERO_TYPE == "TAC" ]
     then
@@ -958,40 +964,47 @@ FN_AUTO_CNF_CHECK(){
         exit
     fi
 
-    if [ -z $DB_NAME ]
-    then
-        echo "tbis message> tbis.cfg - DB_NAME check"
-        exit
-    fi
-
     if [ -z $TB_HOME ]
     then
         echo "tbis message> tbis.cfg - TB_HOME check"
         exit
     fi
 
-    if [ -z $CONTROL_FILE_PATH1 ]
-    then
-        echo "tbis message> tbis.cfg - CONTROL_FILE_PATH1 check"
-        exit
-    fi
 
-    if [ -z $CONTROL_FILE_PATH2 ]
-    then
-        echo "tbis message> tbis.cfg - CONTROL_FILE_PATH2 check"
-        exit
-    fi
 
-    if [ -z $DB_CREATE_FILE_DEST ]
+    if [ $TIBERO_NODE == "observer" ]
     then
-        echo "tbis message> tbis.cfg - DB_CREATE_FILE_DEST check"
-        exit
-    fi
+        2>/dev/null
+    else
+        if [ -z $DB_NAME ]
+        then
+            echo "tbis message> tbis.cfg - DB_NAME check"
+            exit
+        fi
 
-    if [ -z $LOG_ARCHIVE_DEST ]
-    then
-        echo "tbis message> tbis.cfg - LOG_ARCHIVE_DEST check"
-        exit
+        if [ -z $CONTROL_FILE_PATH1 ]
+        then
+            echo "tbis message> tbis.cfg - CONTROL_FILE_PATH1 check"
+            exit
+        fi
+
+        if [ -z $CONTROL_FILE_PATH2 ]
+        then
+            echo "tbis message> tbis.cfg - CONTROL_FILE_PATH2 check"
+            exit
+        fi
+
+        if [ -z $DB_CREATE_FILE_DEST ]
+        then
+            echo "tbis message> tbis.cfg - DB_CREATE_FILE_DEST check"
+            exit
+        fi
+
+        if [ -z $LOG_ARCHIVE_DEST ]
+        then
+            echo "tbis message> tbis.cfg - LOG_ARCHIVE_DEST check"
+            exit
+        fi
     fi
 }
 
