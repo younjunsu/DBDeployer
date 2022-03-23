@@ -617,6 +617,7 @@ FN_AUTO_INSTALL_CHECK(){
         echo "- NODE : $TIBERO_NODE"
     fi
 
+    echo "- DB_NAME : $DB_NAME"
     echo "- TB_SID : $TB_SID"
     echo "- CM_SID : $TIBERO_NODE"
     echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
