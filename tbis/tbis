@@ -1016,7 +1016,7 @@ FN_CONF_MENU(){
 }
 
 FN_MAIN_MENU(){
-    clear    
+        
     CURRENT_DIRECTORY=`pwd`
     CURRENT_DIRECTORY_CHK=`ls $CURRENT_DIRECTORY/tbis.cfg`
 
@@ -1025,7 +1025,8 @@ FN_MAIN_MENU(){
         echo "tbis message> Current working directory checking (CWD : $CURRENT_DIRECTORY)."
         exit
     fi
-
+    
+    clear
     echo "[*] TIBERO Installation Shell Script"
     echo "[*] This script is for TmaxTibero "Daejeon Office" only."
     echo "[*] Supported Version : Tibero 6 FS07 ↑"
