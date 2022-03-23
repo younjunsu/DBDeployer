@@ -529,7 +529,8 @@ FN_AUTO_SYSTEM_SHELL(){
 FN_AUTO_ARCHIVE_DIR(){
     if [ $TIBERO_TYPE == "SINGLE" ]
     then
-        mkdir -p $LOG_ARCHIVE_DEST/tbarch
+        ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch`
+        mkdir -p $ARCHIVE_LOG_FILE_PATH
     elif [ $TIBERO_TYPE == "TSC" ]
     then
         2>/dev/null
@@ -538,20 +539,23 @@ FN_AUTO_ARCHIVE_DIR(){
             2>/dev/null
         elif [ $TIBERO_NODE == "primary" ]
         then
-            mkdir -p $LOG_ARCHIVE_DEST/tbarch
+            ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch`
+            mkdir -p $ARCHIVE_LOG_FILE_PATH
         fi
     elif [ $TIBERO_TYPE == "TAC" ]
     then
         2>/dev/null
         if [ $TIBERO_NODE == "cm0" ]
         then
-            mkdir -p $LOG_ARCHIVE_DEST/tbarch0
+            ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch0`
+            mkdir -p $ARCHIVE_LOG_FILE_PATH
         elif [ $TIbERO_NODE == "cm1" ]
         then
-            mkdir -p $LOG_ARCHIVE_DEST/tbarch0
+            ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch1`
+            mkdir -p ARCHIVE_LOG_FILE_PATH
         fi
     fi
-    chown -R $USE_NAME:$GROUP_NAME $LOG_ARCHIVE_DES
+    chown -R $USE_NAME:$GROUP_NAME $ARCHIVE_LOG_FILE_PATH
 }
 
 FN_AUTO_INSTALL_CHECK(){
