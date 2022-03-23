@@ -193,11 +193,11 @@ FN_AUTO_CM_SID_TIP(){
     FN_AUTO_PROGRESS_CHECK
     if [ $YESNO == "YES" ]
     then
-        if [ -z $CM_SID]
-        then
-          echo "tbis message> \$CM_SID check"
-          exit
-        fi
+        #if [ -z $CM_SID]
+        #then
+        #  echo "tbis message> \$CM_SID check"
+        #  exit
+        #fi
 
         if [ $TIBERO_TYPE == "SINGLE" ]
         then
