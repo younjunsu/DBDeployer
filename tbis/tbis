@@ -95,7 +95,7 @@ FN_AUTO_TBINARY(){
             FILE_CHECK=`ls ../binary/tbinary*.tar`
             if [ -f $FILE_CHECK ]
             then
-                tar -xvf  -C $USER_HOME
+                tar -xvf ../binary/tbinary*.tar -C $USER_HOME
             else
                 echo "tbis message> tibero tbinary file check"
                 exit
