@@ -665,6 +665,8 @@ FN_AUTO_INSTALL_CHECK(){
             exit;;
         "AA"|"aa")
             INSTALL_MODE=ALL;;
+        *)
+            exit;;
     esac
     echo
     ###
