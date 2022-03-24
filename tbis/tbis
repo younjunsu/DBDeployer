@@ -18,8 +18,8 @@ TBIS_AUTO_SQLFILE="tbis.sql"
 TBIS_CWD_PATH=`pwd`
 
 ############################################################
-#
-# Function lists
+# Function Lists
+# 1. Auto Installation
 ############################################################
 FN_AUTO_LOGFILE(){
     TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
@@ -743,11 +743,11 @@ FN_AUTO_TAC_CFG(){
         su - $USER_NAME -c "
             tbsql -s sys/tibero <<EOF
             CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $UNDO1_SIZE AUTOEXTEND OFF;
-            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE 300M;
-            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE 300M;
-            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 7 ('$DB_CREATE_FILE_DEST/tbdata/system/redo071.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo072.redo') SIZE 300M;
-            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 8 ('$DB_CREATE_FILE_DEST/tbdata/system/redo081.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo082.redo') SIZE 300M;
-            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 9 ('$DB_CREATE_FILE_DEST/tbdata/system/redo091.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo092.redo') SIZE 300M;
+            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $REDO_SIZE;
+            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $REDO_SIZE;
+            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 7 ('$DB_CREATE_FILE_DEST/tbdata/system/redo071.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo072.redo') SIZE $REDO_SIZE;
+            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 8 ('$DB_CREATE_FILE_DEST/tbdata/system/redo081.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo082.redo') SIZE $REDO_SIZE;
+            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 9 ('$DB_CREATE_FILE_DEST/tbdata/system/redo091.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo092.redo') SIZE $REDO_SIZE;
             ALTER DATABASE ENABLE PUBLIC THREAD 1;
             exit
             EOF
@@ -1050,6 +1050,34 @@ FN_CONF_MENU(){
     read INPUT_NUMBER
 }
 
+############################################################
+# Function Lists
+# 2. Auto Configuration 
+############################################################
+
+############################################################
+# Function Lists
+# 3. Auto Confirmation
+############################################################
+FN_AUTO_CFI(){
+    echo "- Tibero Version : "
+    echo "- OS User : "
+    echo "- Tibero 설치 위치 (엔진 홈) : "
+    echo "- DB Name (SID) : "
+    echo "- Service Port (Listener Port) : "
+    echo "- Character Set : "
+    echo "- Total Shared Memory : "
+    echo "- Memory Target : "
+    echo "- Max Session : "
+    echo "- Controlfile 위치 : "
+    echo "- Datafile 위치 : "
+    echo "- Archive 모드 및 위치 : "
+    echo "- Instance log 위치 : "    
+}
+############################################################
+# Function Lists
+# tbis main
+############################################################
 FN_MAIN_MENU(){
         
     CURRENT_DIRECTORY=`pwd`
@@ -1079,6 +1107,9 @@ FN_MAIN_MENU(){
         clear
         FN_AUTO_LOGFILE
         FN_AUTO_INSTALL |tee $TBIS_AUTO_LOGFILE 
+        exit;;
+    3)
+        FN_AUTO_CFI
         exit;;
     *)
         clear
