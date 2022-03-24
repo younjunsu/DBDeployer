@@ -5,7 +5,7 @@
 ############################################################
 # Created by. Daejeon Office
 # 2022.03.18 Version : Park Si Hyung, Yoon Jun Su
-# 2022.03.21 Version : Yoon Jun Su
+# 2022.03.24 Version : Yoon Jun Su
 
 ############################################################
 #
@@ -1103,7 +1103,7 @@ FN_MAIN_MENU(){
     echo "-----------------------------------------------------------------"
     echo "# 1. Auto Installation"
     echo "# 2. (to be added) Auto Configuration"
-    echo "# 3. (to be added) Auto Confirmation"
+    echo "# 3. Auto Confirmation"
     echo "-----------------------------------------------------------------"
     echo "# press other key to quit"
     echo "-----------------------------------------------------------------"
