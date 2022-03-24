@@ -61,7 +61,8 @@ FN_AUTO_ENGINE(){
         echo "# tbis Progress> Engine"
         echo "############################################################"
         echo
-        echo "tar -xvzf ../binary/tibero*.tar.gz -C $USER_HOME"
+        echo "gunzip ../binary/tibero*.tar.gz"
+        echo "tar -xvf ../binary/tibero*.tar -C $USER_HOME"
         echo
         FN_AUTO_PROGRESS_CHECK
         if [ $YESNO == "YES" ]
@@ -69,7 +70,8 @@ FN_AUTO_ENGINE(){
             FILE_CHECK=`ls ../binary/tibero*.tar.gz`
             if [ -f $FILE_CHECK ]
             then
-                tar -xvzf ../binary/tibero*.tar.gz -C $USER_HOME
+                gunzip ../binary/tibero*.tar.gz
+                tar -xvf ../binary/tibero*.tar -C $USER_HOME
             else
                 echo "tbis message> tibero engine install file check"
                 exit
@@ -552,7 +554,7 @@ FN_AUTO_ARCHIVE_DIR(){
         elif [ $TIBERO_NODE == "cm1" ]
         then
             ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch1`
-            mkdir -p ARCHIVE_LOG_FILE_PATH
+            mkdir -p $ARCHIVE_LOG_FILE_PATH
         fi
     fi
     chown -R $USER_NAME:$GROUP_NAME $ARCHIVE_LOG_FILE_PATH
