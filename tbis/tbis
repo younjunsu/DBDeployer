@@ -732,9 +732,13 @@ FN_AUTO_TAC_CFG(){
     echo "#  tbis Progress> TAC Configuration"
     echo "############################################################"
     echo
-    echo "CREATE UNDO1 TABLESPACE"
-    echo "THREAD 1 REDO CREATE"
-    echo "THREAD 1 ENABLE"
+    echo "CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $THREAD1_UNDO1_SIZE AUTOEXTEND OFF;"
+    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $THREAD1_REDO_SIZE;"
+    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $THREAD1_REDO_SIZE;"
+    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 7 ('$DB_CREATE_FILE_DEST/tbdata/system/redo071.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo072.redo') SIZE $THREAD1_REDO_SIZE;"
+    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 8 ('$DB_CREATE_FILE_DEST/tbdata/system/redo081.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo082.redo') SIZE $THREAD1_REDO_SIZE;"
+    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 9 ('$DB_CREATE_FILE_DEST/tbdata/system/redo091.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo092.redo') SIZE $THREAD1_REDO_SIZE;"
+    echo "ALTER DATABASE ENABLE PUBLIC THREAD 1;"
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
@@ -742,12 +746,12 @@ FN_AUTO_TAC_CFG(){
     then  
         su - $USER_NAME -c "
             tbsql -s sys/tibero <<EOF
-            CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $UNDO1_SIZE AUTOEXTEND OFF;
-            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $REDO_SIZE;
-            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $REDO_SIZE;
-            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 7 ('$DB_CREATE_FILE_DEST/tbdata/system/redo071.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo072.redo') SIZE $REDO_SIZE;
-            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 8 ('$DB_CREATE_FILE_DEST/tbdata/system/redo081.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo082.redo') SIZE $REDO_SIZE;
-            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 9 ('$DB_CREATE_FILE_DEST/tbdata/system/redo091.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo092.redo') SIZE $REDO_SIZE;
+            CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $THREAD1_UNDO1_SIZE AUTOEXTEND OFF;
+            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $THREAD1_REDO_SIZE;
+            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $THREAD1_REDO_SIZE;
+            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 7 ('$DB_CREATE_FILE_DEST/tbdata/system/redo071.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo072.redo') SIZE $THREAD1_REDO_SIZE;
+            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 8 ('$DB_CREATE_FILE_DEST/tbdata/system/redo081.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo082.redo') SIZE $THREAD1_REDO_SIZE;
+            ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 9 ('$DB_CREATE_FILE_DEST/tbdata/system/redo091.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo092.redo') SIZE $THREAD1_REDO_SIZE;
             ALTER DATABASE ENABLE PUBLIC THREAD 1;
             exit
             EOF
@@ -1055,6 +1059,8 @@ FN_CONF_MENU(){
 # 2. Auto Configuration 
 ############################################################
 
+
+
 ############################################################
 # Function Lists
 # 3. Auto Confirmation
@@ -1074,6 +1080,7 @@ FN_AUTO_CFI(){
     echo "- Archive 모드 및 위치 : "
     echo "- Instance log 위치 : "    
 }
+
 ############################################################
 # Function Lists
 # tbis main
