@@ -667,8 +667,8 @@ FN_AUTO_INSTALL_CHECK(){
     . ./tbis.cfg
     echo "[*] TIBERO Auto installation Tools Configuration Checking STEP"
     echo "-----------------------------------------------------------------"
-    echo "# Install Mode"
-    echo "- ROOT_MODE : " $ROOT_MODE
+    echo "# Installation Mode"
+    echo "- ROOT_MODE : $ROOT_MODE"
     echo "- TYPE : $TIBERO_TYPE"
     echo "- NODE : $TIBERO_NODE"
     if [ $TIBERO_TYPE == "SINGLE" ]
@@ -683,44 +683,22 @@ FN_AUTO_INSTALL_CHECK(){
     else
         exit
     fi
-    echo ""
+    echo "-----------------------------------------------------------------"
     echo "# OS USER & GROUP"
     echo "- OS USER : $USER_NAME"
     echo "- OS USER GROUP : $GROUP_NAME"
     echo "- OS HOME : $USER_HOME"
     echo "-----------------------------------------------------------------"
-    echo "# TIBERO INSTALLATION BINARY "
-    TIBERO_LICENSE_FILE=`ls ../binary/license.xml`
-    if [ -f $TIBERO_LICENSE_FILE ]
-    then
-        echo "- LICENSE FILE : "$TIBERO_LICENSE_FILE
-    else
-        echo "tbis message> license.xml file check"
-    fi
-
-    TIBERO_ENGINE_FILE=`ls ../binary/tibero*`
-    if [ -f $TIBERO_ENGINE_FILE ]
-    then
-        
-        echo "- ENGINE FILE : "$TIBERO_ENGINE_FILE
-    else
-        echo "tbis message> TIBERO ENGINE file check"
-    fi
-
-    TIBERO_TBINARY_FILE=`ls ../binary/tbinary*`
-    if [ -f $TIBERO_TBINARY_FILE ]
-    then
-        echo "- TBINARY FILE : "$TIBERO_TBINARY_FILE
-    else
-        echo "tbis message> TBINARY file check"
-    fi
-
-    echo "-----------------------------------------------------------------"
     echo "# TIBERO DATABASE"
     echo "- TB_SID : $TB_SID"
-    echo "- CM_SID : $TIBERO_NODE"
+    if [ $TIBERO_NODE == "SINGLE" ]
+    then
+        2>/dev/null
+    else        
+        echo "- CM_SID : $TIBERO_NODE"
+    fi    
     echo "- DB_NAME : $DB_NAME"
-    echo "- LISTENER_PORT : " $LISTENER_PORT
+    echo "- LISTENER_PORT : $LISTENER_PORT"
     echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
     echo "-----------------------------------------------------------------"
     echo "# TIBERO DATABASE FILE DEST"
@@ -749,6 +727,32 @@ FN_AUTO_INSTALL_CHECK(){
     then 
         2>/dev/null
     fi
+    echo "-----------------------------------------------------------------"
+    echo "# TIBERO INSTALLATION BINARY "
+    TIBERO_LICENSE_FILE=`ls ../binary/license.xml`
+    if [ -f $TIBERO_LICENSE_FILE ]
+    then
+        echo "- LICENSE FILE : "$TIBERO_LICENSE_FILE
+    else
+        echo "tbis message> license.xml file check"
+    fi
+
+    TIBERO_ENGINE_FILE=`ls ../binary/tibero*`
+    if [ -f $TIBERO_ENGINE_FILE ]
+    then
+        
+        echo "- ENGINE FILE : "$TIBERO_ENGINE_FILE
+    else
+        echo "tbis message> TIBERO ENGINE file check"
+    fi
+
+    TIBERO_TBINARY_FILE=`ls ../binary/tbinary*`
+    if [ -f $TIBERO_TBINARY_FILE ]
+    then
+        echo "- TBINARY FILE : "$TIBERO_TBINARY_FILE
+    else
+        echo "tbis message> TBINARY file check"
+    fi    
     echo "-----------------------------------------------------------------"
     echo "# TIBERO Configuration Files"
     echo "- cat tbis.cfg : TIBERO Configuration File"
