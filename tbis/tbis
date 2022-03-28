@@ -6,6 +6,7 @@
 # Created by. Daejeon Office
 # 2022.03.18 Version : Park Si Hyung, Yoon Jun Su
 # 2022.03.24 Version : Yoon Jun Su
+# 2022.03.28 Version : Yoon Jun Su
 
 ############################################################
 #
@@ -499,14 +500,14 @@ FN_AUTO_CREATEDB(){
     then
         if [ $ROOT_MODE == "N" ]
         then
-            tbsql -s sys/tibero <<EOF
+            `tbsql -s sys/tibero <<EOF
             @$TBIS_CWD_PATH/tbis.sql
             exit
-            EOF
+            EOF`
             
             echo
             echo 
-        else [ $ROOT_MODE == "Y" ]
+        elif [ $ROOT_MODE == "Y" ]
         then
             su - $USER_NAME -c "
             tbsql -s sys/tibero <<EOF
@@ -573,121 +574,6 @@ FN_AUTO_ARCHIVE_DIR(){
         fi
     fi
     chown -R $USER_NAME:$GROUP_NAME $ARCHIVE_LOG_FILE_PATH
-}
-
-FN_AUTO_INSTALL_CHECK(){
-    clear
-    . ./tbis.cfg
-    echo "[*] TIBERO Auto installation Tools Configuration Checking STEP"
-    echo "-----------------------------------------------------------------"
-    echo "# OS USER & GROUP"
-    echo "- OS USER : $USER_NAME"
-    echo "- OS USER GROUP : $GROUP_NAME"
-    echo "- OS HOME : $USER_HOME"
-    echo "-----------------------------------------------------------------"
-    echo "# TIBERO INSTALLATION BINARY "
-    TIBERO_LICENSE_FILE=`ls ../binary/license.xml`
-    if [ -f $TIBERO_LICENSE_FILE ]
-    then
-        
-        echo "- LICENSE FILE : "$TIBERO_LICENSE_FILE
-    else
-        echo "tbis message> license.xml file check"
-    fi
-
-    TIBERO_ENGINE_FILE=`ls ../binary/tibero*`
-    if [ -f $TIBERO_ENGINE_FILE ]
-    then
-        
-        echo "- ENGINE FILE : "$TIBERO_ENGINE_FILE
-    else
-        echo "tbis message> TIBERO ENGINE file check"
-    fi
-
-    TIBERO_TBINARY_FILE=`ls ../binary/tbinary*`
-    if [ -f $TIBERO_TBINARY_FILE ]
-    then
-        echo "- TBINARY FILE : "$TIBERO_TBINARY_FILE
-    else
-        echo "tbis message> TBINARY file check"
-    fi
-
-    echo "-----------------------------------------------------------------"
-    echo "# TIBERO DATABASE"
-    if [ $TIBERO_TYPE == "SINGLE" ]
-    then
-        echo "- TYPE : $TIBERO_TYPE"
-        echo "- NODE : $TIBERO_NODE"
-        FN_AUTO_SINGLE
-    elif [ $TIBERO_TYPE == "TSC" ]
-    then
-        echo "- TYPE : $TIBERO_TYPE"
-        echo "- NODE : $TIBERO_NODE"
-        FN_AUTO_TSC
-    elif [ $TIBERO_TYPE == "TAC" ]
-    then
-        echo "- TYPE : $TIBERO_TYPE"
-        echo "- NODE : $TIBERO_NODE"
-        FN_AUTO_TAC
-    else
-        echo "- TYPE : $TIBERO_TYPE"
-        echo "- NODE : $TIBERO_NODE"
-    fi
-
-    echo "- DB_NAME : $DB_NAME"
-    echo "- TB_SID : $TB_SID"
-    echo "- CM_SID : $TIBERO_NODE"
-    echo "- LISTENER_PORT : " $LISTENER_PORT
-    echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
-    echo "-----------------------------------------------------------------"
-    echo "# TIBERO DATABASE FILE DEST"
-    echo "- TB_HOME PATH : $TB_HOME"
-    echo "- TBINARY PATH : $TB_HOME/tbinary"
-    echo "- CONTROL1_FILE : $CONTROL_FILE_PATH1/tbctl1/c1.ctl"
-    echo "- CONTROL2_FILE : $CONTROL_FILE_PATH2/tbctl2/c2.ctl"
-    echo "- DB_CREATE_FILE : $DB_CREATE_FILE_DEST/tbdata"
-    
-    if [ $TIBERO_TYPE == "SINGLE" ]
-    then
-        echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch"
-    elif [ $TIBERO_TYPE == "TSC" ]
-    then
-        echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch"
-    elif [ $TIBERO_TYPE == "TAC" ]
-    then
-        if [ $TIBERO_NODE == "cm0" ]
-        then
-            echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch0"
-        elif [ $TIBERO_NODE == "cm1" ]
-        then
-            echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch1"
-        fi
-    elif [ $TIBERO_TYPE == "TAS" ]
-    then 
-        2>/dev/null
-    fi
-    echo "-----------------------------------------------------------------"
-    echo "# TIBERO Configuration Files"
-    echo "- cat tbis.cfg : TIBERO Configuration File"
-    echo "- cat tbis.sql : CREATE DATABASE SQL File"
-    echo "-----------------------------------------------------------------"
-    
-    ### IN PROCESS
-    echo
-    printf "continue ? ( [Y]es / [N]o / [AA] All Auto] ) : "
-    read INPUT_YESNO
-    case $INPUT_YESNO in
-        "YES"|"Yes"|"yes"|"y"|"Y")
-            INSTALL_MODE=YES;;
-        "NO"|"No"|"no"|"n"|"N")
-            exit;;
-        "AA"|"aa")
-            INSTALL_MODE=ALL;;
-        *)
-            exit;;
-    esac
-    echo
-    ###
 }
 
 FN_AUTO_TSC_COPY(){
@@ -774,6 +660,117 @@ FN_AUTO_TAC_CFG(){
         "
     fi
     sleep 1
+}
+
+FN_AUTO_INSTALL_CHECK(){
+    clear
+    . ./tbis.cfg
+    echo "[*] TIBERO Auto installation Tools Configuration Checking STEP"
+    echo "-----------------------------------------------------------------"
+    echo "# Install Mode"
+    echo "- ROOT_MODE : " $ROOT_MODE
+    echo "- TYPE : $TIBERO_TYPE"
+    echo "- NODE : $TIBERO_NODE"
+    if [ $TIBERO_TYPE == "SINGLE" ]
+    then
+        FN_AUTO_SINGLE
+    elif [ $TIBERO_TYPE == "TSC" ]
+    then
+        FN_AUTO_TSC
+    elif [ $TIBERO_TYPE == "TAC" ]
+    then
+        FN_AUTO_TAC
+    else
+        exit
+    fi
+    echo ""
+    echo "# OS USER & GROUP"
+    echo "- OS USER : $USER_NAME"
+    echo "- OS USER GROUP : $GROUP_NAME"
+    echo "- OS HOME : $USER_HOME"
+    echo "-----------------------------------------------------------------"
+    echo "# TIBERO INSTALLATION BINARY "
+    TIBERO_LICENSE_FILE=`ls ../binary/license.xml`
+    if [ -f $TIBERO_LICENSE_FILE ]
+    then
+        echo "- LICENSE FILE : "$TIBERO_LICENSE_FILE
+    else
+        echo "tbis message> license.xml file check"
+    fi
+
+    TIBERO_ENGINE_FILE=`ls ../binary/tibero*`
+    if [ -f $TIBERO_ENGINE_FILE ]
+    then
+        
+        echo "- ENGINE FILE : "$TIBERO_ENGINE_FILE
+    else
+        echo "tbis message> TIBERO ENGINE file check"
+    fi
+
+    TIBERO_TBINARY_FILE=`ls ../binary/tbinary*`
+    if [ -f $TIBERO_TBINARY_FILE ]
+    then
+        echo "- TBINARY FILE : "$TIBERO_TBINARY_FILE
+    else
+        echo "tbis message> TBINARY file check"
+    fi
+
+    echo "-----------------------------------------------------------------"
+    echo "# TIBERO DATABASE"
+    echo "- TB_SID : $TB_SID"
+    echo "- CM_SID : $TIBERO_NODE"
+    echo "- DB_NAME : $DB_NAME"
+    echo "- LISTENER_PORT : " $LISTENER_PORT
+    echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
+    echo "-----------------------------------------------------------------"
+    echo "# TIBERO DATABASE FILE DEST"
+    echo "- TB_HOME PATH : $TB_HOME"
+    echo "- TBINARY PATH : $TB_HOME/tbinary"
+    echo "- CONTROL1_FILE : $CONTROL_FILE_PATH1/tbctl1/c1.ctl"
+    echo "- CONTROL2_FILE : $CONTROL_FILE_PATH2/tbctl2/c2.ctl"
+    echo "- DB_CREATE_FILE : $DB_CREATE_FILE_DEST/tbdata"
+    
+    if [ $TIBERO_TYPE == "SINGLE" ]
+    then
+        echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch"
+    elif [ $TIBERO_TYPE == "TSC" ]
+    then
+        echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch"
+    elif [ $TIBERO_TYPE == "TAC" ]
+    then
+        if [ $TIBERO_NODE == "cm0" ]
+        then
+            echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch0"
+        elif [ $TIBERO_NODE == "cm1" ]
+        then
+            echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch1"
+        fi
+    elif [ $TIBERO_TYPE == "TAS" ]
+    then 
+        2>/dev/null
+    fi
+    echo "-----------------------------------------------------------------"
+    echo "# TIBERO Configuration Files"
+    echo "- cat tbis.cfg : TIBERO Configuration File"
+    echo "- cat tbis.sql : CREATE DATABASE SQL File"
+    echo "-----------------------------------------------------------------"
+    
+    ### IN PROCESS
+    echo
+    printf "continue ? ( [Y]es / [N]o / [AA] All Auto] ) : "
+    read INPUT_YESNO
+    case $INPUT_YESNO in
+        "YES"|"Yes"|"yes"|"y"|"Y")
+            INSTALL_MODE=YES;;
+        "NO"|"No"|"no"|"n"|"N")
+            exit;;
+        "AA"|"aa")
+            INSTALL_MODE=ALL;;
+        *)
+            exit;;
+    esac
+    echo
+    ###
 }
 
 FN_AUTO_INSTALL(){   
