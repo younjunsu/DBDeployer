@@ -496,7 +496,7 @@ FN_AUTO_CREATEDB(){
     FN_AUTO_PROGRESS_CHECK
     echo
     if [ $YESNO == "YES" ]
-    then    
+    then
         su - $USER_NAME -c "
             tbsql -s sys/tibero <<EOF
             @$TBIS_CWD_PATH/tbis.sql
