@@ -497,15 +497,30 @@ FN_AUTO_CREATEDB(){
     echo
     if [ $YESNO == "YES" ]
     then
-        su - $USER_NAME -c "
+        if [ $ROOT_MODE == "N" ]
+        then
             tbsql -s sys/tibero <<EOF
             @$TBIS_CWD_PATH/tbis.sql
             exit
             EOF
-        "
+            
+            echo
+            echo 
+        else [ $ROOT_MODE == "Y" ]
+        then
+            su - $USER_NAME -c "
+            tbsql -s sys/tibero <<EOF
+            @$TBIS_CWD_PATH/tbis.sql
+            exit
+            EOF
+            "
 
-        echo
-        echo
+            echo
+            echo
+        else
+            exit
+        fi
+        
         sleep 1
     fi
 }
