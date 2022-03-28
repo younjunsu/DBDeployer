@@ -679,19 +679,19 @@ FN_AUTO_TSC_COPY(){
     echo "#  tbis Progress> CF/DF/ARCH COPY to Target node"
     echo "############################################################"
     echo
-    echo "scp -P $SFTP_PORT -r $CONTROL_FILE_PATH1/tbctl1 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH1/tbctl1"
-    echo "scp -P $SFTP_PORT -r $CONTROL_FILE_PATH2/tbctl2 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH2/tbctl2"
-    echo "scp -P $SFTP_PORT -r $DB_CREATE_FILE_DEST/tbdata "$USER_NAME"@"$NODE2_INTER_IP":$DB_CREATE_FILE_DEST/tbdata"
-    echo "scp -P $SFTP_PORT -r $LOG_ARCHIVE_DEST/tbarch "$USER_NAME"@"$NODE2_INTER_IP":$LOG_ARCHIVE_DEST/tbarch"
+    echo "scp -P $SCP_PORT -r $CONTROL_FILE_PATH1/tbctl1 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH1/tbctl1"
+    echo "scp -P $SCP_PORT -r $CONTROL_FILE_PATH2/tbctl2 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH2/tbctl2"
+    echo "scp -P $SCP_PORT -r $DB_CREATE_FILE_DEST/tbdata "$USER_NAME"@"$NODE2_INTER_IP":$DB_CREATE_FILE_DEST/tbdata"
+    echo "scp -P $SCP_PORT -r $LOG_ARCHIVE_DEST/tbarch "$USER_NAME"@"$NODE2_INTER_IP":$LOG_ARCHIVE_DEST/tbarch"
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
     if [ $YESNO == "YES" ]
     then  
-        scp -P $SFTP_PORT -r $CONTROL_FILE_PATH1/tbctl1 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH1/tbctl1
-        scp -P $SFTP_PORT -r $CONTROL_FILE_PATH2/tbctl2 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH2/tbctl2
-        scp -P $SFTP_PORT -r $DB_CREATE_FILE_DEST/tbdata "$USER_NAME"@"$NODE2_INTER_IP":$DB_CREATE_FILE_DEST/tbdata
-        scp -P $SFTP_PORT -r $LOG_ARCHIVE_DEST/tbarch "$USER_NAME"@"$NODE2_INTER_IP":$LOG_ARCHIVE_DEST/tbarch
+        scp -P $SCP_PORT -r $CONTROL_FILE_PATH1/tbctl1 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH1/tbctl1
+        scp -P $SCP_PORT -r $CONTROL_FILE_PATH2/tbctl2 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH2/tbctl2
+        scp -P $SCP_PORT -r $DB_CREATE_FILE_DEST/tbdata "$USER_NAME"@"$NODE2_INTER_IP":$DB_CREATE_FILE_DEST/tbdata
+        scp -P $SCP_PORT -r $LOG_ARCHIVE_DEST/tbarch "$USER_NAME"@"$NODE2_INTER_IP":$LOG_ARCHIVE_DEST/tbarch
     fi    
 }
 
