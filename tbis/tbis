@@ -289,35 +289,35 @@ FN_AUTO_CM_RESOURCE(){
         then
             if [ $TIBERO_NODE == "primary" ]
             then
-                cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno 29000
+                cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT
                 if [ -z $NODE1_VIP_ETH ]
                 then
                     cmrctl add cluster --name cls0 --incnet net0 --cfile $TB_HOME/config/CMFILE_cls0
                     cmrctl start cluster --name cls0
-                    cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050
+                    cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE2_INTER_IP --obsport $CM_OBSERVER_PORT
                     cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK
                 else
                     cmrctl add network --name pub0 --nettype public --ifname $NODE1_VIP_ETH
                     cmrctl add cluster --name cls0 --incnet net0 --pubnet pub0 --cfile $TB_HOME/config/CMFILE_cls0
                     cmrctl start cluster --name cls0
-                    cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050
+                    cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE2_INTER_IP --obsport $CM_OBSERVER_PORT
                     cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK   
                     cmrctl add vip --name vip0 --svcname $DB_NAME --ipaddr $NODE1_VIP_IP
                 fi
             elif [ $TIBERO_NODE == "standby" ]
             then
-                cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno 29000
+                cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT
                     if [ -z $NODE2_VIP_ETH ]
                     then
                         cmrctl add cluster --name cls1 --incnet net1 --cfile $TB_HOME/config/CMFILE_cls1
                         cmrctl start cluster --name cls1
-                        cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050
+                        cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport $CM_OBSERVER_PORT
                         cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK
                     else
                         cmrctl add network --name pub1 --nettype public --ifname $NODE2_VIP_ETH
                         cmrctl add cluster --name cls1 --incnet net1 --pubnet pub1 --cfile $TB_HOME/config/CMFILE_cls1
                         cmrctl start cluster --name cls1
-                        cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport 9050
+                        cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport $CM_OBSERVER_PORT
                         cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK   
                         cmrctl add vip --name vip1 --svcname $DB_NAME --ipaddr $NODE2_VIP_IP
                     fi
@@ -330,7 +330,7 @@ FN_AUTO_CM_RESOURCE(){
             2>/dev/null
             if [ $TIBERO_NODE == "cm0" ]
             then
-                cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno 29000
+                cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT
                 if [ -z $NODE1_VIP_ETH ]
                 then
                     cmrctl add cluster --name cls0 --incnet net0 --cfile $CFILE_PATH/CMFILE
@@ -347,7 +347,7 @@ FN_AUTO_CM_RESOURCE(){
                 fi
             elif [ $TIBERO_NODE == "cm1" ]
             then
-                 cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno 29000
+                 cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT
                 if [ -z $NODE2_VIP_ETH ]
                 then
                     cmrctl add cluster --name cls0 --incnet net1  --cfile $CFILE_PATH/CMFILE
@@ -622,6 +622,7 @@ FN_AUTO_INSTALL_CHECK(){
     echo "- DB_NAME : $DB_NAME"
     echo "- TB_SID : $TB_SID"
     echo "- CM_SID : $TIBERO_NODE"
+    echo "- LISTENER_PORT : " $LISTENER_PORT
     echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
     echo "-----------------------------------------------------------------"
     echo "# TIBERO DATABASE FILE DEST"
