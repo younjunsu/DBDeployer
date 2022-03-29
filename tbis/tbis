@@ -416,7 +416,7 @@ FN_AUTO_CM_DOWN(){
         then
             FN_AUTO_PROGRESS_PROFILE
             . $TIBERO_PROFILE_CHECK
-            tbcm -b
+            tbcm -d
         else
             su - $USER_NAME -c "tbcm -d"
         fi
