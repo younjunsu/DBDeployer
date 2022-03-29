@@ -818,6 +818,7 @@ FN_AUTO_INSTALL(){
             if [ -z $NODE1_VIP_ETH]
             then
                 FN_AUTO_CM_DOWN
+                FN_AUTO_CHANGE_OWNER
                 FN_AUTO_CM_BOOT
             else
                 2>/dev/null
