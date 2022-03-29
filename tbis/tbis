@@ -418,7 +418,7 @@ FN_AUTO_CM_DOWN(){
             . $TIBERO_PROFILE_CHECK
             tbcm -b
         else
-            su - $USER_NAME -c "tbcm -b"
+            su - $USER_NAME -c "tbcm -d"
         fi
         sleep 1
     fi
