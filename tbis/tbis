@@ -493,6 +493,8 @@ FN_AUTO_CREATEDB(){
     echo "############################################################"
     echo
     echo "Execution SQL FILE : $TBIS_CWD_PATH/tbis.sql"
+    cat $TBIS_CWD_PATH/tbis.sql
+    echo
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
@@ -500,11 +502,7 @@ FN_AUTO_CREATEDB(){
     then
         if [ $ROOT_MODE == "N" ]
         then
-            `tbsql -s sys/tibero <<EOF
-            @$TBIS_CWD_PATH/tbis.sql
-            exit
-            EOF`
-            
+            tbsql sys/tibero < $TBIS_CWD_PATH/tbis.sql
             echo
             echo 
         elif [ $ROOT_MODE == "Y" ]
@@ -1053,6 +1051,16 @@ FN_AUTO_CNF_CHECK(){
             exit
         fi
     fi
+
+    if [ $ROOT_MODE != "Y" ]
+    then
+        if [ -n $NODE1_VIP_ETH ]
+        then
+            echo "tbis message> tbis.cfg - OS Installation User Check"
+            echo "  - Current_user : "$CURRENT_USER
+            exit
+        fi
+    fi
 }
 
 FN_CONF_MENU(){
@@ -1127,9 +1135,9 @@ FN_MAIN_MENU(){
     echo "[*] This script is for TmaxTibero "Daejeon Office" only."
     echo "[*] Supported Version : Tibero 6 FS07 ↑"
     echo "-----------------------------------------------------------------"
-    echo "# 1. Auto Installation"
-    echo "# 2. (to be added) Auto Configuration"
-    echo "# 3. Auto Confirmation"
+    echo "# 1. tbis Installation Tools"
+    echo "# 2. tbis Installation Report"
+    echo "# 3. tbis Configuration Text"
     echo "-----------------------------------------------------------------"
     echo "# press other key to quit"
     echo "-----------------------------------------------------------------"
@@ -1146,15 +1154,14 @@ FN_MAIN_MENU(){
         exit;;
     *)
         clear
-        echo "tbis message> program quit."
-        ;;
+        echo "tbis message> program quit.";;
     esac
-}
+} 
 
 ############################################################
 #
 # Program start
 ############################################################
 # run
-FN_MAIN_MENU 2>/dev/null
+FN_MAIN_MENU
 #FN_MAIN_MENU
