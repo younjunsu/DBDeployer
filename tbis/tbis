@@ -681,6 +681,7 @@ FN_AUTO_INSTALL_CHECK(){
     else
         exit
     fi
+    
     echo "-----------------------------------------------------------------"
     echo "# OS USER & GROUP"
     echo "- OS USER : $USER_NAME"
