@@ -54,7 +54,6 @@ FN_AUTO_PROGRESS_CHECK(){
 }
 
 FN_AUTO_ENGINE(){    
-    # Engine install
     if [ $TIBERO_ENGINE == "Y" ] || [ $TIBERO_ENGINE == "y" ]
     then
         echo
@@ -103,7 +102,7 @@ FN_AUTO_TBINARY(){
                 echo "tbis message> tibero tbinary file check"
                 exit
             fi
-        fi  
+        fi
     fi
 }
 
@@ -519,7 +518,6 @@ FN_AUTO_CREATEDB(){
         else
             exit
         fi
-        
         sleep 1
     fi
 }
@@ -662,7 +660,6 @@ FN_AUTO_TAC_CFG(){
 
 FN_AUTO_INSTALL_CHECK(){
     clear
-    . ./tbis.cfg
     echo "[*] TIBERO Auto installation Tools Configuration Checking STEP"
     echo "-----------------------------------------------------------------"
     echo "# Installation Mode"
@@ -681,7 +678,6 @@ FN_AUTO_INSTALL_CHECK(){
     else
         exit
     fi
-    
     echo "-----------------------------------------------------------------"
     echo "# OS USER & GROUP"
     echo "- OS USER : $USER_NAME"
@@ -776,7 +772,11 @@ FN_AUTO_INSTALL_CHECK(){
     ###
 }
 
-FN_AUTO_INSTALL(){   
+FN_AUTO_INSTALL(){
+    . ./tbis.cfg
+    FN_AUTO_CNF_CHECK
+
+    ############# In Progress
     chmod 655 tbis.log
     TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
     TBIS_START_TIME=$TBIS_AUTO_TIME
@@ -784,10 +784,8 @@ FN_AUTO_INSTALL(){
     echo "# tbis Start Log"
     echo "############################################################"
     echo "# Start time : $TBIS_START_TIME"
-
-    ############# In Progress
-    FN_AUTO_INSTALL_CHECK
-    FN_AUTO_CNF_CHECK 
+ 
+    FN_AUTO_INSTALL_CHECK     
     FN_AUTO_ENGINE
     FN_AUTO_TBINARY
     FN_AUTO_PROFILE
@@ -924,144 +922,168 @@ FN_AUTO_INSTALL(){
 }
 
 FN_AUTO_CNF_CHECK(){
-    # tbis.cfg Parameter Check
+    echo "############################################################"
+    echo "# tbis warning step"
+    echo "############################################################"
+    echo
+    echo "----------------------------------------------------"
+    TB_FAIL_CHK="N"
+    TB_ERROR_CHK="Y"
 
-    if [ -z $TIBERO_TYPE]
+    if [ "$TB_ERROR_CHK" == "Y" ]
     then
-        echo "tbis message> tbis.cfg - TIBERO_TYPE check"
-        exit
-    elif [ -z $TIBERO_NODE ]
-    then
-        echo "tbis message> tbis.cfg - TIBERO_NODE check"
-        exit
-    elif [ $TIBERO_TYPE == "SINGLE" ]
-    then
-        if [ $TIBERO_NODE != "SINGLE" ]
+        echo "tbis warning> tbis.cfg - Parameter check"
+        echo "----------------------------------------------------"
+        if [ -z $USER_NAME ]
         then
-            echo "tbis message> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
-            exit
-        fi
-    elif [ $TIBERO_TYPE == "TSC" ]
-    then
-        if [ $TIBERO_NODE == "SINGLE" ] || [ $TIBERO_NODE == "cm0" ] || [ $TIBERO_NODE == "cm1" ]
-        then
-            echo "tbis message> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
-            exit     
+            echo "  warning> tbis.cfg - USER_NAME check"
+            TB_FAIL_CHK="Y"
         fi
 
-        if [ $TIBERO_NODE == "observer" ]
+        if [ -z $USER_HOME ]
+        then
+            echo "  warning> tbis.cfg - USER_HOME check"
+            TB_FAIL_CHK="Y"
+        fi
+
+        if [ -z $GROUP_NAME ]
+        then
+            echo "  warning> tbis.cfg - GROUP_NAME check"
+            TB_FAIL_CHK="Y"
+        fi
+
+        if [ "$TIBERO_NODE" == "observer" ]
         then
             2>/dev/null
         else
+            if [ -z $DB_NAME ]
+            then
+                echo "  warning> tbis.cfg - DB_NAME check"
+                TB_FAIL_CHK="Y"
+            fi
+
+            if [ -z $CONTROL_FILE_PATH1 ]
+            then
+                echo "  warning> tbis.cfg - CONTROL_FILE_PATH1 check"
+                TB_FAIL_CHK="Y"
+            fi
+
+            if [ -z $CONTROL_FILE_PATH2 ]
+            then
+                echo "  warning> tbis.cfg - CONTROL_FILE_PATH2 check"
+                TB_FAIL_CHK="Y"
+            fi
+
+            if [ -z $DB_CREATE_FILE_DEST ]
+            then
+                echo "  warning> tbis.cfg - DB_CREATE_FILE_DEST check"
+                TB_FAIL_CHK="Y"
+            fi
+
+            if [ -z $LOG_ARCHIVE_DEST ]
+            then
+                echo "  warning> tbis.cfg - LOG_ARCHIVE_DEST check"
+                TB_FAIL_CHK="Y"
+            fi
+        fi
+
+        if [ -z $TB_HOME ]
+        then
+            echo "  warning> tbis.cfg - TB_HOME check"
+            TB_FAIL_CHK="Y"
+        fi
+
+        if [ -z $TIBERO_TYPE ]
+        then
+            echo "  warning> tbis.cfg - TIBERO_TYPE check"
+            TB_FAIL_CHK="Y"
+        elif [ -z $TIBERO_NODE ]
+        then
+            echo "  warning> tbis.cfg - TIBERO_NODE check"
+            TB_FAIL_CHK="Y"
+        elif [ "$TIBERO_TYPE" == "SINGLE" ]
+        then
+            if [ "$TIBERO_NODE" != "SINGLE" ]
+            then
+                echo "  warning> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
+                TB_FAIL_CHK="Y"
+            fi
+        elif [ "$TIBERO_TYPE" == "TSC" ]
+        then
+            if [ "$TIBERO_NODE" == "SINGLE" ] || [ "$TIBERO_NODE" == "cm0" ] || [ "$TIBERO_NODE" == "cm1" ]
+            then
+                echo "  warning> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
+                TB_FAIL_CHK="Y"
+            fi
+
+            if [ "$TIBERO_NODE" == "observer" ]
+            then
+                2>/dev/null
+            else
+                if [ -z $NODE1_INTER_IP ]
+                then
+                    echo "  warning> tbis.cfg - NODE1_INTER_IP check"
+                    TB_FAIL_CHK="Y"
+                fi
+
+                if [ -z $NODE2_INTER_IP ]
+                then
+                    echo "  warning> tbis.cfg - NODE2_INTER_IP check"
+                    TB_FAIL_CHK="Y"
+                fi
+            fi
+        elif [ "$TIBERO_TYPE" == "TAC" ]
+        then
+            if [ "$TIBERO_NODE" == "SINGLE" ] || [ "$TIBERO_NODE" == "observer" ] || [ "$TIBERO_NODE" == "primary" ] || [ "$TIBERO_NODE" == "standby" ]
+            then
+                echo "  warning> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
+                echo "----------------------------------------------------"
+                TB_FAIL_CHK="Y"
+            fi
+
             if [ -z $NODE1_INTER_IP ]
             then
-                echo "tbis message> tbis.cfg - NODE1_INTER_IP check"
-                exit
+                echo "  warning> tbis.cfg - NODE1_INTER_IP check"
+                TB_FAIL_CHK="Y"
             fi
 
             if [ -z $NODE2_INTER_IP ]
             then
-                echo "tbis message> tbis.cfg - NODE2_INTER_IP check"
-                exit    
+                echo "  warning> tbis.cfg - NODE2_INTER_IP check"
+                TB_FAIL_CHK="Y"
+            fi
+
+            if [ -z $CFILE_PATH ]
+            then
+                echo "  warning> tbis.cfg - CFILE_PATH check"
+                TB_FAIL_CHK="Y"
+            fi
+            echo "----------------------------------------------------"
+        fi
+
+      
+        if [ "$ROOT_MODE" != "Y" ]
+        then
+            if [ -n $NODE1_VIP_ETH ]
+            then
+            echo "----------------------------------------------------"
+            echo "tbis warning> OS Installation User Check"
+            echo "----------------------------------------------------"  
+                echo "  warning> TSC or TAC Configuration VIP Enable"
+                echo "  warning> VIP Enable only OS USER root"
+                echo "      * Current OS User : "$CURRENT_USER
+                echo "----------------------------------------------------"
+                TB_FAIL_CHK="Y"
             fi
         fi
-    elif [ $TIBERO_TYPE == "TAC" ]
-    then
-        if [ $TIBERO_NODE == "SINGLE" ] || [ $TIBERO_NODE == "observer" ] || [ $TIBERO_NODE == "primary" ] || [ $TIBERO_NODE == "standby" ]
-        then
-            echo "tbis message> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
-            exit
-        fi
-
-        if [ -z $NODE1_INTER_IP ]
-        then
-            echo "tbis message> tbis.cfg - NODE1_INTER_IP check"
-            exit
-        fi
-
-        if [ -z $NODE2_INTER_IP ]
-        then
-            echo "tbis message> tbis.cfg - NODE2_INTER_IP check"
-            exit    
-        fi
-
-        if [ -z $CFILE_PATH ]
-        then
-            echo "tbis message> tbis.cfg - CFILE_PATH check"
-            exit    
-        fi
-    fi
-
-    if [ -z $USER_NAME ]
-    then
-        echo "tbis message> tbis.cfg - USER_NAME check"
-        exit
-    fi
-
-    if [ -z $USER_HOME ]
-    then
-        echo "tbis message> tbis.cfg - USER_HOME check"
-        exit
-    fi
-
-    if [ -z $GROUP_NAME ]
-    then
-        echo "tbis message> tbis.cfg - GROUP_NAME check"
-        exit
-    fi
-
-    if [ -z $TB_HOME ]
-    then
-        echo "tbis message> tbis.cfg - TB_HOME check"
-        exit
     fi
 
 
 
-    if [ $TIBERO_NODE == "observer" ]
-    then
-        2>/dev/null
-    else
-        if [ -z $DB_NAME ]
+        if [ $TB_FAIL_CHK == "Y" ]
         then
-            echo "tbis message> tbis.cfg - DB_NAME check"
             exit
         fi
-
-        if [ -z $CONTROL_FILE_PATH1 ]
-        then
-            echo "tbis message> tbis.cfg - CONTROL_FILE_PATH1 check"
-            exit
-        fi
-
-        if [ -z $CONTROL_FILE_PATH2 ]
-        then
-            echo "tbis message> tbis.cfg - CONTROL_FILE_PATH2 check"
-            exit
-        fi
-
-        if [ -z $DB_CREATE_FILE_DEST ]
-        then
-            echo "tbis message> tbis.cfg - DB_CREATE_FILE_DEST check"
-            exit
-        fi
-
-        if [ -z $LOG_ARCHIVE_DEST ]
-        then
-            echo "tbis message> tbis.cfg - LOG_ARCHIVE_DEST check"
-            exit
-        fi
-    fi
-
-    if [ $ROOT_MODE != "Y" ]
-    then
-        if [ -n $NODE1_VIP_ETH ]
-        then
-            echo "tbis message> tbis.cfg - OS Installation User Check"
-            echo "  - Current_user : "$CURRENT_USER
-            exit
-        fi
-    fi
 }
 
 FN_CONF_MENU(){
