@@ -7,7 +7,7 @@
 # 2022.03.18 Version : Park Si Hyung, Yoon Jun Su
 # 2022.03.24 Version : Yoon Jun Su
 # 2022.03.28 Version : Yoon Jun Su
-# linux test
+
 ############################################################
 #
 # Program variables
@@ -1188,3 +1188,6 @@ FN_MAIN_MENU(){
 # run
 FN_MAIN_MENU
 #FN_MAIN_MENU
+
+echo "TEST":wq
+
