@@ -790,9 +790,6 @@ FN_AUTO_INSTALL_CHECK(){
 # 1. tbis Installation Tools
 ############################################################
 FN_AUTO_INSTALL(){
-    . ./tbis.cfg
-    FN_AUTO_CNF_CHECK
-
     ############# In Progress
     chmod 655 tbis.log
     TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
@@ -801,7 +798,12 @@ FN_AUTO_INSTALL(){
     echo "# tbis Start Log"
     echo "############################################################"
     echo "# Start time : $TBIS_START_TIME"
- 
+    echo
+    echo
+    cat ./tbis.cfg |grep export |grep -v echo
+    clear
+    . ./tbis.cfg
+    FN_AUTO_CNF_CHECK
     FN_AUTO_INSTALL_CHECK     
     FN_AUTO_ENGINE
     FN_AUTO_TBINARY
@@ -943,7 +945,6 @@ FN_AUTO_CNF_CHECK(){
     echo "# tbis warning step"
     echo "############################################################"
     echo
-    echo "----------------------------------------------------"
     TB_FAIL_CHK="N"
     TB_ERROR_CHK="Y"
 
@@ -1081,29 +1082,44 @@ FN_AUTO_CNF_CHECK(){
         if [ "$TB_FAIL_CHK" != "Y" ]
         then
             echo "  message> tbis.cfg - No problem"
+            TB_FAIL_CHK="N"
         fi
-
-
     fi
-    
-    if [ -n $NODE1_VIP_ETH ]
-    then
-        if [ "$INI_USER_NAME" != "root" ]
-        then
-            echo "----------------------------------------------------"
-            echo "tbis message> OS Installation User"
-            echo "----------------------------------------------------"  
-            echo "  error> TSC or TAC Configuration VIP Enable  check"
-            echo "  error> VIP Enable only OS USER root check "
-            echo "      * Current OS User : "$INI_USER_NAME
-            echo "----------------------------------------------------"
-            TB_FAIL_CHK="Y"
-        fi
-      fi
+    echo "----------------------------------------------------"
+    echo
 
     if [ "$TB_FAIL_CHK" == "Y" ]
     then
-        exit
+        TB_FAIL_EXIT="Y"
+    elif [ "$TB_FAIL_CHK" == "N" ]
+    then
+        continue
+    fi
+
+    echo "tbis message> OS Installation User"
+    echo "----------------------------------------------------" 
+    if [ -z $NODE1_VIP_ETH ]
+    then
+        echo "  message> tbis.cfg - No problem"
+        TB_FAIL_CHK="N"
+    elif [ -n $NODE1_VIP_ETH ]
+    then
+        if [ "$INI_USER_NAME" != "root" ]
+        then
+            echo "  error> TSC or TAC Configuration VIP Enable  check"
+            echo "  error> VIP Enable only OS USER root check "
+            echo "      * Current OS User : "$INI_USER_NAME
+            TB_FAIL_EXIT="YY"
+        fi
+    fi
+    echo "----------------------------------------------------"
+
+    if [ "$TB_FAIL_EXIT" == "YY" ]
+    then
+        
+    elif [ "$TB_FAIL_EXIT" == "Y" ]
+    then
+        continue
     fi
 }
 
