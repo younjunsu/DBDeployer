@@ -950,7 +950,7 @@ FN_AUTO_INSTALL(){
             FN_AUTO_LICENSE
             FN_AUTO_CM_SID_TIP
             FN_AUTO_CHANGE_OWNER
-            FN_AUTO_CM_BOOT ROOT
+            FN_AUTO_CM_BOOT
             FN_AUTO_CM_RESOURCE
             if [ -z $NODE1_VIP_ETH]
             then
