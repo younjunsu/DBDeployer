@@ -67,7 +67,7 @@ FN_AUTO_ENGINE(){
         FN_AUTO_PROGRESS_CHECK
         if [ $YESNO == "YES" ]
         then
-            ENGINE_FILE_CHECK=`ls ../binary/tibero*.tar.gz`
+            ENGINE_FILE_CHECK=`ls ../binary/tibero*.tar*`
             if [ -z $ENGINE_FILE_CHECK ]
             then
                 echo "tbis message> tibero engine file check"
@@ -134,6 +134,7 @@ FN_AUTO_PROFILE(){
             echo "tbis message> .bash_profile or .profile file check"
             exit
         fi
+        . $TIBERO_PROFILE_CHECK
     fi
 }
 
@@ -477,6 +478,7 @@ FN_AUTO_CM_BOOT(){
                     tbcm -b                                
                 fi
             elif [ "$INI_USER_NAME" != "root" ]
+            then
                 tbcm -b
             fi
         fi
@@ -1058,6 +1060,7 @@ FN_AUTO_INSTALL(){
     echo "# tbis END Log"
     echo "############################################################"
     echo "# End time : $TBIS_END_TIME"
+    exit
     ############
 }
 
