@@ -1188,6 +1188,3 @@ FN_MAIN_MENU(){
 # run
 FN_MAIN_MENU
 #FN_MAIN_MENU
-
-echo "TEST":wq
-
