@@ -674,9 +674,10 @@ FN_AUTO_INSTALL_CHECK(){
     echo "[*] TIBERO Auto installation Tools Configuration Checking STEP"
     echo "-----------------------------------------------------------------"
     echo "# Installation Mode"
-    echo "- ROOT_MODE : $ROOT_MODE"
-    echo "- TYPE : $TIBERO_TYPE"
-    echo "- NODE : $TIBERO_NODE"
+    export INI_USER_NAME=`whoami`
+    echo "- Installation user : $INI_USER_NAME"
+    echo "- Installation type : $TIBERO_TYPE"
+    echo "- Installation node : $TIBERO_NODE"
     if [ $TIBERO_TYPE == "SINGLE" ]
     then
         FN_AUTO_SINGLE
