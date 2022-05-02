@@ -67,14 +67,15 @@ FN_AUTO_ENGINE(){
         FN_AUTO_PROGRESS_CHECK
         if [ $YESNO == "YES" ]
         then
-            FILE_CHECK=`ls ../binary/tibero*.tar.gz`
-            if [ -f $FILE_CHECK ]
+            ENGINE_FILE_CHECK=`ls ../binary/tibero*.tar.gz 2>/dev/null`
+            if [ -z $ENGINE_FILE_CHECK ]
+            then
+                echo "tbis message> tibero engine install file check"
+                exit
+            elif [ -n $ENGINE_FILE_CHECK ]
             then
                 gunzip ../binary/tibero*.tar.gz
                 tar -xvf ../binary/tibero*.tar -C $USER_HOME
-            else
-                echo "tbis message> tibero engine install file check"
-                exit
             fi
         fi     
     fi
@@ -299,6 +300,7 @@ FN_AUTO_CM_RESOURCE(){
                     then
                         su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE_OBSERVER_IP --obsport $CM_OBSERVER_PORT"
                     elif [ "$TIBERO_OBSERVER_TYPE" == "N" ]
+                    then
                         su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11"
                     fi
                     su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK"
@@ -310,9 +312,10 @@ FN_AUTO_CM_RESOURCE(){
                     then
                         su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE_OBSERVER_IP --obsport $CM_OBSERVER_PORT"
                     elif [ "$TIBERO_OBSERVER_TYPE" == "N" ]
+                    then
                         su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11"
                     fi
-                    su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK   "
+                    su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK"
                     su - $USER_NAME -c "cmrctl add vip --name vip0 --svcname $DB_NAME --ipaddr $NODE1_VIP_IP"
                 fi
             elif [ "$TIBERO_NODE" == "standby" ]
@@ -953,19 +956,19 @@ FN_AUTO_CNF_CHECK(){
         echo "----------------------------------------------------"
         if [ -z $USER_NAME ]
         then
-            echo "  warning> tbis.cfg - USER_NAME check"
+            echo "  warning> tbis.cfg - USER_NAME"
             TB_FAIL_CHK="Y"
         fi
 
         if [ -z $USER_HOME ]
         then
-            echo "  warning> tbis.cfg - USER_HOME check"
+            echo "  warning> tbis.cfg - USER_HOME"
             TB_FAIL_CHK="Y"
         fi
 
         if [ -z $GROUP_NAME ]
         then
-            echo "  warning> tbis.cfg - GROUP_NAME check"
+            echo "  warning> tbis.cfg - GROUP_NAME"
             TB_FAIL_CHK="Y"
         fi
 
@@ -975,61 +978,61 @@ FN_AUTO_CNF_CHECK(){
         else
             if [ -z $DB_NAME ]
             then
-                echo "  warning> tbis.cfg - DB_NAME check"
+                echo "  warning> tbis.cfg - DB_NAME"
                 TB_FAIL_CHK="Y"
             fi
 
             if [ -z $CONTROL_FILE_PATH1 ]
             then
-                echo "  warning> tbis.cfg - CONTROL_FILE_PATH1 check"
+                echo "  warning> tbis.cfg - CONTROL_FILE_PATH1"
                 TB_FAIL_CHK="Y"
             fi
 
             if [ -z $CONTROL_FILE_PATH2 ]
             then
-                echo "  warning> tbis.cfg - CONTROL_FILE_PATH2 check"
+                echo "  warning> tbis.cfg - CONTROL_FILE_PATH2"
                 TB_FAIL_CHK="Y"
             fi
 
             if [ -z $DB_CREATE_FILE_DEST ]
             then
-                echo "  warning> tbis.cfg - DB_CREATE_FILE_DEST check"
+                echo "  warning> tbis.cfg - DB_CREATE_FILE_DEST"
                 TB_FAIL_CHK="Y"
             fi
 
             if [ -z $LOG_ARCHIVE_DEST ]
             then
-                echo "  warning> tbis.cfg - LOG_ARCHIVE_DEST check"
+                echo "  warning> tbis.cfg - LOG_ARCHIVE_DEST"
                 TB_FAIL_CHK="Y"
             fi
         fi
 
         if [ -z $TB_HOME ]
         then
-            echo "  warning> tbis.cfg - TB_HOME check"
+            echo "  warning> tbis.cfg - TB_HOME"
             TB_FAIL_CHK="Y"
         fi
 
         if [ -z $TIBERO_TYPE ]
         then
-            echo "  warning> tbis.cfg - TIBERO_TYPE check"
+            echo "  warning> tbis.cfg - TIBERO_TYPE"
             TB_FAIL_CHK="Y"
         elif [ -z $TIBERO_NODE ]
         then
-            echo "  warning> tbis.cfg - TIBERO_NODE check"
+            echo "  warning> tbis.cfg - TIBERO_NODE"
             TB_FAIL_CHK="Y"
         elif [ "$TIBERO_TYPE" == "SINGLE" ]
         then
             if [ "$TIBERO_NODE" != "SINGLE" ]
             then
-                echo "  warning> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
+                echo "  warning> tbis.cfg - TIBERO_NODE ($TIBERO_NODE)"
                 TB_FAIL_CHK="Y"
             fi
         elif [ "$TIBERO_TYPE" == "TSC" ]
         then
             if [ "$TIBERO_NODE" == "SINGLE" ] || [ "$TIBERO_NODE" == "cm0" ] || [ "$TIBERO_NODE" == "cm1" ]
             then
-                echo "  warning> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
+                echo "  warning> tbis.cfg - TIBERO_NODE ($TIBERO_NODE)"
                 TB_FAIL_CHK="Y"
             fi
 
@@ -1039,13 +1042,13 @@ FN_AUTO_CNF_CHECK(){
             else
                 if [ -z $NODE1_INTER_IP ]
                 then
-                    echo "  warning> tbis.cfg - NODE1_INTER_IP check"
+                    echo "  warning> tbis.cfg - NODE1_INTER_IP"
                     TB_FAIL_CHK="Y"
                 fi
 
                 if [ -z $NODE2_INTER_IP ]
                 then
-                    echo "  warning> tbis.cfg - NODE2_INTER_IP check"
+                    echo "  warning> tbis.cfg - NODE2_INTER_IP"
                     TB_FAIL_CHK="Y"
                 fi
             fi
@@ -1053,26 +1056,26 @@ FN_AUTO_CNF_CHECK(){
         then
             if [ "$TIBERO_NODE" == "SINGLE" ] || [ "$TIBERO_NODE" == "observer" ] || [ "$TIBERO_NODE" == "primary" ] || [ "$TIBERO_NODE" == "standby" ]
             then
-                echo "  warning> tbis.cfg - TIBERO_NODE check ($TIBERO_NODE)"
+                echo "  warning> tbis.cfg - TIBERO_NODE ($TIBERO_NODE)"
                 echo "----------------------------------------------------"
                 TB_FAIL_CHK="Y"
             fi
 
             if [ -z $NODE1_INTER_IP ]
             then
-                echo "  warning> tbis.cfg - NODE1_INTER_IP check"
+                echo "  warning> tbis.cfg - NODE1_INTER_IP"
                 TB_FAIL_CHK="Y"
             fi
 
             if [ -z $NODE2_INTER_IP ]
             then
-                echo "  warning> tbis.cfg - NODE2_INTER_IP check"
+                echo "  warning> tbis.cfg - NODE2_INTER_IP"
                 TB_FAIL_CHK="Y"
             fi
 
             if [ -z $CFILE_PATH ]
             then
-                echo "  warning> tbis.cfg - CFILE_PATH check"
+                echo "  warning> tbis.cfg - CFILE_PATH"
                 TB_FAIL_CHK="Y"
             fi
             echo "----------------------------------------------------"
