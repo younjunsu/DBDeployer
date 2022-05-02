@@ -693,8 +693,8 @@ FN_AUTO_INSTALL_CHECK(){
     echo "-----------------------------------------------------------------"
     echo "# OS USER & GROUP"
     echo "- OS USER : $USER_NAME"
-    echo "- OS USER GROUP : $GROUP_NAME"
     echo "- OS HOME : $USER_HOME"
+    echo "- OS USER GROUP : $GROUP_NAME"    
     echo "-----------------------------------------------------------------"
     echo "# TIBERO DATABASE"
     echo "- TB_SID : $TB_SID"
@@ -703,6 +703,7 @@ FN_AUTO_INSTALL_CHECK(){
         2>/dev/null
     else        
         echo "- CM_SID : $TIBERO_NODE"
+        echo "- CM_HOME : $CM_HOME"
     fi    
     echo "- DB_NAME : $DB_NAME"
     echo "- LISTENER_PORT : $LISTENER_PORT"
@@ -730,9 +731,6 @@ FN_AUTO_INSTALL_CHECK(){
         then
             echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch1"
         fi
-    elif [ $TIBERO_TYPE == "TAS" ]
-    then 
-        2>/dev/null
     fi
     echo "-----------------------------------------------------------------"
     echo "# TIBERO INSTALLATION BINARY "
@@ -1082,7 +1080,6 @@ FN_AUTO_CNF_CHECK(){
         if [ "$TB_FAIL_CHK" != "Y" ]
         then
             echo "  message> tbis.cfg - No problem"
-            TB_FAIL_CHK="N"
         fi
     fi
     echo "----------------------------------------------------"
@@ -1090,10 +1087,10 @@ FN_AUTO_CNF_CHECK(){
 
     if [ "$TB_FAIL_CHK" == "Y" ]
     then
-        TB_FAIL_EXIT="Y"
+        TB_FAIL_PARAM="Y"
     elif [ "$TB_FAIL_CHK" == "N" ]
     then
-        continue
+        TB_FAIL_PARAM="N"
     fi
 
     echo "tbis message> OS Installation User"
@@ -1101,7 +1098,7 @@ FN_AUTO_CNF_CHECK(){
     if [ -z $NODE1_VIP_ETH ]
     then
         echo "  message> tbis.cfg - No problem"
-        TB_FAIL_CHK="N"
+        TB_FAIL_OS="N"
     elif [ -n $NODE1_VIP_ETH ]
     then
         if [ "$INI_USER_NAME" != "root" ]
@@ -1109,15 +1106,19 @@ FN_AUTO_CNF_CHECK(){
             echo "  error> TSC or TAC Configuration VIP Enable  check"
             echo "  error> VIP Enable only OS USER root check "
             echo "      * Current OS User : "$INI_USER_NAME
-            TB_FAIL_EXIT="YY"
+            TB_FAIL_OS="Y"
+        elif [ "$INI_USER_NAME" == "root" ]
+        then
+            echo "  message> tbis.cfg - No problem"
+            TB_FAIL_OS="N"            
         fi
     fi
     echo "----------------------------------------------------"
 
-    if [ "$TB_FAIL_EXIT" == "YY" ]
+    if [ "$TB_FAIL_PARAM" == "Y" ] || [ "$TB_FAIL_OS" == "Y" ]
     then
-        
-    elif [ "$TB_FAIL_EXIT" == "Y" ]
+        exit
+    elif [ "$TB_FAIL_PARAM" == "N" ] && [ "$TB_FAIL_OS" == "N" ]
     then
         continue
     fi
