@@ -561,16 +561,25 @@ FN_AUTO_CHANGE_OWNER(){
     
 }
 FN_AUTO_PROCESS_CHECK(){
-    TIBERO_PROCESS=`ps -ef |grep tbsvr |grep $USER_NAME |grep -v grep`
-    TIBERO_SHM=`ipcs |grep $USER_NAME`
-    if [ -z $TIBERO_PROCESS ]
+    PROCESS_CHECK_OPTION=$1
+    TIBERO_PROCESS=`ps -ef |grep tbsvr |grep -w $USER_NAME |grep -v grep`
+    TIBERO_SHM=`ipcs |grep -w $USER_NAME`
+    if [ -z $TIBERO_PROCESS ] || [ -z $TIBERO_SHM ]
     then
-            echo "tbis message> tibero Process check"
-            echo "  error> tbsvr process check"
-            ps -ef |grep tbsvr |grep $USER_NAME |grep -v grep
-            echo "  error> TIBERO Shared Memory & Semaphore"
-            ipcs |grep $USER_NAME            
+        echo "tbis message> tibero Process check"
+        echo "  error> tbsvr process check"
+        ps 
+        ps -ef |grep tbsvr |grep -w $USER_NAME |grep -v grep 
+        echo "  error> TIBERO Shared Memory & Semaphore"
+        ipcs |grep $USER_NAME |head -n 3
+        echo "...skip"        
+        if [ "$PROCESS_CHECK_OPTION" == "EXIT" ]
+        then
             exit
+        elif [ "$PROCESS_CHECK_OPTION" == "CHECK" ] 
+        then
+            echo
+        fi
     fi
 }
 
@@ -618,7 +627,7 @@ FN_AUTO_TB_DOWN(){
     echo
     if [ $YESNO == "YES" ]
     then
-        FN_AUTO_PROCESS_CHECK
+        FN_AUTO_PROCESS_CHECK EXIT
         if [ "$INI_USER_NAME" == "root" ]
         then
             su - $USER_NAME -c "tbdown $TB_DOWN_OPTION"        
@@ -646,7 +655,7 @@ FN_AUTO_CREATEDB(){
     echo
     if [ $YESNO == "YES" ]
     then
-        FN_AUTO_PROCESS_CHECK
+        FN_AUTO_PROCESS_CHECK EXIT
         if [ "$INI_USER_NAME" == "root" ]
         then
             su - $USER_NAME -c "
@@ -680,9 +689,9 @@ FN_AUTO_SYSTEM_SHELL(){
     echo
     if [ $YESNO == "YES" ]
     then
-        FN_AUTO_PROCESS_CHECK
+        FN_AUTO_PROCESS_CHECK EXIT
         if [ "$INI_USER_NAME" == "root" ]
-        then
+        then 
             su - $USER_NAME -c "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
             echo
             echo
@@ -786,14 +795,18 @@ EOF
 }
 
 FN_AUTO_SUCCESS(){
+    TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
+    TBIS_END_TIME=$TBIS_AUTO_TIME
     echo "############################################################"
     echo "#  tbis Progress> last step done"
     echo "# TIBERO_TYPE : $TIBERO_TYPE"
     echo "# TIBERO_NODE : $TIBERO_NODE"
+    echo "# end time : "$TBIS_END_TIME
+    echo "# tbis end log..."
     echo "############################################################"
     echo
     echo
-    
+    exit
 }
 
 FN_AUTO_TAC_CFG(){
@@ -971,7 +984,7 @@ FN_AUTO_INSTALL(){
     echo "############################################################"
     echo "# tbis Start Log"
     echo "############################################################"
-    echo "# Start time : $TBIS_START_TIME"
+    echo "# start time : $TBIS_START_TIME"
     echo
     echo
     cat ./tbis.cfg |grep export |grep -v echo
@@ -1102,16 +1115,7 @@ FN_AUTO_INSTALL(){
             FN_AUTO_ARCHIVE_DIR
         fi
     fi
-    
     FN_AUTO_SUCCESS
-    
-    TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
-    TBIS_END_TIME=$TBIS_AUTO_TIME
-    echo "############################################################"
-    echo "# tbis END Log"
-    echo "############################################################"
-    echo "# End time : $TBIS_END_TIME"
-    exit
 }
 
 FN_AUTO_CNF_CHECK(){
