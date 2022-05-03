@@ -1309,19 +1309,58 @@ FN_AUTO_CNF_CHECK(){
 # 2. tbis Installation Report
 ############################################################
 FN_AUTO_INSTALL_REPORT(){
-    echo "- Tibero Version : "
-    echo "- OS User : "
-    echo "- Tibero 설치 위치 (엔진 홈) : "
-    echo "- DB Name (SID) : "
-    echo "- Service Port (Listener Port) : "
-    echo "- Character Set : "
-    echo "- Total Shared Memory : "
-    echo "- Memory Target : "
-    echo "- Max Session : "
-    echo "- Controlfile 위치 : "
-    echo "- Datafile 위치 : "
-    echo "- Archive 모드 및 위치 : "
-    echo "- Instance log 위치 : "    
+    clear
+    . ./tbis.cfg
+    FN_AUTO_SINGLE
+    FN_AUTO_TSC
+    FN_AUTO_TAC
+    FN_AUTO_PROGRESS_PROFILE
+    . $TIBERO_PROFILE_CHECK
+    echo "TIBERO AUTO INSTALLATION REPORT"
+    echo "-----------------------------------------------------------------"
+    echo "# MODE CHOICE"
+    echo "-----------------------------------------------------------------"
+    echo "# 1. Print mode : STEP"
+    echo "# 2. Print mode : ALL "
+    echo "-----------------------------------------------------------------"
+    echo "b - before"
+    echo "press other key to quit"
+    echo "-----------------------------------------------------------------"
+    printf "Choose the Number : "
+    read INPUT_NUMBER
+    case $INPUT_NUMBER in
+    1)
+        echo
+        ;;
+    2)
+        clear
+        echo ""
+        tbboot -l
+        echo
+        echo
+
+        echo "- Tibero Version : "`tbboot -version |grep -i "tibero" |head -n 1`
+        echo "- OS User : "$USER_NAME
+        echo "- Tibero 설치 위치 (엔진 홈) : "$TB_HOME
+        echo "- DB Name (SID) : "$TB_SID
+        echo "- Service Port (Listener Port) : "$LISTENER_PORT
+        echo "- Character Set : "`cat tbis.sql|grep CHARACTER |awk '{print $NF}'`
+        echo "- Total Shared Memory : "`cat $TB_HOME/config/$TB_SID.tip |grep TOTAL_SHM_SIZE |awk -F= '{print $NF}'`
+        echo "- Memory Target : "`cat $TB_HOME/config/$TB_SID.tip |grep MEMORY_TARGET |awk -F= '{print $NF}'`
+        echo "- Max Session : "`cat $TB_HOME/config/$TB_SID.tip |grep MAX_SESSION_COUNT |awk -F= '{print $NF}'`
+        echo "- Controlfile 위치 : "`cat $TB_HOME/config/$TB_SID.tip |grep CONTROL_FILES |awk -F= '{print $NF}'`
+        echo "- Datafile 위치 : "`cat $TB_HOME/config/$TB_SID.tip |grep DB_CREATE_FILE_DEST |awk -F= '{print $NF}'`
+        echo "- Archive 모드 및 위치 : "`cat $TB_HOME/config/$TB_SID.tip |grep LOG_ARCHIVE_DEST|awk -F= '{print $NF}'`
+        echo "- Instance log 위치 : "$TB_HOME"/instance"
+
+        cat $TIBERO_PROFILE_CHECK
+
+        ;;
+    *)
+        exit;;
+    esac
+
+
 }
 
 ############################################################
@@ -1331,30 +1370,15 @@ FN_AUTO_INSTALL_REPORT(){
 FN_AUTO_CONFIGURATION(){
     clear
     . ./tbis.cfg
-    echo "#################################################################"
     echo "TIBERO AUTO CONFIGURATION TEXT"
     echo "-----------------------------------------------------------------"
-    echo "# Installation Mode"
-    echo "- Installation type : $TIBERO_TYPE"
-    echo "- Installation node : $TIBERO_NODE"
-    echo
-    echo "#################################################################"
-    echo "# tbis.cfg"
+    echo "# MODE CHOICE"
     echo "-----------------------------------------------------------------"
-    echo "Apply Parameters"
+    echo "# 1. Print mode : STEP"
+    echo "# 2. Print mode : ALL "
+    echo "# 3. Print mode : Check"
     echo "-----------------------------------------------------------------"
-    cat ./tbis.cfg |grep export |grep -vE "echo|#|TIBERO_ENGINE|TIBERO_TBINARY|SCP_PORT|INI_USER_NAME" 
-    echo
-    echo "Annotation Parameters"
-    echo "-----------------------------------------------------------------"
-    cat ./tbis.cfg |grep export |grep -vE "echo|TIBERO_ENGINE|TIBERO_TBINARY|SCP_PORT|INI_USER_NAME" |grep "#export"
-    echo
-    echo
-    echo "#################################################################"
-    echo "MODE CHOICE"
-    echo "# 1. Step by step print"
-    echo "# 2. All print "
-    echo "-----------------------------------------------------------------"
+    echo "b - before"
     echo "press other key to quit"
     echo "-----------------------------------------------------------------"
     printf "Choose the Number : "
@@ -1368,6 +1392,26 @@ FN_AUTO_CONFIGURATION(){
         clear
         FN_AUTO_CONFIGURATION_ALL_PRINT
         ;;
+    3)
+        clear
+        echo "# tbis.cfg"
+        echo "-----------------------------------------------------------------"
+        echo "Apply Parameters"
+        echo "-----------------------------------------------------------------"
+        cat ./tbis.cfg |grep export |grep -vE "echo|#|TIBERO_ENGINE|TIBERO_TBINARY|SCP_PORT|INI_USER_NAME" 
+        echo
+        echo "Annotation Parameters"
+        echo "-----------------------------------------------------------------"
+        cat ./tbis.cfg |grep export |grep -vE "echo|TIBERO_ENGINE|TIBERO_TBINARY|SCP_PORT|INI_USER_NAME" |grep "#export"
+        echo
+        echo
+        echo
+        echo        
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY                
+        FN_AUTO_CONFIGURATION;;
+    "b")
+        FN_MAIN_MENU;;
     *)
         exit;;
     esac
@@ -1397,6 +1441,7 @@ FN_AUTO_CONFIGURATION_STEP_PRINT(){
     echo "# 20. CM TIP"
     echo "# 21. CM RESOURCE"
     echo "-----------------------------------------------------------------"
+    echo "b - before"    
     echo "press other key to quit"
     echo "-----------------------------------------------------------------"
     printf "Choose the Number : "
@@ -1489,6 +1534,8 @@ FN_AUTO_CONFIGURATION_STEP_PRINT(){
         read PRINT_PRESS_KEY        
         FN_AUTO_CONFIGURATION_STEP_PRINT
         echo;;
+    "b")
+        FN_AUTO_CONFIGURATION;;
     *)
         exit;;
     esac
