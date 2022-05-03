@@ -971,7 +971,6 @@ FN_AUTO_INSTALL_CHECK(){
     ###
 }
 
-
 ############################################################
 # Function Lists
 # 1. tbis Installation Tools
@@ -1304,37 +1303,11 @@ FN_AUTO_CNF_CHECK(){
     fi
 }
 
-FN_CONF_MENU(){
-    echo " -----------------------------------------------------------------------------------"
-    echo "  1.TIBERO USER CREATE                      |  2.TIBERO User Profile                  "
-    echo " ---------------------------------------- + ----------------------------------------"
-    echo "  # 11 - MANUAL                             |  # 21 - MANUAL                            "
-    echo "                                            |                                         "
-    echo " -----------------------------------------------------------------------------------"
-    echo "  3.TIBERO Directory                        |  4.TIBERO TIP                           "
-    echo " ---------------------------------------- + ----------------------------------------"
-    echo "  # 31 - MANUAL                             |  # 41 - MANUAL                            "
-    echo "                                            |                                         "
-    echo " -----------------------------------------------------------------------------------"
-    echo "  5.TIBERO CREATE DATABASE                  |  6.TIBERO CM Resource                   "
-    echo " ---------------------------------------- + ----------------------------------------"
-    echo "  # 51 - MANUAL                             |  # 61 - MANUAL                            "
-    echo "                                            |                                         "
-    echo " -----------------------------------------------------------------------------------"
-    echo "  c  - Clear terminal                                                               "
-    echo "  r  - retry main menu                                                              "
-    echo "  press other key to quit                                                                  "
-    echo " -----------------------------------------------------------------------------------"
-    printf " Choose the Number or Command : "
-    read INPUT_NUMBER
-}
-
-
 ############################################################
 # Function Lists
 # 2. tbis Installation Report
 ############################################################
-FN_AUTO_CFI(){
+FN_AUTO_INSTALL_REPORT(){
     echo "- Tibero Version : "
     echo "- OS User : "
     echo "- Tibero 설치 위치 (엔진 홈) : "
@@ -1354,7 +1327,34 @@ FN_AUTO_CFI(){
 # Function Lists
 # 3. tbis Configuration Text
 ############################################################
+FN_AUTO_CONFIGURATION(){
+    . ./tbis.cfg
+    echo "TIBERO_TYPE : "$TIBERO_TYPE
+    echo "TIBERO_NODE : "$TIBERO_NODE
 
+    echo "PRINT OPTIONS"
+    echo "1. Step by step print"
+    if [ "$TIBERO_TYPE" == "SINGLE" ]
+    then
+
+    elif [ "$TIBERO_NODE" == "observer" ]
+    then
+
+    else
+
+    fi
+
+    echo "2. All print "
+    if [ "$TIBERO_TYPE" == "SINGLE" ]
+    then
+
+    elif [ "$TIBERO_NODE" == "observer" ]
+    then
+
+    else
+
+    fi
+}
 
 
 
@@ -1392,8 +1392,11 @@ FN_MAIN_MENU(){
         FN_AUTO_LOGFILE
         FN_AUTO_INSTALL |tee $TBIS_AUTO_LOGFILE 
         exit;;
+    2)
+        FN_AUTO_INSTALL_REPORT
+        exit;;
     3)
-        FN_AUTO_CFI
+        FN_AUTO_CONFIGURATION
         exit;;
     *)
         clear
