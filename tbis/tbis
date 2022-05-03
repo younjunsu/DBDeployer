@@ -53,7 +53,8 @@ FN_AUTO_PROGRESS_CHECK(){
     
 }
 
-FN_AUTO_ENGINE(){    
+FN_AUTO_ENGINE(){
+    STEP_FUNCTION="FN_AUTO_ENGINE"
     if [ $TIBERO_ENGINE == "Y" ] || [ $TIBERO_ENGINE == "y" ]
     then
         echo
@@ -76,6 +77,7 @@ FN_AUTO_ENGINE(){
             then
                 gunzip ../binary/tibero*.tar.gz
                 tar -xvf ../binary/tibero*.tar -C $USER_HOME
+                FN_SUCCESS_MSG
             fi
         fi     
     fi
@@ -83,6 +85,7 @@ FN_AUTO_ENGINE(){
 }
 
 FN_AUTO_TBINARY(){
+    STEP_FUNCTION="FN_AUTO_TBINARY"
     if [ $TIBERO_TBINARY == "Y" ] || [ $TIBERO_TBINARY == "y" ]
     then
         echo
@@ -102,13 +105,19 @@ FN_AUTO_TBINARY(){
             elif [ -n $TBINARY_FILE_CHECK ]
             then
                 tar -xvf ../binary/tbinary*.tar -C $USER_HOME
-                
+                FN_SUCCESS_MSG
             fi
         fi
     fi
 }
 
+FN_SUCCESS_MSG(){
+    echo
+    echo "  Success> Step : "$STEP_FUNCTION
+    echo
+}
 FN_AUTO_PROFILE(){
+    STEP_FUNCTION="FN_AUTO_PROFILE"
     echo
     echo "############################################################"
     echo "# tbis Progress> Profile " 
@@ -126,19 +135,24 @@ FN_AUTO_PROFILE(){
             echo ""
             TIBERO_PROFILE_CHECK=$TIBERO_PROFILE
             sh tbis.cfg USER_PROFILE >> $USER_HOME/.profile
+            . $TIBERO_PROFILE_CHECK
+            FN_SUCCESS_MSG
         elif [ -f $TIBERO_BASHPROFILE ]
         then
             TIBERO_PROFILE_CHECK=$TIBERO_BASHPROFILE
             sh tbis.cfg USER_PROFILE >> $USER_HOME/.bash_profile
+            . $TIBERO_PROFILE_CHECK
+            FN_SUCCESS_MSG
         else
             echo "tbis message> .bash_profile or .profile file check"
             exit
         fi
-        . $TIBERO_PROFILE_CHECK
+
     fi
 }
 
 FN_AUTO_LICENSE(){
+    STEP_FUNCTION="FN_AUTO_LICENSE"
     echo
     echo "############################################################"
     echo "# tbis Progress> license "    
@@ -158,11 +172,13 @@ FN_AUTO_LICENSE(){
         elif [ -n $LICENSE_FILE_CHECK ]
         then
             cp ../binary/license.xml $TB_HOME/license/license.xml
+            FN_SUCCESS_MSG
         fi
     fi
 }
 
 FN_AUTO_TB_SID_TIP(){
+    STEP_FUNCTION="FN_AUTO_TB_SID_TIP"
     echo
     echo "############################################################"
     echo "# tbis Progress> TB_SID TIP File"
@@ -173,7 +189,7 @@ FN_AUTO_TB_SID_TIP(){
     FN_AUTO_PROGRESS_CHECK        
     if [ $YESNO == "YES" ]
     then
-        if [ -z $TB_SID]
+        if [ -z $TB_SID ]
         then
           echo "tbis message> \$TB_SID check"
           exit
@@ -183,12 +199,14 @@ FN_AUTO_TB_SID_TIP(){
         then
             2>/dev/null
         else
-            sh tbis.cfg TB_SID_TIP > $TB_HOME/config/$TB_SID.tip        
+            sh tbis.cfg TB_SID_TIP > $TB_HOME/config/$TB_SID.tip
+            FN_SUCCESS_MSG
         fi
     fi
 }
 
 FN_AUTO_CM_SID_TIP(){
+    STEP_FUNCTION="FN_AUTO_CM_SID_TIP"
     echo
     echo "############################################################"
     echo "# tbis Progress> CM_SID TIP File"
@@ -199,22 +217,21 @@ FN_AUTO_CM_SID_TIP(){
     FN_AUTO_PROGRESS_CHECK
     if [ $YESNO == "YES" ]
     then
-        #if [ -z $CM_SID]
-        #then
-        #  echo "tbis message> \$CM_SID check"
-        #  exit
-        #fi
-
         if [ $TIBERO_TYPE == "SINGLE" ]
         then
-            echo "SINGLE"
+            echo
+            echo $TIBERO_TYPE
+            echo $TIBERO_NODE
+            echo
         else
             sh tbis.cfg CM_SID_TIP > $TB_HOME/config/$TIBERO_NODE.tip
+            FN_SUCCESS_MSG
         fi
     fi
 }
 
 FN_AUTO_TBDSN(){
+    STEP_FUNCTION="FN_AUTO_TBDSN"
     echo
     echo "############################################################"
     echo "# tbis Progress> TBDSN"
@@ -226,13 +243,14 @@ FN_AUTO_TBDSN(){
     if [ $YESNO == "YES" ]
     then
         
-        if [ -z $TB_HOME]
+        if [ -z $TB_HOME ]
         then
           echo "tbis message> \$TB_HOME check"
           exit
         fi
 
         sh tbis.cfg TB_DSN > $TB_HOME/client/config/tbdsn.tbr
+        FN_SUCCESS_MSG
     fi
 }
 
@@ -277,6 +295,7 @@ FN_AUTO_PROGRESS_PROFILE(){
 }
 
 FN_AUTO_CM_RESOURCE(){
+    STEP_FUNCTION="FN_AUTO_CM_RESOURCE"
     echo
     echo "############################################################"
     echo "# tbis Progress> tbcm resource "    
@@ -439,12 +458,14 @@ FN_AUTO_CM_RESOURCE(){
                     fi
                 fi
             fi    
-        fi        
+        fi
         sleep 1
+        FN_SUCCESS_MSG
     fi
 }
 
 FN_AUTO_CM_BOOT(){
+    STEP_FUNCTION="FN_AUTO_CM_BOOT"
     echo
     echo "############################################################"
     echo "# tbis Progress> tbcm boot "    
@@ -483,11 +504,13 @@ FN_AUTO_CM_BOOT(){
             fi
         fi
         sleep 1 
+        FN_SUCCESS_MSG
     fi
     
 }
 
 FN_AUTO_CM_DOWN(){
+    STEP_FUNCTION="FN_AUTO_CM_DOWN"
     echo
     echo "############################################################"
     echo "# tbis Progress> tbcm down "    
@@ -516,12 +539,13 @@ FN_AUTO_CM_DOWN(){
             tbcm -d
         fi
         sleep 1
+        FN_SUCCESS_MSG
     fi
  
 }
 
 FN_AUTO_CHANGE_OWNER(){
-    # Owner Change Files
+    STEP_FUNCTION="FN_AUTO_CHANGE_OWNER"
     echo "############################################################"
     echo "#  tbis Progress> Change Owner"
     echo "############################################################"
@@ -532,40 +556,49 @@ FN_AUTO_CHANGE_OWNER(){
     if [ $YESNO == "YES" ]
     then
         chown -R $USER_NAME:$GROUP_NAME $USER_HOME
+        FN_SUCCESS_MSG
     fi
     
+}
+FN_AUTO_PROCESS_CHECK(){
+    TIBERO_PROCESS=`ps -ef |grep tbsvr |grep $USER_NAME |grep -v grep`
+    TIBERO_SHM=`ipcs |grep $USER_NAME`
+    if [ -z $TIBERO_PROCESS ]
+    then
+            echo "tbis message> tibero Process check"
+            echo "  error> tbsvr process check"
+            ps -ef |grep tbsvr |grep $USER_NAME |grep -v grep
+            echo "  error> TIBERO Shared Memory & Semaphore"
+            ipcs |grep $USER_NAME            
+            exit
+    fi
 }
 
 FN_AUTO_TB_BOOT(){
     TB_BOOT_OPTION=$1
+    STEP_FUNCTION="FN_AUTO_TB_BOOT"
     echo "############################################################"
     echo "#  tbis Progress> tbboot"
     echo "############################################################"
     echo
-    echo "su - $USER_NAME -c \"tbboot" $TB_BOOT_OPTION\"""
+    echo "tbboot "$TB_BOOT_OPTION
     echo
 
     FN_AUTO_PROGRESS_CHECK
     if [ $YESNO == "YES" ]
     then
-        TIBERO_PROCESS=`ps -ef |grep tbsvr |grep $USER_NAME |grep -v grep`
-        if [ -z $TIBERO_PROCESS ]
+        if [ "$INI_USER_NAME" == "root" ]
         then
-            if [ "$INI_USER_NAME" == "root" ]
-            then
-                su - $USER_NAME -c "tbboot $TB_BOOT_OPTION"
-                echo
-                echo
-            elif [ "$INI_USER_NAME" != "root" ]
-            then
-                tbboot $TB_BOOT_OPTION
-                echo
-                echo
-            fi
-        else
-            echo "tbis message> tibero Process check"
-            exit
-            ps -ef |grep tbsvr |grep $USER_NAME |grep -v grep
+            su - $USER_NAME -c "tbboot $TB_BOOT_OPTION"
+            echo
+            echo
+            FN_SUCCESS_MSG
+        elif [ "$INI_USER_NAME" != "root" ]
+        then
+            tbboot $TB_BOOT_OPTION
+            echo
+            echo
+            FN_SUCCESS_MSG
         fi
         sleep 1
     fi
@@ -574,28 +607,33 @@ FN_AUTO_TB_BOOT(){
 
 FN_AUTO_TB_DOWN(){
     TB_DOWN_OPTION=$1
+    STEP_FUNCTION="FN_AUTO_TB_DOWN"
     echo "############################################################"
     echo "#  tbis Progress> tbdown"
     echo "############################################################"
     echo
-    echo "su - $USER_NAME -c \"tbboot" $TB_DOWN_OPTION\"""
+    echo "tbboot "$TB_DOWN_OPTION
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
     if [ $YESNO == "YES" ]
     then
+        FN_AUTO_PROCESS_CHECK
         if [ "$INI_USER_NAME" == "root" ]
         then
             su - $USER_NAME -c "tbdown $TB_DOWN_OPTION"        
+            FN_SUCCESS_MSG
         elif [ "$INI_USER_NAME" != "root" ]
         then
             tbdown $TB_DOWN_OPTION
+            FN_SUCCESS_MSG
         fi
         sleep 1
     fi
 }
 
 FN_AUTO_CREATEDB(){
+    STEP_FUNCTION="FN_AUTO_CREATEDB"
     echo "############################################################"
     echo "#  tbis Progress> CREATE DATABASE"
     echo "############################################################"
@@ -608,6 +646,7 @@ FN_AUTO_CREATEDB(){
     echo
     if [ $YESNO == "YES" ]
     then
+        FN_AUTO_PROCESS_CHECK
         if [ "$INI_USER_NAME" == "root" ]
         then
             su - $USER_NAME -c "
@@ -615,11 +654,13 @@ FN_AUTO_CREATEDB(){
             "
             echo
             echo
+            FN_SUCCESS_MSG
         elif [ "$INI_USER_NAME" != "root" ]
         then
             tbsql sys/tibero < $TBIS_CWD_PATH/tbis.sql
             echo
-            echo 
+            echo
+            FN_SUCCESS_MSG
         else
             exit
         fi
@@ -628,26 +669,30 @@ FN_AUTO_CREATEDB(){
 }
 
 FN_AUTO_SYSTEM_SHELL(){
+    STEP_FUNCTION="FN_AUTO_SYSTEM_SHELL"
     echo "############################################################"
     echo "#  tbis Progress> system.sh"
     echo "############################################################"
     echo
-    echo "su - $USER_NAME -c \"sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y\""
+    echo "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
     if [ $YESNO == "YES" ]
     then
+        FN_AUTO_PROCESS_CHECK
         if [ "$INI_USER_NAME" == "root" ]
         then
             su - $USER_NAME -c "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
             echo
             echo
+            FN_SUCCESS_MSG
         elif [ "$INI_USER_NAME" != "root" ]
         then
             sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y
             echo
             echo
+            FN_SUCCESS_MSG
         fi    
         sleep 1
     fi    
@@ -686,6 +731,7 @@ FN_AUTO_ARCHIVE_DIR(){
 }
 
 FN_AUTO_TSC_COPY(){
+    STEP_FUNCTION="FN_AUTO_TSC_COPY"
     echo "############################################################"
     echo "#  tbis Progress> CF/DF/ARCH COPY to Target node"
     echo "############################################################"
@@ -703,10 +749,12 @@ FN_AUTO_TSC_COPY(){
         scp -P $SCP_PORT -r $CONTROL_FILE_PATH2/tbctl2 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH2/tbctl2
         scp -P $SCP_PORT -r $DB_CREATE_FILE_DEST/tbdata "$USER_NAME"@"$NODE2_INTER_IP":$DB_CREATE_FILE_DEST/tbdata
         scp -P $SCP_PORT -r $LOG_ARCHIVE_DEST/tbarch "$USER_NAME"@"$NODE2_INTER_IP":$LOG_ARCHIVE_DEST/tbarch
+        FN_SUCCESS_MSG
     fi    
 }
 
 FN_AUTO_TSC_CFG(){
+    STEP_FUNCTION="FN_AUTO_TSC_CFG"
     echo "############################################################"
     echo "#  tbis Progress> Target TSC Configuration"
     echo "############################################################"
@@ -733,6 +781,7 @@ exit
 EOF
         fi        
         sleep 1
+        FN_SUCCESS_MSG
     fi
 }
 
@@ -748,6 +797,7 @@ FN_AUTO_SUCCESS(){
 }
 
 FN_AUTO_TAC_CFG(){
+    STEP_FUNCTION="FN_AUTO_TAC_CFG"
     echo "############################################################"
     echo "#  tbis Progress> TAC Configuration"
     echo "############################################################"
@@ -791,8 +841,9 @@ FN_AUTO_TAC_CFG(){
                 exit
 EOF
         fi
+        sleep 1
+        FN_SUCCESS_MSG
     fi
-    sleep 1
 }
 
 FN_AUTO_INSTALL_CHECK(){
@@ -1061,7 +1112,6 @@ FN_AUTO_INSTALL(){
     echo "############################################################"
     echo "# End time : $TBIS_END_TIME"
     exit
-    ############
 }
 
 FN_AUTO_CNF_CHECK(){
