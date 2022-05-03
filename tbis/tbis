@@ -1304,6 +1304,9 @@ FN_AUTO_CNF_CHECK(){
     fi
 }
 
+FN_RUN_SQL(){
+	tbsql -s sys/tibero @report_sql/$1
+}
 ############################################################
 # Function Lists
 # 2. tbis Installation Report
@@ -1316,12 +1319,18 @@ FN_AUTO_INSTALL_REPORT(){
     FN_AUTO_TAC
     FN_AUTO_PROGRESS_PROFILE
     . $TIBERO_PROFILE_CHECK
-    echo "TIBERO AUTO INSTALLATION REPORT"
+    echo "TIBERO AUTO INSTALLATION REPORT" 
     echo "-----------------------------------------------------------------"
-    echo "# MODE CHOICE"
-    echo "-----------------------------------------------------------------"
-    echo "# 1. Print mode : STEP"
-    echo "# 2. Print mode : ALL "
+    echo "# 1. tbboot -l"
+    echo "# 2. ncpu"
+    echo "# 3. installation infomation"
+    echo "# 4. profile"
+    echo "# 5. CREATE DATABASE sql"
+    echo "# 6. instance tip"
+    echo "# 7. datafile infomation"
+    echo "# 8. tablespace infomation"
+    echo "# 9. OS infomation"
+    echo "# 10. tbiobench"
     echo "-----------------------------------------------------------------"
     echo "b - before"
     echo "press other key to quit"
@@ -1330,15 +1339,19 @@ FN_AUTO_INSTALL_REPORT(){
     read INPUT_NUMBER
     case $INPUT_NUMBER in
     1)
-        echo
-        ;;
-    2)
         clear
-        echo ""
         tbboot -l
         echo
-        echo
-
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY         
+        FN_AUTO_INSTALL_REPORT;;
+    2)
+        clear
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY         
+        FN_AUTO_INSTALL_REPORT;;
+    3) 
+        clear
         echo "- Tibero Version : "`tbboot -version |grep -i "tibero" |head -n 1`
         echo "- OS User : "$USER_NAME
         echo "- Tibero 설치 위치 (엔진 홈) : "$TB_HOME
@@ -1352,10 +1365,77 @@ FN_AUTO_INSTALL_REPORT(){
         echo "- Datafile 위치 : "`cat $TB_HOME/config/$TB_SID.tip |grep DB_CREATE_FILE_DEST |awk -F= '{print $NF}'`
         echo "- Archive 모드 및 위치 : "`cat $TB_HOME/config/$TB_SID.tip |grep LOG_ARCHIVE_DEST|awk -F= '{print $NF}'`
         echo "- Instance log 위치 : "$TB_HOME"/instance"
-
+        echo
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY         
+        FN_AUTO_INSTALL_REPORT;;
+    4)
+        clear
         cat $TIBERO_PROFILE_CHECK
-
-        ;;
+        echo
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY         
+        FN_AUTO_INSTALL_REPORT;;
+    5)
+        clear
+        cat ./tbis.sql
+        echo
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY         
+        FN_AUTO_INSTALL_REPORT;;
+    6)
+        clear
+        cat $TB_HOME/config/$TB_SID.tip
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY         
+        FN_AUTO_INSTALL_REPORT;;
+    7)
+        clear
+        echo "========================"
+        echo " Controlfile Infomation "
+        echo "========================"
+        FN_RUN_SQL 5_control.sql
+        echo
+        echo "===================="
+        echo " Logfile Infomation "
+        echo "===================="
+        FN_RUN_SQL 5_logfile.sql
+        echo
+        echo "====================="
+        echo " Datafile Infomation "
+        echo "====================="
+        FN_RUN_SQL 5_datafile.sql
+        echo
+        read PRINT_PRESS_KEY         
+        FN_AUTO_INSTALL_REPORT;;
+    8)
+        clear
+        echo "======================="
+        echo " Tablespace Infomation "
+        echo "======================="
+        FN_RUN_SQL 5_tbs.sql
+        echo
+        echo "============================"
+        echo " Temp Tablespace Infomation "
+        echo "============================"
+        FN_RUN_SQL 5_temp_tbs.sql
+        echo
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY         
+        FN_AUTO_INSTALL_REPORT;;    
+        
+    9)
+        clear
+        ulimit -a
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY         
+        FN_AUTO_INSTALL_REPORT;;
+    10)
+        clear
+        tbiobench -i all -s 1G -F O_SYNC -F O_DIRECT -k
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY         
+        FN_AUTO_INSTALL_REPORT;;    
     *)
         exit;;
     esac
