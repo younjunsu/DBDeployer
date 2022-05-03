@@ -116,6 +116,7 @@ FN_SUCCESS_MSG(){
     echo "  Success> Step : "$STEP_FUNCTION
     echo
 }
+
 FN_AUTO_PROFILE(){
     STEP_FUNCTION="FN_AUTO_PROFILE"
     echo
@@ -1328,35 +1329,151 @@ FN_AUTO_INSTALL_REPORT(){
 # 3. tbis Configuration Text
 ############################################################
 FN_AUTO_CONFIGURATION(){
+    clear
     . ./tbis.cfg
-    echo "TIBERO_TYPE : "$TIBERO_TYPE
-    echo "TIBERO_NODE : "$TIBERO_NODE
-
+    echo "-----------------------------------------------------------------"
+    echo "TIBERO AUTO CONFIGURATION TEXT MODE CHOICE"
+    echo "-----------------------------------------------------------------"
+    echo "# Installation Mode"
+    echo "- Installation type : $TIBERO_TYPE"
+    echo "- Installation node : $TIBERO_NODE"
+    echo "-----------------------------------------------------------------"
     echo "PRINT OPTIONS"
     echo "1. Step by step print"
-    if [ "$TIBERO_TYPE" == "SINGLE" ]
-    then
-
-    elif [ "$TIBERO_NODE" == "observer" ]
-    then
-
-    else
-
-    fi
-
     echo "2. All print "
-    if [ "$TIBERO_TYPE" == "SINGLE" ]
-    then
+    echo "-----------------------------------------------------------------"
+    echo "press other key to quit"
+    echo "-----------------------------------------------------------------"
+    printf "Choose the Number : "
+    read INPUT_NUMBER
+    case $INPUT_NUMBER in
+    1)
+        clear
+        FN_AUTO_CONFIGURATION_STEP_PRINT
+        ;;
+    2)
+        clear
+        FN_AUTO_CONFIGURATION_ALL_PRINT
+        ;;
+    *)
+        exit;;
+    esac
 
-    elif [ "$TIBERO_NODE" == "observer" ]
-    then
-
-    else
-
-    fi
 }
 
+FN_PRINT_PRESS(){
+    echo "Press Enter Key to continue..."
+}
 
+FN_AUTO_CONFIGURATION_STEP_PRINT(){  
+    clear
+    echo "-----------------------------------------------------------------"
+    echo "TIBERO AUTO CONFIGURATION TEXT MODE : STEP"
+    echo "# Installation Mode"
+    echo "- Installation type : $TIBERO_TYPE"
+    echo "- Installation node : $TIBERO_NODE"
+    echo "-----------------------------------------------------------------"
+    echo "1. OS USER"
+    echo "2. HOME DIRECTORY CONCEPT"
+    echo "3. PROFILE"
+    echo "-----------------------------------------------------------------"
+    echo "10. INSTANCE TIP"
+    echo "11. TBDSN"
+    echo "-----------------------------------------------------------------"
+    echo "20. CM TIP"
+    echo "21. CM RESOURCE"
+    echo "-----------------------------------------------------------------"
+    echo "press other key to quit"
+    echo "-----------------------------------------------------------------"
+    printf "Choose the Number : "
+    read INPUT_NUMBER
+    echo
+    echo
+    case $INPUT_NUMBER in
+    1)
+        clear
+        echo "-----------------------------------------------------------------"
+        echo "# OS USER/GROUP Result"
+        echo "-----------------------------------------------------------------"
+        echo "# LINUX | HP-UX | Solaris"
+        echo
+        echo "groupadd $GROUP_NAME"
+        echo "useradd $USER_NAME -d $USER_HOME -g $GROUP_NAME"
+        echo
+        echo "-----------------------------------------------------------------"
+        echo "# AIX "
+        echo
+        echo "mkgroup $GROUP_NAME"
+        echo "useradd $USER_NAME -d $USER_HOME -g $GROUP_NAME"
+        echo "-----------------------------------------------------------------"
+        echo
+        echo
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY
+        FN_AUTO_CONFIGURATION_STEP_PRINT
+        echo;;
+    2)
+        clear
+        echo "$OS_HOME"
+        echo
+        echo        
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY
+        FN_AUTO_CONFIGURATION_STEP_PRINT
+        echo;;
+    3)
+        clear   
+        . ./tbis.cfg USER_PROFILE
+        echo
+        echo        
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY        
+        FN_AUTO_CONFIGURATION_STEP_PRINT
+        echo;;
+    10)
+        clear       
+        . ./tbis.cfg TB_SID_TIP
+        echo
+        echo        
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY        
+        FN_AUTO_CONFIGURATION_STEP_PRINT
+        echo;;
+    11)
+        clear       
+        . ./tbis.cfg TB_DSN
+        echo
+        echo        
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY        
+        FN_AUTO_CONFIGURATION_STEP_PRINT
+        echo;;
+    20)
+        clear   
+        . ./tbis.cfg CM_SID_TIP
+        echo
+        echo        
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY        
+        FN_AUTO_CONFIGURATION_STEP_PRINT
+        echo;;
+    21)
+        clear       
+        . ./tbis.cfg CM_RESOURCE
+        echo
+        echo
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY        
+        FN_AUTO_CONFIGURATION_STEP_PRINT
+        echo;;
+    *)
+        exit;;
+    esac
+}
+
+FN_AUTO_CONFIGURATION_ALL_PRINT(){
+    echo
+}
 
 ############################################################
 # Function Lists
