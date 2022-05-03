@@ -1434,8 +1434,14 @@ FN_AUTO_INSTALL_REPORT(){
         clear
         cd $DB_CREATE_FILE_DEST
         echo "Running PATH : $DB_CREATE_FILE_DEST"
-
         tbiobench -i all -s 1G -F O_SYNC -F O_DIRECT -k
+        cd $OLDPWD
+        TBIO_GARBAGE_FILE=`ls $DB_CREATE_FILE_DEST/*.tmp`
+        for TBIO_GARBAGE_NAME in ${TBIO_GARBAGE_FILE[@]}
+        do
+            echo "Garbage file : "$TBIO_GARBAGE_NAME
+        done
+        echo
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY         
         FN_AUTO_INSTALL_REPORT;;    
