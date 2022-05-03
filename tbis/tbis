@@ -1432,6 +1432,9 @@ FN_AUTO_INSTALL_REPORT(){
         FN_AUTO_INSTALL_REPORT;;
     10)
         clear
+        cd $DB_CREATE_FILE_DEST
+        echo "Running PATH : $DB_CREATE_FILE_DEST"
+
         tbiobench -i all -s 1G -F O_SYNC -F O_DIRECT -k
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY         
@@ -1439,8 +1442,6 @@ FN_AUTO_INSTALL_REPORT(){
     *)
         exit;;
     esac
-
-
 }
 
 ############################################################
