@@ -255,30 +255,31 @@ FN_AUTO_TBDSN(){
     fi
 }
 
-FN_AUTO_SINGLE(){
-    export TB_SID=`echo $DB_NAME`
-}
-
-FN_AUTO_TSC(){
-    if [ "$TIBERO_NODE" == "primary" ] 
+FN_AUTO_TB_SID_NAME(){
+    if [ "$TIBERO_TYPE" == "SINGLE" ]
     then
-        export TB_SID=`echo "$DB_NAME"_p`
-    elif [ "$TIBERO_NODE" == "standby" ]
+        export TB_SID=`echo $DB_NAME`
+    elif [ "$TIBERO_TYPE" == "TSC" ]
     then
-        export TB_SID=`echo "$DB_NAME"_s`
-    elif [ "$TIBERO_NODE" == "observer" ]
+        if [ "$TIBERO_NODE" == "primary" ] 
+        then
+            export TB_SID=`echo "$DB_NAME"_p`
+        elif [ "$TIBERO_NODE" == "standby" ]
+        then
+            export TB_SID=`echo "$DB_NAME"_s`
+        elif [ "$TIBERO_NODE" == "observer" ]
+        then
+            export TB_SID="Observer_Not_TB_SID"
+        fi
+    elif [ "$TIBERO_TYPE" == "TAC" ]
     then
-        export TB_SID="Observer_Not_TB_SID"
-    fi
-}
-
-FN_AUTO_TAC(){
-    if [ $TIBERO_NODE == "cm0" ]
-    then
-        export TB_SID=`echo "$DB_NAME"0`
-    elif [ $TIBERO_NODE == "cm1" ]
-    then
-        export TB_SID=`echo "$DB_NAME"1`
+        if [ $TIBERO_NODE == "cm0" ]
+        then
+            export TB_SID=`echo "$DB_NAME"0`
+        elif [ $TIBERO_NODE == "cm1" ]
+        then
+            export TB_SID=`echo "$DB_NAME"1`
+        fi
     fi
 }
 
@@ -868,18 +869,7 @@ FN_AUTO_INSTALL_CHECK(){
     echo "- Installation user : $INI_USER_NAME"
     echo "- Installation type : $TIBERO_TYPE"
     echo "- Installation node : $TIBERO_NODE"
-    if [ $TIBERO_TYPE == "SINGLE" ]
-    then
-        FN_AUTO_SINGLE
-    elif [ $TIBERO_TYPE == "TSC" ]
-    then
-        FN_AUTO_TSC
-    elif [ $TIBERO_TYPE == "TAC" ]
-    then
-        FN_AUTO_TAC
-    else
-        exit
-    fi
+    FN_AUTO_TB_SID_NAME
     echo "-----------------------------------------------------------------"
     echo "# OS USER & GROUP"
     echo "- OS USER : $USER_NAME"
@@ -1314,9 +1304,7 @@ FN_RUN_SQL(){
 FN_AUTO_INSTALL_REPORT(){
     clear
     . ./tbis.cfg
-    FN_AUTO_SINGLE
-    FN_AUTO_TSC
-    FN_AUTO_TAC
+    FN_AUTO_TB_SID_NAME
     FN_AUTO_PROGRESS_PROFILE
     . $TIBERO_PROFILE_CHECK
     echo "TIBERO AUTO INSTALLATION REPORT" 
@@ -1461,9 +1449,9 @@ FN_AUTO_CONFIGURATION(){
     echo "-----------------------------------------------------------------"
     echo "# MODE CHOICE"
     echo "-----------------------------------------------------------------"
-    echo "# 1. Print mode : STEP"
-    echo "# 2. Print mode : ALL "
-    echo "# 3. Print mode : Check"
+    echo "# 1. step by step"
+    echo "# 2. every step"
+    echo "# 3. Check"
     echo "-----------------------------------------------------------------"
     echo "b - before"
     echo "press other key to quit"
@@ -1477,7 +1465,7 @@ FN_AUTO_CONFIGURATION(){
         ;;
     2)
         clear
-        FN_AUTO_CONFIGURATION_ALL_PRINT
+        FN_AUTO_CONFIGURATION_EVERY_PRINT
         ;;
     3)
         clear
@@ -1512,22 +1500,34 @@ FN_PRINT_PRESS(){
 FN_AUTO_CONFIGURATION_STEP_PRINT(){  
     clear
     echo "-----------------------------------------------------------------"
-    echo "TIBERO AUTO CONFIGURATION TEXT MODE : STEP"
+    echo "# TIBERO auto configuration text"
+    echo "- Step by step"
+    echo "-----------------------------------------------------------------"
     echo "# Installation Mode"
     echo "- Installation type : $TIBERO_TYPE"
     echo "- Installation node : $TIBERO_NODE"
     echo "-----------------------------------------------------------------"
-    echo "# 1. OS USER"
-    echo "# 2. HOME DIRECTORY CONCEPT"
-    echo "# 3. PROFILE"
+    echo
+    echo "# Operation System"
     echo "-----------------------------------------------------------------"
-    echo "# 10. INSTANCE TIP"
-    echo "# 11. TBDSN"
-    echo "# 12. CREATE DATABASE SQL"
+    echo "# 1. OS user"
+    echo "# 2. Profile"
+    echo "# 3. Home directory concept"
     echo "-----------------------------------------------------------------"
-    echo "# 20. CM TIP"
-    echo "# 21. CM RESOURCE"
+    echo
+    echo "# DATABASE"
     echo "-----------------------------------------------------------------"
+    echo "# 10. Instance tip"
+    echo "# 11. tbdsn.tbr"
+    echo "# 12. CREATE DATABASE SQL Syntax"
+    echo "-----------------------------------------------------------------"
+    echo
+    echo "# Cluster Manager "
+    echo "-----------------------------------------------------------------"
+    echo "# 20. CM tip"
+    echo "# 21. CM resource"
+    echo "-----------------------------------------------------------------"
+    echo
     echo "b - before"    
     echo "press other key to quit"
     echo "-----------------------------------------------------------------"
@@ -1559,21 +1559,21 @@ FN_AUTO_CONFIGURATION_STEP_PRINT(){
         FN_AUTO_CONFIGURATION_STEP_PRINT
         echo;;
     2)
-        clear
-        echo "$OS_HOME"
-        echo
-        echo        
-        FN_PRINT_PRESS
-        read PRINT_PRESS_KEY
-        FN_AUTO_CONFIGURATION_STEP_PRINT
-        echo;;
-    3)
         clear   
         . ./tbis.cfg USER_PROFILE
         echo
         echo        
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY        
+        FN_AUTO_CONFIGURATION_STEP_PRINT
+        echo;;
+    3)
+        clear
+        echo "$OS_HOME"
+        echo
+        echo        
+        FN_PRINT_PRESS
+        read PRINT_PRESS_KEY
         FN_AUTO_CONFIGURATION_STEP_PRINT
         echo;;
     10)
@@ -1586,7 +1586,8 @@ FN_AUTO_CONFIGURATION_STEP_PRINT(){
         FN_AUTO_CONFIGURATION_STEP_PRINT
         echo;;
     11)
-        clear       
+        clear
+        FN_AUTO_TB_SID_NAME       
         . ./tbis.cfg TB_DSN
         echo
         echo        
@@ -1628,7 +1629,7 @@ FN_AUTO_CONFIGURATION_STEP_PRINT(){
     esac
 }
 
-FN_AUTO_CONFIGURATION_ALL_PRINT(){
+FN_AUTO_CONFIGURATION_EVERY_PRINT(){
     echo
 }
 
