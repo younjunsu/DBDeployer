@@ -8,7 +8,7 @@ MAXDATAFILES 256
         - ASCII     -> ASCII
         - MSWIN949  -> MSWIN949
 */
-CHARACTER SET UTF8
+CHARACTER SET MSWIN949
 LOGFILE 
 GROUP 0 ('system/redo001.redo','system/redo002.redo') SIZE 30M,
 GROUP 1 ('system/redo011.redo','system/redo012.redo') SIZE 30M,
