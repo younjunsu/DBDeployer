@@ -1450,65 +1450,14 @@ FN_AUTO_INSTALL_REPORT(){
 # Function Lists
 # 3. tbis Configuration Text
 ############################################################
-FN_AUTO_CONFIGURATION(){
-    clear
-    . ./tbis.cfg
-    echo "TIBERO AUTO CONFIGURATION TEXT"
-    echo "-----------------------------------------------------------------"
-    echo "# MODE CHOICE"
-    echo "-----------------------------------------------------------------"
-    echo "# 1. step by step"
-    echo "# 2. every step"
-    echo "# 3. Check"
-    echo "-----------------------------------------------------------------"
-    echo "b - before"
-    echo "press other key to quit"
-    echo "-----------------------------------------------------------------"
-    printf "Choose the Number : "
-    read INPUT_NUMBER
-    case $INPUT_NUMBER in
-    1)
-        clear
-        FN_AUTO_CONFIGURATION_STEP_PRINT
-        ;;
-    2)
-        clear
-        FN_AUTO_CONFIGURATION_EVERY_PRINT
-
-        ;;
-    3)
-        clear
-        echo "# tbis.cfg"
-        echo "-----------------------------------------------------------------"
-        echo "Apply Parameters"
-        echo "-----------------------------------------------------------------"
-        cat ./tbis.cfg |grep export |grep -vE "echo|#|TIBERO_ENGINE|TIBERO_TBINARY|SCP_PORT|INI_USER_NAME" 
-        echo
-        echo "Annotation Parameters"
-        echo "-----------------------------------------------------------------"
-        cat ./tbis.cfg |grep export |grep -vE "echo|TIBERO_ENGINE|TIBERO_TBINARY|SCP_PORT|INI_USER_NAME" |grep "#export"
-        echo
-        echo
-        echo
-        echo        
-        FN_PRINT_PRESS
-        read PRINT_PRESS_KEY                
-        FN_AUTO_CONFIGURATION;;
-    "b")
-        FN_MAIN_MENU;;
-    *)
-        exit;;
-    esac
-
-}
-
 FN_PRINT_PRESS(){
     echo "Press Enter Key to continue..."
 }
 
-FN_AUTO_CONFIGURATION_STEP_PRINT(){  
+FN_AUTO_CONFIGURATION(){  
     clear
-    echo "-----------------------------------------------------------------"
+    . ./tbis.cfg
+    echo
     echo "# TIBERO auto configuration text"
     echo "- Step by step"
     echo "-----------------------------------------------------------------"
@@ -1565,7 +1514,7 @@ FN_AUTO_CONFIGURATION_STEP_PRINT(){
         echo
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY
-        FN_AUTO_CONFIGURATION_STEP_PRINT
+        FN_AUTO_CONFIGURATION
         echo;;
     2)
         clear   
@@ -1574,7 +1523,7 @@ FN_AUTO_CONFIGURATION_STEP_PRINT(){
         echo        
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY        
-        FN_AUTO_CONFIGURATION_STEP_PRINT
+        FN_AUTO_CONFIGURATION
         echo;;
     3)
         clear
@@ -1609,7 +1558,7 @@ FN_AUTO_CONFIGURATION_STEP_PRINT(){
         echo
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY
-        FN_AUTO_CONFIGURATION_STEP_PRINT
+        FN_AUTO_CONFIGURATION
         echo;;
     10)
         clear       
@@ -1618,7 +1567,7 @@ FN_AUTO_CONFIGURATION_STEP_PRINT(){
         echo        
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY        
-        FN_AUTO_CONFIGURATION_STEP_PRINT
+        FN_AUTO_CONFIGURATION
         echo;;
     11)
         clear
@@ -1628,7 +1577,7 @@ FN_AUTO_CONFIGURATION_STEP_PRINT(){
         echo        
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY        
-        FN_AUTO_CONFIGURATION_STEP_PRINT
+        FN_AUTO_CONFIGURATION
         echo;;
     12)
         clear
@@ -1637,7 +1586,7 @@ FN_AUTO_CONFIGURATION_STEP_PRINT(){
         echo
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY        
-        FN_AUTO_CONFIGURATION_STEP_PRINT
+        FN_AUTO_CONFIGURATION
         echo;;        
     20)
         clear   
@@ -1646,7 +1595,7 @@ FN_AUTO_CONFIGURATION_STEP_PRINT(){
         echo        
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY        
-        FN_AUTO_CONFIGURATION_STEP_PRINT
+        FN_AUTO_CONFIGURATION
         echo;;
     21)
         clear       
@@ -1655,18 +1604,15 @@ FN_AUTO_CONFIGURATION_STEP_PRINT(){
         echo
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY        
-        FN_AUTO_CONFIGURATION_STEP_PRINT
+        FN_AUTO_CONFIGURATION
         echo;;
     "b")
-        FN_AUTO_CONFIGURATION;;
+        FN_MAIN_MENU;;
     *)
         exit;;
     esac
 }
 
-FN_AUTO_CONFIGURATION_EVERY_PRINT(){
-    echo
-}
 
 ############################################################
 # Function Lists
