@@ -196,7 +196,7 @@ FN_AUTO_TB_SID_TIP(){
           exit
         fi
 
-        if [ $TIBERO_NODE == "observer" ]
+        if [ "$TIBERO_NODE" == "observer" ]
         then
             2>/dev/null
         else
@@ -218,7 +218,7 @@ FN_AUTO_CM_SID_TIP(){
     FN_AUTO_PROGRESS_CHECK
     if [ "$YESNO" == "YES" ]
     then
-        if [ $TIBERO_TYPE == "SINGLE" ]
+        if [ "$TIBERO_TYPE" == "SINGLE" ]
         then
             echo
             echo $TIBERO_TYPE
@@ -273,10 +273,10 @@ FN_AUTO_TB_SID_NAME(){
         fi
     elif [ "$TIBERO_TYPE" == "TAC" ]
     then
-        if [ $TIBERO_NODE == "cm0" ]
+        if [ "$TIBERO_NODE" == "cm0" ]
         then
             export TB_SID=`echo "$DB_NAME"0`
-        elif [ $TIBERO_NODE == "cm1" ]
+        elif [ "$TIBERO_NODE" == "cm1" ]
         then
             export TB_SID=`echo "$DB_NAME"1`
         fi
@@ -479,7 +479,7 @@ FN_AUTO_CM_BOOT(){
     echo
     if [ "$YESNO"  == "YES" ]
     then
-        if [ $TIBERO_NODE == "observer" ]
+        if [ "$TIBERO_NODE" == "observer" ]
         then
             if [ "$INI_USER_NAME" == "root" ]
             then
@@ -878,16 +878,17 @@ FN_AUTO_INSTALL_CHECK(){
     echo "-----------------------------------------------------------------"
     echo "# TIBERO DATABASE"
     echo "- TB_SID : $TB_SID"
-    if [ $TIBERO_NODE == "SINGLE" ]
-    then
-        2>/dev/null
-    else        
-        echo "- CM_SID : $TIBERO_NODE"
-        echo "- CM_HOME : $CM_HOME"
-    fi    
+    echo "- TB_HOME : $TB_HOME"
     echo "- DB_NAME : $DB_NAME"
     echo "- LISTENER_PORT : $LISTENER_PORT"
     echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
+    if [ $TIBERO_NODE != "SINGLE" ]
+    then
+        echo "-----------------------------------------------------------------"
+        echo "# TIBERO Cluster Manager"
+        echo "- CM_SID : $TIBERO_NODE"
+        echo "- CM_HOME : $TB_HOME"
+    fi    
     echo "-----------------------------------------------------------------"
     echo "# TIBERO DATABASE FILE DEST"
     echo "- TB_HOME PATH : $TB_HOME"
@@ -1412,10 +1413,14 @@ FN_AUTO_INSTALL_REPORT(){
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY         
         FN_AUTO_INSTALL_REPORT;;    
-        
     9)
         clear
+        echo "uname"
+        uname -a
+        echo
+        echo "ulimit"
         ulimit -a
+        echo
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY         
         FN_AUTO_INSTALL_REPORT;;
@@ -1434,6 +1439,8 @@ FN_AUTO_INSTALL_REPORT(){
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY         
         FN_AUTO_INSTALL_REPORT;;
+    b)
+        FN_MAIN_MENU;;
     *)
         exit;;
     esac
@@ -1665,8 +1672,7 @@ FN_AUTO_CONFIGURATION_EVERY_PRINT(){
 # Function Lists
 # tbis main
 ############################################################
-FN_MAIN_MENU(){
-        
+FN_MAIN_MENU(){        
     CURRENT_DIRECTORY=`pwd`
     CURRENT_DIRECTORY_CHK=`ls $CURRENT_DIRECTORY/tbis.cfg`
 
