@@ -1335,6 +1335,7 @@ FN_AUTO_INSTALL_REPORT(){
         FN_AUTO_INSTALL_REPORT;;
     2)
         clear
+        sh ./tbis_report/ncpu/chk_cpu_for_license.sh TIBERO
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY         
         FN_AUTO_INSTALL_REPORT;;
@@ -1432,7 +1433,7 @@ FN_AUTO_INSTALL_REPORT(){
         echo
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY         
-        FN_AUTO_INSTALL_REPORT;;    
+        FN_AUTO_INSTALL_REPORT;;
     *)
         exit;;
     esac
@@ -1466,6 +1467,7 @@ FN_AUTO_CONFIGURATION(){
     2)
         clear
         FN_AUTO_CONFIGURATION_EVERY_PRINT
+
         ;;
     3)
         clear
