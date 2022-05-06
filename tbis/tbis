@@ -1295,7 +1295,7 @@ FN_AUTO_CNF_CHECK(){
 }
 
 FN_RUN_SQL(){
-	tbsql -s sys/tibero @report_sql/$1
+	tbsql -s sys/tibero @tbis_report/$1
 }
 ############################################################
 # Function Lists
