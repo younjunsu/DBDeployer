@@ -311,7 +311,7 @@ FN_AUTO_CM_RESOURCE(){
 
     if [ "$YESNO" == "YES" ]
     then
-        if [ "$INI_USER_NAME" == "root" ]
+        if [ "$INSTALL_USER_NAME" == "root" ]
         then
             if [ "$TIBERO_TYPE" == "TSC" ]
             then
@@ -402,7 +402,7 @@ FN_AUTO_CM_RESOURCE(){
                     fi
                 fi
             fi    
-        elif [ "$INI_USER_NAME" != "root" ]
+        elif [ "$INSTALL_USER_NAME" != "root" ]
         then
             if [ "$TIBERO_TYPE" == "TSC" ]
             then
@@ -481,15 +481,15 @@ FN_AUTO_CM_BOOT(){
     then
         if [ "$TIBERO_NODE" == "observer" ]
         then
-            if [ "$INI_USER_NAME" == "root" ]
+            if [ "$INSTALL_USER_NAME" == "root" ]
             then
                 su - $USER_NAME -c "tbcmobs -b"
-            elif [ "$INI_USER_NAME" != "root" ]
+            elif [ "$INSTALL_USER_NAME" != "root" ]
             then
                 tbcmobs -b
             fi        
         else
-           if [ "$INI_USER_NAME" == "root" ]
+           if [ "$INSTALL_USER_NAME" == "root" ]
            then
                 if [ -z $NODE1_VIP_ETH ]
                 then
@@ -500,7 +500,7 @@ FN_AUTO_CM_BOOT(){
                     . $TIBERO_PROFILE_CHECK
                     tbcm -b                                
                 fi
-            elif [ "$INI_USER_NAME" != "root" ]
+            elif [ "$INSTALL_USER_NAME" != "root" ]
             then
                 tbcm -b
             fi
@@ -525,7 +525,7 @@ FN_AUTO_CM_DOWN(){
     CM_DOWN_OPTION=$1
     if [ "$YESNO"  == "YES" ]
     then
-        if [ "$INI_USER_NAME" == "root" ]
+        if [ "$INSTALL_USER_NAME" == "root" ]
         then
             if [ -z $NODE1_VIP_ETH ]
             then
@@ -536,7 +536,7 @@ FN_AUTO_CM_DOWN(){
                 . $TIBERO_PROFILE_CHECK
                 tbcm -d
             fi
-        elif [ "$INI_USER_NAME" != "root" ]
+        elif [ "$INSTALL_USER_NAME" != "root" ]
         then
             tbcm -d
         fi
@@ -562,10 +562,12 @@ FN_AUTO_CHANGE_OWNER(){
     fi
     
 }
+
 FN_AUTO_PROCESS_CHECK(){
     PROCESS_CHECK_OPTION=$1
-    TIBERO_PROCESS=`ps -ef |grep tbsvr |grep -w $USER_NAME |grep -v grep`
-    TIBERO_SHM=`ipcs |grep -w $USER_NAME`
+    TIBERO_PROCESS=`ps -ef |grep tbsvr |grep -w $USER_NAME |grep -v grep |tail -n 1`
+    TIBERO_SHM=`ipcs |grep -w $USER_NAME |tail -n 1`
+
     if [ -z $TIBERO_PROCESS ] || [ -z $TIBERO_SHM ]
     then
         echo "tbis message> tibero Process check"
@@ -598,13 +600,13 @@ FN_AUTO_TB_BOOT(){
     FN_AUTO_PROGRESS_CHECK
     if [ "$YESNO"  == "YES" ]
     then
-        if [ "$INI_USER_NAME" == "root" ]
+        if [ "$INSTALL_USER_NAME" == "root" ]
         then
             su - $USER_NAME -c "tbboot $TB_BOOT_OPTION"
             echo
             echo
             FN_SUCCESS_MSG
-        elif [ "$INI_USER_NAME" != "root" ]
+        elif [ "$INSTALL_USER_NAME" != "root" ]
         then
             tbboot $TB_BOOT_OPTION
             echo
@@ -630,11 +632,11 @@ FN_AUTO_TB_DOWN(){
     if [ "$YESNO"  == "YES" ]
     then
         FN_AUTO_PROCESS_CHECK EXIT
-        if [ "$INI_USER_NAME" == "root" ]
+        if [ "$INSTALL_USER_NAME" == "root" ]
         then
             su - $USER_NAME -c "tbdown $TB_DOWN_OPTION"        
             FN_SUCCESS_MSG
-        elif [ "$INI_USER_NAME" != "root" ]
+        elif [ "$INSTALL_USER_NAME" != "root" ]
         then
             tbdown $TB_DOWN_OPTION
             FN_SUCCESS_MSG
@@ -658,7 +660,7 @@ FN_AUTO_CREATEDB(){
     if [ "$YESNO"  == "YES" ]
     then
         FN_AUTO_PROCESS_CHECK EXIT
-        if [ "$INI_USER_NAME" == "root" ]
+        if [ "$INSTALL_USER_NAME" == "root" ]
         then
             su - $USER_NAME -c "
             tbsql -s sys/tibero < $TBIS_CWD_PATH/tbis.sql
@@ -666,7 +668,7 @@ FN_AUTO_CREATEDB(){
             echo
             echo
             FN_SUCCESS_MSG
-        elif [ "$INI_USER_NAME" != "root" ]
+        elif [ "$INSTALL_USER_NAME" != "root" ]
         then
             tbsql sys/tibero < $TBIS_CWD_PATH/tbis.sql
             echo
@@ -692,13 +694,13 @@ FN_AUTO_SYSTEM_SHELL(){
     if [ "$YESNO"  == "YES" ]
     then
         FN_AUTO_PROCESS_CHECK EXIT
-        if [ "$INI_USER_NAME" == "root" ]
+        if [ "$INSTALL_USER_NAME" == "root" ]
         then 
             su - $USER_NAME -c "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
             echo
             echo
             FN_SUCCESS_MSG
-        elif [ "$INI_USER_NAME" != "root" ]
+        elif [ "$INSTALL_USER_NAME" != "root" ]
         then
             sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y
             echo
@@ -776,7 +778,7 @@ FN_AUTO_TSC_CFG(){
     echo
     if [ "$YESNO"  == "YES" ]
     then   
-        if [ "$INI_USER_NAME" == "root" ]
+        if [ "$INSTALL_USER_NAME" == "root" ]
         then
             su - $USER_NAME -c "
                 tbsql -s sys/tibero <<EOF
@@ -784,7 +786,7 @@ FN_AUTO_TSC_CFG(){
                 exit
                 EOF
             "        
-        elif [ "$INI_USER_NAME" != "root" ]
+        elif [ "$INSTALL_USER_NAME" != "root" ]
         then
 tbsql -s sys/tibero <<EOF
 ALTER DATABASE STANDBY CONTROLFILE;
@@ -799,13 +801,21 @@ EOF
 FN_AUTO_SUCCESS(){
     TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
     TBIS_END_TIME=$TBIS_AUTO_TIME
-    echo "############################################################"
-    echo "#  tbis Progress> last step done"
-    echo "# TIBERO_TYPE : $TIBERO_TYPE"
-    echo "# TIBERO_NODE : $TIBERO_NODE"
-    echo "# end time : "$TBIS_END_TIME
-    echo "# tbis end log..."
-    echo "############################################################"
+    echo "#  tbis Progress> time: "$TBIS_END_TIME
+    echo "# Installation Mode"
+    echo "- Installation user : $INSTALL_USER_NAME"
+    echo "- Installation type : $TIBERO_TYPE"
+    echo "- Installation node : $TIBERO_NODE"
+    echo "-----------------------------------------------------------------"
+    echo "# TIBERO DATABASE FILE DEST"
+    echo "- TB_HOME PATH : $TB_HOME"
+    echo "- TBINARY PATH : $TB_HOME/tbinary"
+    echo "- CONTROL1_FILE : $CONTROL_FILE_PATH1/tbctl1/c1.ctl"
+    echo "- CONTROL2_FILE : $CONTROL_FILE_PATH2/tbctl2/c2.ctl"
+    echo "- DB_CREATE_FILE : $DB_CREATE_FILE_DEST/tbdata"
+    echo "-----------------------------------------------------------------"
+    echo "# ps command"
+    ps -ef |grep $USER_NAME |grep -E "tbsvr|tbcm" |grep -v "grep"
     echo
     echo
     exit
@@ -829,7 +839,7 @@ FN_AUTO_TAC_CFG(){
     echo
     if [ "$YESNO"  == "YES" ]
     then
-        if [ "$INI_USER_NAME" == "root" ]
+        if [ "$INSTALL_USER_NAME" == "root" ]
         then
             su - $USER_NAME -c "
                 tbsql -s sys/tibero <<EOF
@@ -843,7 +853,7 @@ FN_AUTO_TAC_CFG(){
                 exit
                 EOF
             "
-        elif [ "$INI_USER_NAME" != "root" ]
+        elif [ "$INSTALL_USER_NAME" != "root" ]
         then
                 tbsql -s sys/tibero <<EOF
                 CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $THREAD1_UNDO1_SIZE AUTOEXTEND OFF;
@@ -866,7 +876,7 @@ FN_AUTO_INSTALL_CHECK(){
     echo "[*] TIBERO Auto installation Tools Configuration Checking STEP"
     echo "-----------------------------------------------------------------"
     echo "# Installation Mode"
-    echo "- Installation user : $INI_USER_NAME"
+    echo "- Installation user : $INSTALL_USER_NAME"
     echo "- Installation type : $TIBERO_TYPE"
     echo "- Installation node : $TIBERO_NODE"
     FN_AUTO_TB_SID_NAME
@@ -978,15 +988,15 @@ FN_AUTO_INSTALL(){
     echo "# start time : $TBIS_START_TIME"
     echo
     echo
-    cat ./tbis.cfg |grep export |grep -v echo
+    cat ./tbis.cfg |grep "export" |grep -v "echo"
     clear
     . ./tbis.cfg
+
     FN_AUTO_CNF_CHECK
     FN_AUTO_INSTALL_CHECK     
     FN_AUTO_ENGINE
     FN_AUTO_TBINARY
     FN_AUTO_PROFILE
-    
     if [ $TIBERO_TYPE == "SINGLE" ]
     then
         FN_AUTO_TB_SID_TIP
@@ -1272,13 +1282,13 @@ FN_AUTO_CNF_CHECK(){
         TB_FAIL_OS="N"
     elif [ -n $NODE1_VIP_ETH ]
     then
-        if [ "$INI_USER_NAME" != "root" ]
+        if [ "$INSTALL_USER_NAME" != "root" ]
         then
             echo "  error> TSC or TAC Configuration VIP Enable  check"
             echo "  error> VIP Enable only OS USER root check "
-            echo "      * Current OS User : "$INI_USER_NAME
+            echo "      * Current OS User : "$INSTALL_USER_NAME
             TB_FAIL_OS="Y"
-        elif [ "$INI_USER_NAME" == "root" ]
+        elif [ "$INSTALL_USER_NAME" == "root" ]
         then
             echo "  message> tbis.cfg - No problem"
             TB_FAIL_OS="N"            
@@ -1298,6 +1308,7 @@ FN_AUTO_CNF_CHECK(){
 FN_RUN_SQL(){
 	tbsql -s sys/tibero @tbis_report/$1
 }
+
 ############################################################
 # Function Lists
 # 2. tbis Installation Report
