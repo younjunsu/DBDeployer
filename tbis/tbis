@@ -55,7 +55,7 @@ FN_AUTO_PROGRESS_CHECK(){
 
 FN_AUTO_ENGINE(){
     STEP_FUNCTION="FN_AUTO_ENGINE"
-    if [ $TIBERO_ENGINE == "Y" ] || [ $TIBERO_ENGINE == "y" ]
+    if [ "$TIBERO_ENGINE" == "Y" ] || [ "$TIBERO_ENGINE" == "y" ]
     then
         echo
         echo "############################################################"
@@ -86,7 +86,7 @@ FN_AUTO_ENGINE(){
 
 FN_AUTO_TBINARY(){
     STEP_FUNCTION="FN_AUTO_TBINARY"
-    if [ $TIBERO_TBINARY == "Y" ] || [ $TIBERO_TBINARY == "y" ]
+    if [ "$TIBERO_TBINARY" == "Y" ] || [ "$TIBERO_TBINARY" == "y" ]
     then
         echo
         echo "############################################################"
