@@ -802,7 +802,10 @@ EOF
 FN_AUTO_SUCCESS(){
     TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
     TBIS_END_TIME=$TBIS_AUTO_TIME
-    echo "#  tbis Progress> time: "$TBIS_END_TIME
+    echo "############################################################"
+    echo "# tbis auto installation end"
+    echo "############################################################"
+    echo "# tbis Progress> time: "$TBIS_END_TIME
     echo "# Installation Mode"
     echo "- Installation user : $INSTALL_USER_NAME"
     echo "- Installation type : $TIBERO_TYPE"
