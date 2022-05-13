@@ -69,7 +69,7 @@ FN_AUTO_ENGINE(){
         FN_AUTO_PROGRESS_CHECK
         if [ "$YESNO"  == "YES" ]
         then
-            ENGINE_FILE_CHECK=`ls ../binary/tibero*.tar*`
+            ENGINE_FILE_CHECK=`ls ../binary/tibero*.tar* 2>/dev/null`
             if [ -z $ENGINE_FILE_CHECK ]
             then
                 echo "tbis message> tibero engine file check"
@@ -99,7 +99,7 @@ FN_AUTO_TBINARY(){
         FN_AUTO_PROGRESS_CHECK
         if [ "$YESNO"  == "YES" ]
         then
-            TBINARY_FILE_CHECK=`ls ../binary/tbinary*.tar`
+            TBINARY_FILE_CHECK=`ls ../binary/tbinary*.tar 2>/dev/null`
             if [ -z $TBINARY_FILE_CHECK ]
             then
                 echo "tbis message> tibero tbinary file check"
@@ -165,7 +165,7 @@ FN_AUTO_LICENSE(){
     FN_AUTO_PROGRESS_CHECK
     if [ "$YESNO" == "YES" ]
     then
-        LICENSE_FILE_CHECK=`ls ../binary/license.xml`
+        LICENSE_FILE_CHECK=`ls ../binary/license.xml 2>/dev/null`
         if [ -z $LICENSE_FILE_CHECK ]
         then
             echo "tbis message> tibero license file check"
@@ -929,7 +929,7 @@ FN_AUTO_INSTALL_CHECK(){
     fi
     echo "-----------------------------------------------------------------"
     echo "# TIBERO INSTALLATION BINARY "
-    TIBERO_LICENSE_FILE=`ls ../binary/license.xml`
+    TIBERO_LICENSE_FILE=`ls ../binary/license.xml 2>/dev/null`
     if [ -f $TIBERO_LICENSE_FILE ]
     then
         echo "- LICENSE FILE : "$TIBERO_LICENSE_FILE
@@ -937,7 +937,7 @@ FN_AUTO_INSTALL_CHECK(){
         echo "tbis message> license.xml file check"
     fi
 
-    TIBERO_ENGINE_FILE=`ls ../binary/tibero*`
+    TIBERO_ENGINE_FILE=`ls ../binary/tibero* 2>/dev/null`
     if [ -f $TIBERO_ENGINE_FILE ]
     then
         
@@ -946,7 +946,7 @@ FN_AUTO_INSTALL_CHECK(){
         echo "tbis message> TIBERO ENGINE file check"
     fi
 
-    TIBERO_TBINARY_FILE=`ls ../binary/tbinary*`
+    TIBERO_TBINARY_FILE=`ls ../binary/tbinary* 2>/dev/null`
     if [ -f $TIBERO_TBINARY_FILE ]
     then
         echo "- TBINARY FILE : "$TIBERO_TBINARY_FILE
@@ -1445,7 +1445,7 @@ FN_AUTO_INSTALL_REPORT(){
         echo "Running PATH : $DB_CREATE_FILE_DEST"
         tbiobench -i all -s 1G -F O_SYNC -F O_DIRECT -k
         cd $OLDPWD
-        TBIO_GARBAGE_FILE=`ls $DB_CREATE_FILE_DEST/*.tmp`
+        TBIO_GARBAGE_FILE=`ls $DB_CREATE_FILE_DEST/*.tmp 2>/dev/null`
         for TBIO_GARBAGE_NAME in ${TBIO_GARBAGE_FILE[@]}
         do
             echo "Garbage file : "$TBIO_GARBAGE_NAME
@@ -1635,7 +1635,7 @@ FN_AUTO_CONFIGURATION(){
 ############################################################
 FN_MAIN_MENU(){        
     CURRENT_DIRECTORY=`pwd`
-    CURRENT_DIRECTORY_CHK=`ls $CURRENT_DIRECTORY/tbis.cfg`
+    CURRENT_DIRECTORY_CHK=`ls $CURRENT_DIRECTORY/tbis.cfg 2>/dev/null` 
 
     if [ -z $CURRENT_DIRECTORY_CHK ]
     then
