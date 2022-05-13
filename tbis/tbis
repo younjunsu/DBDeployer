@@ -569,7 +569,7 @@ FN_AUTO_PROCESS_CHECK(){
     TIBERO_PROCESS=`ps -ef |grep tbsvr |grep -w $USER_NAME |grep -v grep |tail -n 1`
     TIBERO_SHM=`ipcs |grep -w $USER_NAME |tail -n 1`
 
-    if [ -z $TIBERO_PROCESS ] || [ -z $TIBERO_SHM ]
+    if [ -z "$TIBERO_PROCESS" ] || [ -z "$TIBERO_SHM" ]
     then
         echo "tbis message> tibero Process check"
         echo "  error> tbsvr process check"
