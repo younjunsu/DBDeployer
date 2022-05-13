@@ -157,17 +157,8 @@ FN_AUTO_LICENSE(){
     FN_AUTO_PROGRESS_CHECK
     if [ "$YESNO" == "YES" ]
     then
-        LICENSE_FILE_CHECK=`ls ../binary/license.xml 2>/dev/null`
-        if [ -z $LICENSE_FILE_CHECK ]
-        then
-            echo "tbis message> tibero license file check"
-            exit
-            
-        elif [ -n $LICENSE_FILE_CHECK ]
-        then
             cp ../binary/license.xml $TB_HOME/license/license.xml
             FN_SUCCESS_MSG
-        fi
     fi
 }
 
@@ -1317,17 +1308,23 @@ FN_AUTO_CNF_CHECK(){
             fi
         fi
     fi
+    
     echo
     echo "tbis message> TIBERO File Check"
     echo "----------------------------------------------------"
+    TB_FAIL_FILE_PARAM="N"
     ENGINE_FILE_CHECK=`ls ../binary/tibero*.tar* 2>/dev/null`    
     if [ -z $ENGINE_FILE_CHECK ]
     then
-                echo "tbis message> tibero engine file check"
-                exit
-                gunzip ../binary/tibero*.tar.gz
-                tar -xvf ../binary/tibero*.tar -C $USER_HOME
-                FN_SUCCESS_MSG
+        echo "  error> tibero engine file check"
+        TB_FAIL_FILE_PARAM="Y"
+    fi
+
+    LICENSE_FILE_CHECK=`ls ../binary/license.xml 2>/dev/null`
+    if [ -z $LICENSE_FILE_CHECK ]
+    then
+        echo "  error> tibero license file check"
+        TB_FAIL_FILE_PARAM="Y"
 	fi
     echo "----------------------------------------------------"
 
@@ -1337,10 +1334,10 @@ FN_AUTO_CNF_CHECK(){
     # N = Continue
     ##########################
     #-------------------------
-    if [ "$TB_FAIL_TIP_PARAM" == "Y" ] || [ "$TB_FAIL_OS_PARAM" == "Y" ]
+    if [ "$TB_FAIL_TIP_PARAM" == "Y" ] || [ "$TB_FAIL_OS_PARAM" == "Y" ] || [ "$TB_FAIL_FILE_PARAM" == "Y" ]
     then
         exit
-    elif [ "$TB_FAIL_TIP_PARAM" == "N" ] && [ "$TB_FAIL_OS_PARAM" == "N" ]
+    elif [ "$TB_FAIL_TIP_PARAM" == "N" ] && [ "$TB_FAIL_OS_PARAM" == "N" ]  && [ "$TB_FAIL_FILE_PARAM" == "N" ]
     then
         continue
     fi
