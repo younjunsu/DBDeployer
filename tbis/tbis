@@ -69,17 +69,9 @@ FN_AUTO_ENGINE(){
         FN_AUTO_PROGRESS_CHECK
         if [ "$YESNO"  == "YES" ]
         then
-            ENGINE_FILE_CHECK=`ls ../binary/tibero*.tar* 2>/dev/null`
-            if [ -z $ENGINE_FILE_CHECK ]
-            then
-                echo "tbis message> tibero engine file check"
-                exit
-            elif [ -n $ENGINE_FILE_CHECK ]
-            then
                 gunzip ../binary/tibero*.tar.gz
                 tar -xvf ../binary/tibero*.tar -C $USER_HOME
                 FN_SUCCESS_MSG
-            fi
         fi     
     fi
     
@@ -1325,7 +1317,20 @@ FN_AUTO_CNF_CHECK(){
             fi
         fi
     fi
+    echo
+    echo "tbis message> TIBERO File Check"
     echo "----------------------------------------------------"
+    ENGINE_FILE_CHECK=`ls ../binary/tibero*.tar* 2>/dev/null`    
+    if [ -z $ENGINE_FILE_CHECK ]
+    then
+                echo "tbis message> tibero engine file check"
+                exit
+                gunzip ../binary/tibero*.tar.gz
+                tar -xvf ../binary/tibero*.tar -C $USER_HOME
+                FN_SUCCESS_MSG
+	fi
+    echo "----------------------------------------------------"
+
 
     ##########################
     # Y = exit
