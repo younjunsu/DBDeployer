@@ -1,10 +1,12 @@
 # tbinstall
 
 
+## RUN
 ```
 #./tbis
 ```
 
+## MAIN
 ```
 [*] TIBERO Installation Shell Script
 [*] This script is for TmaxTibero Daejeon Office only.
@@ -19,6 +21,8 @@
 Choose the Number : 
 ```
 
+
+## 1. tbis Installation Tools
 ```
 [*] TIBERO Auto installation Tools Configuration Checking STEP
 -----------------------------------------------------------------
@@ -69,7 +73,7 @@ Choose the Number :
 continue ? ( [Y]es / [N]o / [AA] All Auto] ) : 
 ```
 
-
+## 2. tbis Installation Report
 ```
 TIBERO AUTO INSTALLATION REPORT
 -----------------------------------------------------------------
@@ -90,6 +94,7 @@ press other key to quit
 Choose the Number : 
 ```
 
+## 3. tbis Configuration Text
 ```
 # TIBERO auto configuration text
 - Step by step
