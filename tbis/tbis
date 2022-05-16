@@ -800,13 +800,23 @@ FN_AUTO_SUCCESS(){
     echo "- CONTROL2_FILE : $CONTROL_FILE_PATH2/tbctl2/c2.ctl"
     echo "- DB_CREATE_FILE : $DB_CREATE_FILE_DEST/tbdata"
     echo "-----------------------------------------------------------------"
-    echo "# TBCM Process"
-    ps -ef |grep $USER_NAME |grep -E "tbcm" |grep -v "grep"
+    
+    if [ "$TIBERO_TYPE" != "SINGLE" ]
+    then
+        echo "# TBCM Process"
+        ps -ef |grep $USER_NAME |grep -E "tbcm" |grep -v "grep"
+    fi
+
     echo
-    echo "# tbsvr Process"
-    ps -ef |grep $USER_NAME |grep -E "tbsvr" |grep -v "grep"
-    echo
-    echo
+
+    if [ "$TIBERO_TYPE" != "observer" ]
+    then
+    
+        echo "# tbsvr Process"
+        ps -ef |grep $USER_NAME |grep -E "tbsvr" |grep -v "grep"
+        echo
+        echo
+    fi
     exit
 }
 
