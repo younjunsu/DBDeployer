@@ -1,1 +1,1 @@
-# tbis crruent working directory
+# tbis install binary
