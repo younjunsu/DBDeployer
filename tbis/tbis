@@ -543,8 +543,7 @@ FN_AUTO_CHANGE_OWNER(){
     then
         chown -R $USER_NAME:$GROUP_NAME $USER_HOME
         FN_SUCCESS_MSG
-    fi
-    
+    fi    
 }
 
 FN_AUTO_PROCESS_CHECK(){
@@ -765,14 +764,14 @@ FN_AUTO_TSC_CFG(){
         if [ "$INSTALL_USER_NAME" == "root" ]
         then
             su - $USER_NAME -c "
-                tbsql -s sys/tibero <<EOF
+                tbsql -s sys/tibero <<-EOF
                 ALTER DATABASE STANDBY CONTROLFILE;
                 exit
                 EOF
             "        
         elif [ "$INSTALL_USER_NAME" != "root" ]
         then
-tbsql -s sys/tibero <<EOF
+tbsql -s sys/tibero <<-EOF
 ALTER DATABASE STANDBY CONTROLFILE;
 exit
 EOF
@@ -801,8 +800,11 @@ FN_AUTO_SUCCESS(){
     echo "- CONTROL2_FILE : $CONTROL_FILE_PATH2/tbctl2/c2.ctl"
     echo "- DB_CREATE_FILE : $DB_CREATE_FILE_DEST/tbdata"
     echo "-----------------------------------------------------------------"
-    echo "# ps command"
-    ps -ef |grep $USER_NAME |grep -E "tbsvr|tbcm" |grep -v "grep"
+    echo "# TBCM Process"
+    ps -ef |grep $USER_NAME |grep -E "tbcm" |grep -v "grep"
+    echo
+    echo "# tbsvr Process"
+    ps -ef |grep $USER_NAME |grep -E "tbsvr" |grep -v "grep"
     echo
     echo
     exit
@@ -829,7 +831,7 @@ FN_AUTO_TAC_CFG(){
         if [ "$INSTALL_USER_NAME" == "root" ]
         then
             su - $USER_NAME -c "
-                tbsql -s sys/tibero <<EOF
+                tbsql -s sys/tibero <<-EOF
                 CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $THREAD1_UNDO1_SIZE AUTOEXTEND OFF;
                 ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $THREAD1_REDO_SIZE;
                 ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $THREAD1_REDO_SIZE;
@@ -842,7 +844,7 @@ FN_AUTO_TAC_CFG(){
             "
         elif [ "$INSTALL_USER_NAME" != "root" ]
         then
-                tbsql -s sys/tibero <<EOF
+                tbsql -s sys/tibero <<-EOF
                 CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $THREAD1_UNDO1_SIZE AUTOEXTEND OFF;
                 ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $THREAD1_REDO_SIZE;
                 ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $THREAD1_REDO_SIZE;
@@ -1001,7 +1003,7 @@ FN_AUTO_INSTALL(){
     FN_AUTO_ENGINE
     FN_AUTO_TBINARY
     FN_AUTO_PROFILE
-    if [ $TIBERO_TYPE == "SINGLE" ]
+    if [ "$TIBERO_TYPE" == "SINGLE" ]
     then
         FN_AUTO_TB_SID_TIP
         FN_AUTO_TBDSN
@@ -1012,9 +1014,9 @@ FN_AUTO_INSTALL(){
         FN_AUTO_TB_BOOT NORMAL
         FN_AUTO_SYSTEM_SHELL
         FN_AUTO_ARCHIVE_DIR
-    elif [ $TIBERO_TYPE == "TSC" ]
+    elif [ "$TIBERO_TYPE" == "TSC" ]
     then
-        if [ $TIBERO_NODE == "primary" ]
+        if [ "$TIBERO_NODE" == "primary" ]
         then
             FN_AUTO_TB_SID_TIP
             FN_AUTO_TBDSN
@@ -1023,7 +1025,7 @@ FN_AUTO_INSTALL(){
             FN_AUTO_CHANGE_OWNER
             FN_AUTO_CM_BOOT
             FN_AUTO_CM_RESOURCE
-            if [ -z $NODE1_VIP_ETH]
+            if [ -z "$NODE1_VIP_ETH" ]
             then
                 FN_AUTO_CHANGE_OWNER
                 FN_AUTO_CM_DOWN
@@ -1040,7 +1042,7 @@ FN_AUTO_INSTALL(){
             FN_AUTO_TB_DOWN IMMEDIATE
             FN_AUTO_TSC_COPY
             FN_AUTO_ARCHIVE_DIR
-        elif [ $TIBERO_NODE == "standby" ]
+        elif [ "$TIBERO_NODE" == "standby" ]
         then
             FN_AUTO_TB_SID_TIP
             FN_AUTO_TBDSN
@@ -1049,7 +1051,7 @@ FN_AUTO_INSTALL(){
             FN_AUTO_CHANGE_OWNER
             FN_AUTO_CM_BOOT ROOT
             FN_AUTO_CM_RESOURCE
-            if [ -z $NODE2_VIP_ETH]
+            if [ -z "$NODE2_VIP_ETH" ]
             then
                 FN_AUTO_CHANGE_OWNER
                 FN_AUTO_CM_DOWN
@@ -1063,16 +1065,16 @@ FN_AUTO_INSTALL(){
             FN_AUTO_TSC_CFG
             FN_AUTO_TB_DOWN IMMEDIATE
             FN_AUTO_ARCHIVE_DIR
-        elif [ $TIBERO_NODE == "observer" ]
+        elif [ "$TIBERO_NODE" == "observer" ]
         then
             FN_AUTO_CHANGE_OWNER
             FN_AUTO_CM_SID_TIP
             FN_AUTO_CHANGE_OWNER
             FN_AUTO_CM_BOOT
         fi
-    elif [ $TIBERO_TYPE == "TAC" ]
+    elif [ "$TIBERO_TYPE" == "TAC" ]
     then
-        if [ $TIBERO_NODE == "cm0" ]
+        if [ "$TIBERO_NODE" == "cm0" ]
         then
             FN_AUTO_TB_SID_TIP
             FN_AUTO_TBDSN
@@ -1097,7 +1099,7 @@ FN_AUTO_INSTALL(){
             FN_AUTO_SYSTEM_SHELL
             FN_AUTO_TAC_CFG
             FN_AUTO_ARCHIVE_DIR
-        elif [ $TIBERO_NODE == "cm1" ]
+        elif [ "$TIBERO_NODE" == "cm1" ]
         then
             FN_AUTO_TB_SID_TIP
             FN_AUTO_TBDSN
@@ -1106,7 +1108,7 @@ FN_AUTO_INSTALL(){
             FN_AUTO_CHANGE_OWNER
             FN_AUTO_CM_BOOT ROOT
             FN_AUTO_CM_RESOURCE
-            if [ -z $NODE2_VIP_ETH]
+            if [ -z "$NODE2_VIP_ETH" ]
             then
                 FN_AUTO_CHANGE_OWNER
                 FN_AUTO_CM_DOWN
@@ -1306,6 +1308,20 @@ FN_AUTO_CNF_CHECK(){
                 TB_FAIL_OS_PARAM="Y"
             fi
         fi
+    fi
+   
+    OS_USER_CHECK=`id -nu |grep $USER_NAME`
+    OS_GROUP_CHECK=`id -ng $USER_NAME |grep $GROUP_NAME`
+    if [ -n "$OS_USER_CHECK" ]
+    then
+        echo "  error> USER_NAME check"
+        TB_FAIL_OS_PARAM="Y"
+    fi
+
+    if [ -n "$OS_GROUP_CHECK" ]
+    then
+        echo "  error> GROUP_NAME check"
+        TB_FAIL_OS_PARAM="Y"
     fi
     
     echo
