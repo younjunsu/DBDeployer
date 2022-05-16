@@ -803,7 +803,7 @@ FN_AUTO_SUCCESS(){
     if [ "$TIBERO_TYPE" != "SINGLE" ]
     then
         echo "# TBCM Process"
-        ps -ef |grep $USER_NAME |grep -E "tbcm" |grep -v "grep"
+        ps -ef |grep -E "root|$USER_NAME" |grep -E "tbcm" |grep -v "grep"
     fi
 
     echo
