@@ -802,15 +802,14 @@ FN_AUTO_SUCCESS(){
     
     if [ "$TIBERO_TYPE" != "SINGLE" ]
     then
-        echo "# TBCM Process"
+        echo "# tbcm Process"
         ps -ef |grep -E "root|$USER_NAME" |grep -E "tbcm" |grep -v "grep"
+        echo "-----------------------------------------------------------------"
     fi
-
-    echo
 
     if [ "$TIBERO_TYPE" != "observer" ]
     then
-    
+        
         echo "# tbsvr Process"
         ps -ef |grep $USER_NAME |grep -E "tbsvr" |grep -v "grep"
         echo
