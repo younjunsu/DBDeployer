@@ -1135,7 +1135,7 @@ FN_AUTO_CNF_CHECK(){
 
     if [ "$TB_ERROR_CHK" == "Y" ]
     then
-        echo "tbis message> tbis.cfg - Parameter"
+        echo "tbis message> tbis - Parameter"
         echo "----------------------------------------------------"
         if [ -z $USER_NAME ]
         then
@@ -1272,19 +1272,19 @@ FN_AUTO_CNF_CHECK(){
     echo "----------------------------------------------------"
     echo
 
-    if [ "$TB_FAIL_CHK" == "Y" ]
-    then
-        TB_FAIL_TIP_PARAM="Y"
-    elif [ "$TB_FAIL_CHK" == "N" ]
-    then
-        TB_FAIL_TIP_PARAM="N"
-    fi
+    #if [ "$TB_FAIL_CHK" == "Y" ]
+    #then
+    #    TB_FAIL_TIP_PARAM="Y"
+    #elif [ "$TB_FAIL_CHK" == "N" ]
+    #then
+    #    TB_FAIL_TIP_PARAM="N"
+    #fi
 
-    echo "tbis message> OS Installation User"
+    echo "tbis message> tbis - OS Installation USER/GROUP check"
     echo "----------------------------------------------------" 
+    TB_FAIL_OS_PARAM="N"
     if [ -z $NODE1_VIP_ETH ]
     then
-        echo "  message> tbis.cfg - No problem"
         TB_FAIL_OS_PARAM="N"
     elif [ -n $NODE1_VIP_ETH ]
     then
@@ -1296,7 +1296,6 @@ FN_AUTO_CNF_CHECK(){
             TB_FAIL_OS_PARAM="Y"
         elif [ "$INSTALL_USER_NAME" == "root" ]
         then
-            echo "  message> tbis.cfg - No problem"
             TB_FAIL_OS_PARAM="N"
         fi
 
@@ -1310,22 +1309,29 @@ FN_AUTO_CNF_CHECK(){
         fi
     fi
    
-    OS_USER_CHECK=`id -nu |grep $USER_NAME`
-    OS_GROUP_CHECK=`id -ng $USER_NAME |grep $GROUP_NAME`
-    if [ -n "$OS_USER_CHECK" ]
+    OS_USER_CHECK=`id -nu $USER_NAME`
+    OS_GROUP_CHECK=`id -ng $USER_NAME |grep $GROUP_NAME 2>/dev/null`
+
+    if [ "$OS_USER_CHECK" != "$USER_NAME" ] || [ -z "$OS_USER_CHECK" ]
     then
-        echo "  error> USER_NAME check"
+        echo "  error> USER_NAME : $USER_NAME Unknown "
         TB_FAIL_OS_PARAM="Y"
     fi
 
-    if [ -n "$OS_GROUP_CHECK" ]
+    if [ "$OS_GROUP_CHECK" != "$GROUP_NAME" ] || [ -z "$OS_GROUP_CHECK" ]
     then
-        echo "  error> GROUP_NAME check"
+        echo "  error> GROUP_NAME : $GROUP_NAME Unknown "
         TB_FAIL_OS_PARAM="Y"
     fi
     
+    if [ $TB_FAIL_OS_PARAM != "Y" ]
+    then
+        echo "  message> tbis.cfg - No problem"
+    fi
+    echo "----------------------------------------------------"
     echo
-    echo "tbis message> TIBERO File Check"
+
+    echo "tbis message> tbis - file check"
     echo "----------------------------------------------------"
     TB_FAIL_FILE_PARAM="N"
     ENGINE_FILE_CHECK=`ls ../binary/tibero*.tar* 2>/dev/null`    
@@ -1341,18 +1347,22 @@ FN_AUTO_CNF_CHECK(){
         echo "  error> tibero license file check"
         TB_FAIL_FILE_PARAM="Y"
 	fi
+    
+    if [ $TB_FAIL_FILE_PARAM != "Y" ]
+    then
+        echo "  message> tbis.cfg - No problem"
+    fi
     echo "----------------------------------------------------"
-
 
     ##########################
     # Y = exit
     # N = Continue
     ##########################
     #-------------------------
-    if [ "$TB_FAIL_TIP_PARAM" == "Y" ] || [ "$TB_FAIL_OS_PARAM" == "Y" ] || [ "$TB_FAIL_FILE_PARAM" == "Y" ]
+    if [ "$TB_FAIL_CHK" == "Y" ] || [ "$TB_FAIL_OS_PARAM" == "Y" ] || [ "$TB_FAIL_FILE_PARAM" == "Y" ]
     then
         exit
-    elif [ "$TB_FAIL_TIP_PARAM" == "N" ] && [ "$TB_FAIL_OS_PARAM" == "N" ]  && [ "$TB_FAIL_FILE_PARAM" == "N" ]
+    elif [ "$TB_FAIL_CHK" == "N" ] && [ "$TB_FAIL_OS_PARAM" == "N" ]  && [ "$TB_FAIL_FILE_PARAM" == "N" ]
     then
         continue
     fi
