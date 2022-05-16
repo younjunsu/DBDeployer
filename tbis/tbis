@@ -840,7 +840,7 @@ FN_AUTO_TAC_CFG(){
         if [ "$INSTALL_USER_NAME" == "root" ]
         then
             su - $USER_NAME -c "
-                tbsql -s sys/tibero <<-EOF
+                tbsql -s sys/tibero <<EOF
                 CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $THREAD1_UNDO1_SIZE AUTOEXTEND OFF;
                 ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $THREAD1_REDO_SIZE;
                 ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $THREAD1_REDO_SIZE;
@@ -849,11 +849,11 @@ FN_AUTO_TAC_CFG(){
                 ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 9 ('$DB_CREATE_FILE_DEST/tbdata/system/redo091.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo092.redo') SIZE $THREAD1_REDO_SIZE;
                 ALTER DATABASE ENABLE PUBLIC THREAD 1;
                 exit
-                EOF
+EOF
             "
         elif [ "$INSTALL_USER_NAME" != "root" ]
         then
-                tbsql -s sys/tibero <<-EOF
+                tbsql -s sys/tibero <<EOF
                 CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $THREAD1_UNDO1_SIZE AUTOEXTEND OFF;
                 ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $THREAD1_REDO_SIZE;
                 ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $THREAD1_REDO_SIZE;
