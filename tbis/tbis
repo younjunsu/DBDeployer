@@ -863,7 +863,6 @@ FN_AUTO_INSTALL_CHECK(){
     echo "[*] TIBERO Auto installation Tools Configuration Checking STEP"
     echo "-----------------------------------------------------------------"
     echo "# Installation Mode"
-    echo "- Installation user : $INSTALL_USER_NAME"
     echo "- Installation type : $TIBERO_TYPE"
     echo "- Installation node : $TIBERO_NODE"
     FN_AUTO_TB_SID_NAME
