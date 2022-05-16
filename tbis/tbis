@@ -789,7 +789,6 @@ FN_AUTO_SUCCESS(){
     echo "############################################################"
     echo "# tbis Progress> time: "$TBIS_END_TIME
     echo "# Installation Mode"
-    echo "- Installation user : $INSTALL_USER_NAME"
     echo "- Installation type : $TIBERO_TYPE"
     echo "- Installation node : $TIBERO_NODE"
     echo "-----------------------------------------------------------------"
