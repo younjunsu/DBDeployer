@@ -215,11 +215,32 @@ FN_AUTO_CNF_CHECK(){
 
         if [ "$TIBERO_TYPE" == "TSC" ]
         then
-            if [ "$NODE1_VIP_IP" != "$NODE2_VIP_IP" ]
+            if [ "$NODE1_INTER_IP" == "$NODE2_INTER_IP" ]
             then
-                echo "  error> TSC nodes same VIP check"
+                echo "  error> TSC nodes NODE1_INTER_IP, NODE2_INTER_IP"
                 TB_FAIL_OS_PARAM="Y"
             fi
+                    
+            if [ "$NODE1_VIP_IP" != "$NODE2_VIP_IP" ]
+            then
+                echo "  error> TSC nodes NODE1_VIP_IP, NODE2_VIP_IP"
+                TB_FAIL_OS_PARAM="Y"
+            fi
+        elif [ "$TIBERO_TYPE" == "TAC" ]
+        then
+            if [ "$NODE1_INTER_IP" == "$NODE2_INTER_IP" ]
+            then
+                echo "  error> TAC nodes NODE1_INTER_IP, NODE2_INTER_IP"
+                TB_FAIL_OS_PARAM="Y"
+            fi     
+
+            if [ "$NODE1_VIP_IP" == "$NODE2_VIP_IP" ]
+            then
+                echo "  error> TAC nodes NODE1_VIP_IP, NODE2_VIP_IP"
+                TB_FAIL_OS_PARAM="Y"
+            fi
+            
+ 
         fi
     fi
    
@@ -1168,27 +1189,105 @@ FN_AUTO_INSTALL_CHECK(){
     echo "[*] TIBERO Auto installation Tools Configuration Checking STEP"
     echo "-----------------------------------------------------------------"
     echo "# Installation Mode"
+    echo "-----------------------------------------------------------------"    
     echo "- Installation type : $TIBERO_TYPE"
     echo "- Installation node : $TIBERO_NODE"
+    echo
     FN_AUTO_TB_SID_NAME
     echo "-----------------------------------------------------------------"
-    echo "# OS USER & GROUP"
+    echo "# TIBERO installation binary/license "
+    echo "-----------------------------------------------------------------"    
+    TIBERO_LICENSE_FILE=`ls ../binary/license.xml 2>/dev/null`
+    if [ "$TIBERO_NODE" != "observer" ]
+    then
+        if [ -f "$TIBERO_LICENSE_FILE" ]
+        then
+            echo "- LICENSE file : "$TIBERO_LICENSE_FILE
+        else
+            echo "- LICENSE file : none"
+        fi
+    fi
+
+    TIBERO_ENGINE_FILE=`ls ../binary/tibero* 2>/dev/null`
+    if [ -f "$TIBERO_ENGINE_FILE" ]
+    then    
+        echo "- ENGINE file : "$TIBERO_ENGINE_FILE
+    else
+        echo "- ENGINE file : none"
+    fi
+
+    TIBERO_TBINARY_FILE=`ls ../binary/tbinary* 2>/dev/null`
+    if [ -f "$TIBERO_TBINARY_FILE" ]
+    then
+        echo "- TBINARY file : "$TIBERO_TBINARY_FILE
+    else
+        echo "- TBINARY file : none" 
+    fi    
+    echo
+    echo "-----------------------------------------------------------------"
+    echo "# OS user/group"
+    echo "-----------------------------------------------------------------"
     echo "- OS user : $USER_NAME"
     echo "- OS home : $USER_HOME"
-    echo "- OS user group : $GROUP_NAME"    
+    echo "- OS user group : $GROUP_NAME"
+    echo
     echo "-----------------------------------------------------------------"
-    echo "# TIBERO DATABASE"
-    echo "- TB_SID : $TB_SID"
+    echo "# TIBERO"
+    echo "-----------------------------------------------------------------"
     echo "- TB_HOME : $TB_HOME"
-    echo "- DB_NAME : $DB_NAME"
-    echo "- LISTENER_PORT : $LISTENER_PORT"
-    echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
+    if [ "$TIBERO_NODE" != "observer" ]
+    then
+        echo "- TB_SID : $TB_SID"
+        echo "- DB_NAME : $DB_NAME"
+        echo "- LISTENER_PORT : $LISTENER_PORT"
+        echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
+        echo "- ARCHIVE MODE : `cat tbis.sql|grep -Ew "NOARCHIVELOG|ARCHIVELOG" |awk '{print $1}'`"        
+    fi
+
+    if [ "$TIBERO_NODE" != "observer" ]
+    then
+        echo
+        echo "-----------------------------------------------------------------"
+        echo "# TIBERO file path"
+        echo "-----------------------------------------------------------------"    
+        echo "- TB_HOME PATH : $TB_HOME"
+        echo "- TBINARY PATH : $TB_HOME/tbinary"
+        echo "- CONTROL1_FILE : $CONTROL_FILE_PATH1/tbctl1/c1.ctl"
+        echo "- CONTROL2_FILE : $CONTROL_FILE_PATH2/tbctl2/c2.ctl"
+        echo "- DB_CREATE_FILE : $DB_CREATE_FILE_DEST/tbdata"
+        
+        if [ "$TIBERO_TYPE" == "SINGLE" ]
+        then
+            echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch"
+        elif [ "$TIBERO_TYPE" == "TSC" ]
+        then
+            echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch"
+        elif [ "$TIBERO_TYPE" == "TAC" ]
+        then
+            if [ "$TIBERO_NODE" == "cm0" ]
+            then
+                echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch0"
+            elif [ "$TIBERO_NODE" == "cm1" ]
+            then
+                echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch1"
+            fi
+        fi
+    fi
+    echo
     if [ "$TIBERO_NODE" != "SINGLE" ]
     then
         echo "-----------------------------------------------------------------"
-        echo "# TIBERO CM"
+        echo "# TIBERO cluseter manager"
+        echo "-----------------------------------------------------------------"
         echo "- CM_SID : $TIBERO_NODE"
         echo "- CM_HOME : $TB_HOME"
+    fi 
+    
+    if [ "$TIBERO_NODE" == "observer" ]
+    then
+        2>/dev/null
+    elif [ "$TIBERO_NODE" != "SINGLE" ]
+    then    
         echo "- NODE1_INTER_IP : $NODE1_INTER_IP"
         echo "- NODE2_INTER_IP : $NODE2_INTER_IP"
         if [ "$TIBERO_TYPE" == "TSC" ]
@@ -1198,72 +1297,44 @@ FN_AUTO_INSTALL_CHECK(){
                 echo "- TIBERO_OBSERVER_ENABLE : $TIBERO_OBSERVER_ENABLE"
                 echo "- NODE_OBSERVER_IP : $NODE_OBSERVER_IP"
             fi
-            echo "- TSC VIP_ETH : $NODE1_VIP_ETH"
-            echo "- TSC VIP : $NODE1_VIP_IP"
+
+            if [ -n "$NODE1_VIP_ETH" ] || [ -n "$NODE2_VIP_ETH" ]
+            then
+                echo "-------------"
+                echo "- VIP Enable"
+                echo "-------------"            
+                echo "- TSC VIP_ETH : $NODE1_VIP_ETH"
+                echo "- TSC VIP : $NODE1_VIP_IP"
+            else 
+                echo "-------------"
+                echo "- VIP Disable"
+                echo "-------------"
+            fi
         elif [ "$TIBERO_TYPE" == "TAC" ]
         then
-            echo "- NODE1_VIP_ETH : $NODE1_VIP_ETH"
-            echo "- NODE1_VIP_IP : $NODE1_VIP_IP"
-            echo "- NODE2_VIP_ETH : $NODE2_VIP_ETH"
-            echo "- NODE2_VIP_IP : $NODE2_VIP_IP"
-        fi
-    fi    
-    echo "-----------------------------------------------------------------"
-    echo "# TIBERO DATABASE FILE DEST"
-    echo "- TB_HOME PATH : $TB_HOME"
-    echo "- TBINARY PATH : $TB_HOME/tbinary"
-    echo "- CONTROL1_FILE : $CONTROL_FILE_PATH1/tbctl1/c1.ctl"
-    echo "- CONTROL2_FILE : $CONTROL_FILE_PATH2/tbctl2/c2.ctl"
-    echo "- DB_CREATE_FILE : $DB_CREATE_FILE_DEST/tbdata"
-    
-    if [ "$TIBERO_TYPE" == "SINGLE" ]
-    then
-        echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch"
-    elif [ "$TIBERO_TYPE" == "TSC" ]
-    then
-        echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch"
-    elif [ "$TIBERO_TYPE" == "TAC" ]
-    then
-        if [ "$TIBERO_NODE" == "cm0" ]
-        then
-            echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch0"
-        elif [ "$TIBERO_NODE" == "cm1" ]
-        then
-            echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch1"
+            if [ -n "$NODE1_VIP_ETH" ] || [ -n "$NODE2_VIP_ETH" ]
+            then
+                echo "-------------"
+                echo "- VIP Enable"
+                echo "-------------"                          
+                echo "- NODE1_VIP_ETH : $NODE1_VIP_ETH"
+                echo "- NODE1_VIP_IP : $NODE1_VIP_IP"
+                echo "- NODE2_VIP_ETH : $NODE2_VIP_ETH"
+                echo "- NODE2_VIP_IP : $NODE2_VIP_IP"
+            else 
+                echo "-------------"
+                echo "- VIP Disable"
+                echo "-------------"
+            fi                
         fi
     fi
+    echo
     echo "-----------------------------------------------------------------"
-    echo "# TIBERO INSTALLATION BINARY "
-    TIBERO_LICENSE_FILE=`ls ../binary/license.xml 2>/dev/null`
-    if [ -f "$TIBERO_LICENSE_FILE" ]
-    then
-        echo "- LICENSE FILE : "$TIBERO_LICENSE_FILE
-    else
-        echo "tbis message> license.xml file check"
-    fi
-
-    TIBERO_ENGINE_FILE=`ls ../binary/tibero* 2>/dev/null`
-    if [ -f "$TIBERO_ENGINE_FILE" ]
-    then
-        
-        echo "- ENGINE FILE : "$TIBERO_ENGINE_FILE
-    else
-        echo "tbis message> TIBERO ENGINE file check"
-    fi
-
-    TIBERO_TBINARY_FILE=`ls ../binary/tbinary* 2>/dev/null`
-    if [ -f "$TIBERO_TBINARY_FILE" ]
-    then
-        echo "- TBINARY FILE : "$TIBERO_TBINARY_FILE
-    else
-        echo "tbis message> TBINARY file check"
-    fi    
-    echo "-----------------------------------------------------------------"
-    echo "# TIBERO Configuration Files"
+    echo "# TIBERO Configuration file"
     echo "- cat tbis.cfg : TIBERO Configuration File"
     echo "- cat tbis.sql : CREATE DATABASE SQL File"
     echo "-----------------------------------------------------------------"
-    
+
     ### IN PROCESS
     echo
     printf "continue ? ( [Y]es / [N]o / [AA] All Auto] ) : "
