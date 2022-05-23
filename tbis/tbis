@@ -92,10 +92,10 @@ FN_AUTO_TBINARY(){
         if [ "$YESNO"=="YES" ]
         then
             TBINARY_FILE_CHECK=`ls ../binary/tbinary*.tar 2>/dev/null`
-            if [ -z $TBINARY_FILE_CHECK ]
+            if [ -z "$TBINARY_FILE_CHECK" ]
             then
                 echo "tbis message> tibero tbinary file check"
-            elif [ -n $TBINARY_FILE_CHECK ]
+            elif [ -n "$TBINARY_FILE_CHECK" ]
             then
                 tar -xvf ../binary/tbinary*.tar -C $USER_HOME
                 FN_SUCCESS_MSG
@@ -124,14 +124,14 @@ FN_AUTO_PROFILE(){
     then
         TIBERO_BASHPROFILE=$USER_HOME/.bash_profile
         TIBERO_PROFILE=$USER_HOME/.profile
-        if [ -f $TIBERO_PROFILE ]
+        if [ -f "$TIBERO_PROFILE" ]
         then
             echo ""
             TIBERO_PROFILE_CHECK=$TIBERO_PROFILE
             sh tbis.cfg USER_PROFILE >> $USER_HOME/.profile
             . $TIBERO_PROFILE_CHECK
             FN_SUCCESS_MSG
-        elif [ -f $TIBERO_BASHPROFILE ]
+        elif [ -f "$TIBERO_BASHPROFILE" ]
         then
             TIBERO_PROFILE_CHECK=$TIBERO_BASHPROFILE
             sh tbis.cfg USER_PROFILE >> $USER_HOME/.bash_profile
@@ -174,7 +174,7 @@ FN_AUTO_TB_SID_TIP(){
     FN_AUTO_PROGRESS_CHECK        
     if [ "$YESNO"=="YES" ]
     then
-        if [ -z $TB_SID ]
+        if [ -z "$TB_SID" ]
         then
           echo "tbis message> \$TB_SID check"
           exit
@@ -228,7 +228,7 @@ FN_AUTO_TBDSN(){
     if [ "$YESNO"=="YES" ]
     then
         
-        if [ -z $TB_HOME ]
+        if [ -z "$TB_HOME" ]
         then
           echo "tbis message> \$TB_HOME check"
           exit
@@ -271,10 +271,10 @@ FN_AUTO_PROGRESS_PROFILE(){
     TIBERO_BASHPROFILE=$USER_HOME/.bash_profile
     TIBERO_PROFILE=$USER_HOME/.profile
 
-    if [ -f $TIBERO_PROFILE ]
+    if [ -f "$TIBERO_PROFILE" ]
     then
         TIBERO_PROFILE_CHECK=$TIBERO_PROFILE
-    elif [ -f $TIBERO_BASHPROFILE ]
+    elif [ -f "$TIBERO_BASHPROFILE" ]
     then
         TIBERO_PROFILE_CHECK=$TIBERO_BASHPROFILE
     fi
@@ -302,7 +302,7 @@ FN_AUTO_CM_RESOURCE(){
                 if [ "$TIBERO_NODE"=="primary" ]
                 then
                     su - $USER_NAME -c "cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT"
-                    if [ -z $NODE1_VIP_ETH ]
+                    if [ -z "$NODE1_VIP_ETH" ]
                     then
                         su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --cfile $TB_HOME/config/CMFILE_cls0"
                         su - $USER_NAME -c "cmrctl start cluster --name cls0"
@@ -331,7 +331,7 @@ FN_AUTO_CM_RESOURCE(){
                 elif [ "$TIBERO_NODE"=="standby" ]
                 then
                     su - $USER_NAME -c "cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT"
-                        if [ -z $NODE2_VIP_ETH ]
+                        if [ -z "$NODE2_VIP_ETH" ]
                         then
                             su - $USER_NAME -c "cmrctl add cluster --name cls1 --incnet net1 --cfile $TB_HOME/config/CMFILE_cls1"
                             su - $USER_NAME -c "cmrctl start cluster --name cls1"
@@ -355,7 +355,7 @@ FN_AUTO_CM_RESOURCE(){
                 if [ "$TIBERO_NODE"=="cm0" ]
                 then
                     su - $USER_NAME -c "cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT"
-                    if [ -z $NODE1_VIP_ETH ]
+                    if [ -z "$NODE1_VIP_ETH" ]
                     then
                         su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --cfile $CFILE_PATH/CMFILE"
                         su - $USER_NAME -c "cmrctl start cluster --name cls0"
@@ -372,7 +372,7 @@ FN_AUTO_CM_RESOURCE(){
                 elif [ "$TIBERO_NODE"=="cm1" ]
                 then
                     su - $USER_NAME -c "cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT"
-                    if [ -z $NODE2_VIP_ETH ]
+                    if [ -z "$NODE2_VIP_ETH" ]
                     then
                         su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net1  --cfile $CFILE_PATH/CMFILE"
                         su - $USER_NAME -c "cmrctl start cluster --name cls0"
@@ -393,7 +393,7 @@ FN_AUTO_CM_RESOURCE(){
                 if [ "$TIBERO_NODE"=="primary" ]
                 then
                     cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT
-                    if [ -z $NODE1_VIP_ETH ]
+                    if [ -z "$NODE1_VIP_ETH" ]
                     then
                         cmrctl add cluster --name cls0 --incnet net0 --cfile $TB_HOME/config/CMFILE_cls0
                         cmrctl start cluster --name cls0
@@ -436,7 +436,7 @@ FN_AUTO_CM_RESOURCE(){
                 elif [ "$TIBERO_NODE"=="cm1" ]
                 then
                     cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT
-                    if [ -z $NODE2_VIP_ETH ]
+                    if [ -z "$NODE2_VIP_ETH" ]
                     then
                         cmrctl add cluster --name cls0 --incnet net1  --cfile $CFILE_PATH/CMFILE
                         cmrctl start cluster --name cls0
@@ -475,10 +475,10 @@ FN_AUTO_CM_BOOT(){
         else
            if [ "$INSTALL_USER_NAME"=="root" ]
            then
-                if [ -z $NODE1_VIP_ETH ]
+                if [ -z "$NODE1_VIP_ETH" ]
                 then
                     su - $USER_NAME -c "tbcm -b"
-                elif [ -n $NODE1_VIP_ETH ]
+                elif [ -n "$NODE1_VIP_ETH" ]
                 then
                     FN_AUTO_PROGRESS_PROFILE
                     . $TIBERO_PROFILE_CHECK
@@ -511,10 +511,10 @@ FN_AUTO_CM_DOWN(){
     then
         if [ "$INSTALL_USER_NAME"=="root" ]
         then
-            if [ -z $NODE1_VIP_ETH ]
+            if [ -z "$NODE1_VIP_ETH" ]
             then
                 su - $USER_NAME -c "tbcm -d"
-            elif [ -n $NODE1_VIP_ETH ]
+            elif [ -n "$NODE1_VIP_ETH" ]
             then
                 FN_AUTO_PROGRESS_PROFILE
                 . $TIBERO_PROFILE_CHECK
@@ -695,29 +695,29 @@ FN_AUTO_SYSTEM_SHELL(){
 }
 
 FN_AUTO_ARCHIVE_DIR(){
-    if [ $TIBERO_TYPE=="SINGLE" ]
+    if [ "$TIBERO_TYPE"=="SINGLE" ]
     then
         ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch`
         mkdir -p $ARCHIVE_LOG_FILE_PATH
-    elif [ $TIBERO_TYPE=="TSC" ]
+    elif [ "$TIBERO_TYPE"=="TSC" ]
     then
         2>/dev/null
-        if [ $TIBERO_NODE=="observer" ]
+        if [ "$TIBERO_NODE"=="observer" ]
         then
             2>/dev/null
-        elif [ $TIBERO_NODE=="primary" ]
+        elif [ "$TIBERO_NODE"=="primary" ]
         then
             ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch`
             mkdir -p $ARCHIVE_LOG_FILE_PATH
         fi
-    elif [ $TIBERO_TYPE=="TAC" ]
+    elif [ "$TIBERO_TYPE"=="TAC" ]
     then
         2>/dev/null
-        if [ $TIBERO_NODE=="cm0" ]
+        if [ "$TIBERO_NODE"=="cm0" ]
         then
             ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch0`
             mkdir -p $ARCHIVE_LOG_FILE_PATH
-        elif [ $TIBERO_NODE=="cm1" ]
+        elif [ "$TIBERO_NODE"=="cm1" ]
         then
             ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch1`
             mkdir -p $ARCHIVE_LOG_FILE_PATH
@@ -764,14 +764,14 @@ FN_AUTO_TSC_CFG(){
         if [ "$INSTALL_USER_NAME"=="root" ]
         then
             su - $USER_NAME -c "
-                tbsql -s sys/tibero <<-EOF
+                tbsql -s sys/tibero <<EOF
                 ALTER DATABASE STANDBY CONTROLFILE;
                 exit
                 EOF
             "        
         elif [ "$INSTALL_USER_NAME" != "root" ]
         then
-tbsql -s sys/tibero <<-EOF
+tbsql -s sys/tibero <<EOF
 ALTER DATABASE STANDBY CONTROLFILE;
 exit
 EOF
@@ -940,7 +940,7 @@ FN_AUTO_INSTALL_CHECK(){
     echo "-----------------------------------------------------------------"
     echo "# TIBERO INSTALLATION BINARY "
     TIBERO_LICENSE_FILE=`ls ../binary/license.xml 2>/dev/null`
-    if [ -f $TIBERO_LICENSE_FILE ]
+    if [ -f "$TIBERO_LICENSE_FILE" ]
     then
         echo "- LICENSE FILE : "$TIBERO_LICENSE_FILE
     else
@@ -948,7 +948,7 @@ FN_AUTO_INSTALL_CHECK(){
     fi
 
     TIBERO_ENGINE_FILE=`ls ../binary/tibero* 2>/dev/null`
-    if [ -f $TIBERO_ENGINE_FILE ]
+    if [ -f "$TIBERO_ENGINE_FILE" ]
     then
         
         echo "- ENGINE FILE : "$TIBERO_ENGINE_FILE
@@ -957,7 +957,7 @@ FN_AUTO_INSTALL_CHECK(){
     fi
 
     TIBERO_TBINARY_FILE=`ls ../binary/tbinary* 2>/dev/null`
-    if [ -f $TIBERO_TBINARY_FILE ]
+    if [ -f "$TIBERO_TBINARY_FILE" ]
     then
         echo "- TBINARY FILE : "$TIBERO_TBINARY_FILE
     else
@@ -1091,7 +1091,7 @@ FN_AUTO_INSTALL(){
             FN_AUTO_CHANGE_OWNER
             FN_AUTO_CM_BOOT ROOT
             FN_AUTO_CM_RESOURCE
-            if [ -z $NODE1_VIP_ETH]
+            if [ -z "$NODE1_VIP_ETH" ]
             then
                 FN_AUTO_CHANGE_OWNER
                 FN_AUTO_CM_DOWN
@@ -1145,19 +1145,19 @@ FN_AUTO_CNF_CHECK(){
     then
         echo "tbis message> tbis - Parameter"
         echo "----------------------------------------------------"
-        if [ -z $USER_NAME ]
+        if [ -z "$USER_NAME" ]
         then
             echo "  error> tbis.cfg - USER_NAME check"
             TB_FAIL_CHK="Y"
         fi
 
-        if [ -z $USER_HOME ]
+        if [ -z "$USER_HOME" ]
         then
             echo "  error> tbis.cfg - USER_HOME check"
             TB_FAIL_CHK="Y"
         fi
 
-        if [ -z $GROUP_NAME ]
+        if [ -z "$GROUP_NAME" ]
         then
             echo "  error> tbis.cfg - GROUP_NAME check"
             TB_FAIL_CHK="Y"
@@ -1167,48 +1167,48 @@ FN_AUTO_CNF_CHECK(){
         then
             2>/dev/null
         else
-            if [ -z $DB_NAME ]
+            if [ -z "$DB_NAME" ]
             then
                 echo "  error> tbis.cfg - DB_NAME check"
                 TB_FAIL_CHK="Y"
             fi
 
-            if [ -z $CONTROL_FILE_PATH1 ]
+            if [ -z "$CONTROL_FILE_PATH1" ]
             then
                 echo "  error> tbis.cfg - CONTROL_FILE_PATH1 check"
                 TB_FAIL_CHK="Y"
             fi
 
-            if [ -z $CONTROL_FILE_PATH2 ]
+            if [ -z "$CONTROL_FILE_PATH2" ]
             then
                 echo "  error> tbis.cfg - CONTROL_FILE_PATH2 check"
                 TB_FAIL_CHK="Y"
             fi
 
-            if [ -z $DB_CREATE_FILE_DEST ]
+            if [ -z "$DB_CREATE_FILE_DEST" ]
             then
                 echo "  error> tbis.cfg - DB_CREATE_FILE_DEST check"
                 TB_FAIL_CHK="Y"
             fi
 
-            if [ -z $LOG_ARCHIVE_DEST ]
+            if [ -z "$LOG_ARCHIVE_DEST" ]
             then
                 echo "  error> tbis.cfg - LOG_ARCHIVE_DEST check"
                 TB_FAIL_CHK="Y"
             fi
         fi
 
-        if [ -z $TB_HOME ]
+        if [ -z "$TB_HOME" ]
         then
             echo "  error> tbis.cfg - TB_HOME check"
             TB_FAIL_CHK="Y"
         fi
 
-        if [ -z $TIBERO_TYPE ]
+        if [ -z "$TIBERO_TYPE" ]
         then
             echo "  error> tbis.cfg - TIBERO_TYPE check"
             TB_FAIL_CHK="Y"
-        elif [ -z $TIBERO_NODE ]
+        elif [ -z "$TIBERO_NODE" ]
         then
             echo "  error> tbis.cfg - TIBERO_NODE check"
             TB_FAIL_CHK="Y"
@@ -1231,13 +1231,13 @@ FN_AUTO_CNF_CHECK(){
             then
                 2>/dev/null
             else
-                if [ -z $NODE1_INTER_IP ]
+                if [ -z "$NODE1_INTER_IP" ]
                 then
                     echo "  error> tbis.cfg - NODE1_INTER_IP check"
                     TB_FAIL_CHK="Y"
                 fi
 
-                if [ -z $NODE2_INTER_IP ]
+                if [ -z "$NODE2_INTER_IP" ]
                 then
                     echo "  error> tbis.cfg - NODE2_INTER_IP check"
                     TB_FAIL_CHK="Y"
@@ -1252,19 +1252,19 @@ FN_AUTO_CNF_CHECK(){
                 TB_FAIL_CHK="Y"
             fi
 
-            if [ -z $NODE1_INTER_IP ]
+            if [ -z "$NODE1_INTER_IP" ]
             then
                 echo "  error> tbis.cfg - NODE1_INTER_IP check"
                 TB_FAIL_CHK="Y"
             fi
 
-            if [ -z $NODE2_INTER_IP ]
+            if [ -z "$NODE2_INTER_IP" ]
             then
                 echo "  error> tbis.cfg - NODE2_INTER_IP check"
                 TB_FAIL_CHK="Y"
             fi
 
-            if [ -z $CFILE_PATH ]
+            if [ -z "$CFILE_PATH" ]
             then
                 echo "  error> tbis.cfg - CFILE_PATH check"
                 TB_FAIL_CHK="Y"
@@ -1280,21 +1280,13 @@ FN_AUTO_CNF_CHECK(){
     echo "----------------------------------------------------"
     echo
 
-    #if [ "$TB_FAIL_CHK"=="Y" ]
-    #then
-    #    TB_FAIL_TIP_PARAM="Y"
-    #elif [ "$TB_FAIL_CHK"=="N" ]
-    #then
-    #    TB_FAIL_TIP_PARAM="N"
-    #fi
-
     echo "tbis message> tbis - OS Installation USER/GROUP check"
     echo "----------------------------------------------------" 
     TB_FAIL_OS_PARAM="N"
-    if [ -z $NODE1_VIP_ETH ]
+    if [ -z "$NODE1_VIP_ETH" ]
     then
         TB_FAIL_OS_PARAM="N"
-    elif [ -n $NODE1_VIP_ETH ]
+    elif [ -n "$NODE1_VIP_ETH" ]
     then
         if [ "$INSTALL_USER_NAME" != "root" ]
         then
@@ -1332,7 +1324,7 @@ FN_AUTO_CNF_CHECK(){
         TB_FAIL_OS_PARAM="Y"
     fi
     
-    if [ $TB_FAIL_OS_PARAM != "Y" ]
+    if [ "$TB_FAIL_OS_PARAM" != "Y" ]
     then
         echo "  message> tbis.cfg - No problem"
     fi
@@ -1343,31 +1335,30 @@ FN_AUTO_CNF_CHECK(){
     echo "----------------------------------------------------"
     TB_FAIL_FILE_PARAM="N"
     ENGINE_FILE_CHECK=`ls ../binary/tibero*.tar* 2>/dev/null`    
-    if [ -z $ENGINE_FILE_CHECK ]
+    if [ -z "$ENGINE_FILE_CHECK" ]
     then
         echo "  error> tibero engine file check"
         TB_FAIL_FILE_PARAM="Y"
     fi
 
     LICENSE_FILE_CHECK=`ls ../binary/license.xml 2>/dev/null`
-    if [ -z $LICENSE_FILE_CHECK ]
+    if [ -z "$LICENSE_FILE_CHECK" ]
     then
         echo "  error> tibero license file check"
         TB_FAIL_FILE_PARAM="Y"
 	fi
     
-    if [ $TB_FAIL_FILE_PARAM != "Y" ]
+    if [ "$TB_FAIL_FILE_PARAM" != "Y" ]
     then
         echo "  message> tbis.cfg - No problem"
     fi
     echo "----------------------------------------------------"
-
     ##########################
     # Y = exit
     # N = Continue
     ##########################
     #-------------------------
-    if [ "$TB_FAIL_CHK"=="Y" ] || [ "$TB_FAIL_OS_PARAM"=="Y" ] || [ "$TB_FAIL_FILE_PARAM"=="Y" ]
+    if [ "$TB_FAIL_CHK" -eq "Y" ] || [ "$TB_FAIL_OS_PARAM" -eq "Y" ] || [ "$TB_FAIL_FILE_PARAM" -eq "Y" ]
     then
         exit
     elif [ "$TB_FAIL_CHK"=="N" ] && [ "$TB_FAIL_OS_PARAM"=="N" ]  && [ "$TB_FAIL_FILE_PARAM"=="N" ]
@@ -1601,7 +1592,6 @@ FN_AUTO_CONFIGURATION(){
         echo;;
     2)
         clear   
-        #. ./tbis.cfg USER_PROFILE
         sh tbis.cfg USER_PROFILE
         echo
         echo        
@@ -1646,7 +1636,6 @@ FN_AUTO_CONFIGURATION(){
         echo;;
     10)
         clear       
-        #. ./tbis.cfg TB_SID_TIP
         sh tbis.cfg TB_SID_TIP
         echo
         echo        
@@ -1657,7 +1646,6 @@ FN_AUTO_CONFIGURATION(){
     11)
         clear
         FN_AUTO_TB_SID_NAME
-        #. ./tbis.cfg TB_DSN
         sh tbis.cfg TB_DSN
         echo
         echo        
@@ -1676,7 +1664,6 @@ FN_AUTO_CONFIGURATION(){
         echo;;        
     20)
         clear   
-        #. ./tbis.cfg CM_SID_TIP
         sh tbis.cfg CM_SID_TIP
         echo
         echo        
@@ -1686,7 +1673,6 @@ FN_AUTO_CONFIGURATION(){
         echo;;
     21)
         clear       
-        #. ./tbis.cfg CM_RESOURCE
         sh tbis.cfg CM_RESOURCE
         echo
         echo
