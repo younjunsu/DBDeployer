@@ -888,7 +888,7 @@ FN_AUTO_INSTALL_CHECK(){
     echo "- DB_NAME : $DB_NAME"
     echo "- LISTENER_PORT : $LISTENER_PORT"
     echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
-    if [ $TIBERO_NODE != "SINGLE" ]
+    if [ "$TIBERO_NODE" != "SINGLE" ]
     then
         echo "-----------------------------------------------------------------"
         echo "# TIBERO CM"
@@ -1601,7 +1601,8 @@ FN_AUTO_CONFIGURATION(){
         echo;;
     2)
         clear   
-        . ./tbis.cfg USER_PROFILE
+        #. ./tbis.cfg USER_PROFILE
+        sh tbis.cfg USER_PROFILE
         echo
         echo        
         FN_PRINT_PRESS
@@ -1645,7 +1646,8 @@ FN_AUTO_CONFIGURATION(){
         echo;;
     10)
         clear       
-        . ./tbis.cfg TB_SID_TIP
+        #. ./tbis.cfg TB_SID_TIP
+        sh tbis.cfg TB_SID_TIP
         echo
         echo        
         FN_PRINT_PRESS
@@ -1654,8 +1656,9 @@ FN_AUTO_CONFIGURATION(){
         echo;;
     11)
         clear
-        FN_AUTO_TB_SID_NAME       
-        . ./tbis.cfg TB_DSN
+        FN_AUTO_TB_SID_NAME
+        #. ./tbis.cfg TB_DSN
+        sh tbis.cfg TB_DSN
         echo
         echo        
         FN_PRINT_PRESS
@@ -1673,7 +1676,8 @@ FN_AUTO_CONFIGURATION(){
         echo;;        
     20)
         clear   
-        . ./tbis.cfg CM_SID_TIP
+        #. ./tbis.cfg CM_SID_TIP
+        sh tbis.cfg CM_SID_TIP
         echo
         echo        
         FN_PRINT_PRESS
@@ -1682,7 +1686,8 @@ FN_AUTO_CONFIGURATION(){
         echo;;
     21)
         clear       
-        . ./tbis.cfg CM_RESOURCE
+        #. ./tbis.cfg CM_RESOURCE
+        sh tbis.cfg CM_RESOURCE
         echo
         echo
         FN_PRINT_PRESS
