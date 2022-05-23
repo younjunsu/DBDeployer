@@ -70,12 +70,14 @@ FN_AUTO_ENGINE(){
         FN_AUTO_PROGRESS_CHECK
         if [ "$YESNO" == "YES" ]
         then
-                TB_HOME_EDIT=`echo $TB_HOME |sed 's/\// /g' |awk '{print $NF}'`
-                TB_HOME=`echo $TB_HOME | sed 's/\/'$TB_HOME_EDIT'//g'`
+            TB_HOME_CURRENT=$TB_HOME
+            TB_HOME_EDIT=`echo $TB_HOME |sed 's/\// /g' |awk '{print $NF}'`
+            TB_HOME=`echo $TB_HOME | sed 's/\/'$TB_HOME_EDIT'//g'`
 
-                gunzip ../binary/tibero*.tar.gz
-                tar -xvf ../binary/tibero*.tar -C $TB_HOME
-                FN_SUCCESS_MSG
+            gunzip ../binary/tibero*.tar.gz
+            tar -xvf ../binary/tibero*.tar -C $TB_HOME
+            export TB_HOME=$TB_HOME_CURRENT
+            FN_SUCCESS_MSG
         fi     
     fi
     
