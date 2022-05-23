@@ -15,7 +15,7 @@
 # Program variables
 ############################################################
 # Configuration file path
-TBIS_AUTO_LOGFILE="tbis.log"
+TBIS_AUTO_LOGFILE="tbis_log/tbis.log"
 TBIS_AUTO_CFGFILE="tbis.cfg"
 TBIS_AUTO_SQLFILE="tbis.sql"
 TBIS_CWD_PATH=`pwd`
@@ -1368,7 +1368,7 @@ FN_AUTO_CNF_CHECK(){
         exit
     elif [ "$TB_FAIL_CHK" == "N" ] && [ "$TB_FAIL_OS_PARAM" == "N" ]  && [ "$TB_FAIL_FILE_PARAM" == "N" ]
     then
-        continue;
+        echo "Pass"
     fi
     #-------------------------
 }
@@ -1597,7 +1597,7 @@ FN_AUTO_CONFIGURATION(){
         echo;;
     2)
         clear   
-        sh tbis.cfg USER_PROFILE
+        . ./tbis.cfg USER_PROFILE
         echo
         echo        
         FN_PRINT_PRESS
@@ -1641,7 +1641,7 @@ FN_AUTO_CONFIGURATION(){
         echo;;
     10)
         clear       
-        sh tbis.cfg TB_SID_TIP
+        . ./tbis.cfg TB_SID_TIP
         echo
         echo        
         FN_PRINT_PRESS
@@ -1651,7 +1651,7 @@ FN_AUTO_CONFIGURATION(){
     11)
         clear
         FN_AUTO_TB_SID_NAME
-        sh tbis.cfg TB_DSN
+        . ./tbis.cfg TB_DSN
         echo
         echo        
         FN_PRINT_PRESS
@@ -1669,7 +1669,7 @@ FN_AUTO_CONFIGURATION(){
         echo;;        
     20)
         clear   
-        sh tbis.cfg CM_SID_TIP
+        . ./tbis.cfg CM_SID_TIP
         echo
         echo        
         FN_PRINT_PRESS
@@ -1678,7 +1678,7 @@ FN_AUTO_CONFIGURATION(){
         echo;;
     21)
         clear       
-        sh tbis.cfg CM_RESOURCE
+        . ./tbis.cfg CM_RESOURCE
         echo
         echo
         FN_PRINT_PRESS

@@ -1,6 +1,3 @@
-echo "TIBERO SHELL"
-echo $SHELL
-
 SHELL_CHECK=`uname -a |grep -i Ubuntu`
 
 if [ -n "$SHELL_CHECK" ]
