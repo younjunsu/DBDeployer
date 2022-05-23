@@ -1,17 +1,6 @@
 #!/bin/sh
 ############################################################
 #
-# Program history
-############################################################
-# Created by. Daejeon Office
-# 2022.03.18 Version : Park Si Hyung, Yoon Jun Su
-# 2022.03.24 Version : Yoon Jun Su
-# 2022.03.28 Version : Yoon Jun Su
-# 2022.05.16 Version : Yoon Jun Su
-# 2022.05.23 Version : Yoon Jun Su
-
-############################################################
-#
 # Program variables
 ############################################################
 # Configuration file path
@@ -21,15 +10,18 @@ TBIS_AUTO_SQLFILE="tbis.sql"
 TBIS_CWD_PATH=`pwd`
 
 ############################################################
-# Function Lists
-# 1. Auto Installation
+#
+# Message or Exception error Function
 ############################################################
-FN_AUTO_LOGFILE(){
-    TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
-    if [ -f "$TBIS_AUTO_LOGFILE" ]
-    then
-        mv $TBIS_AUTO_LOGFILE "$TBIS_AUTO_LOGFILE"_"$TBIS_AUTO_TIME"
-    fi
+# Message
+FN_PRINT_PRESS(){
+    echo "Press Enter Key to continue..."
+}
+
+FN_SUCCESS_MSG(){
+    echo
+    echo "  Success> Step : "$STEP_FUNCTION
+    echo
 }
 
 FN_AUTO_PROGRESS_CHECK(){
@@ -51,1095 +43,10 @@ FN_AUTO_PROGRESS_CHECK(){
                 exit;;
         esac
         echo
-    fi
-    
-}
-
-FN_AUTO_ENGINE(){
-    STEP_FUNCTION="FN_AUTO_ENGINE"
-    if [ "$TIBERO_ENGINE" == "Y" ] || [ "$TIBERO_ENGINE" == "y" ]
-    then
-        echo
-        echo "############################################################"
-        echo "# tbis Progress> Engine"
-        echo "############################################################"
-        echo
-        echo "gunzip ../binary/tibero*.tar.gz"
-        echo "tar -xvf ../binary/tibero*.tar -C $USER_HOME"
-        echo
-        FN_AUTO_PROGRESS_CHECK
-        if [ "$YESNO" == "YES" ]
-        then
-            TB_HOME_CURRENT=$TB_HOME
-            TB_HOME_EDIT=`echo $TB_HOME |sed 's/\// /g' |awk '{print $NF}'`
-            TB_HOME=`echo $TB_HOME | sed 's/\/'$TB_HOME_EDIT'//g'`
-
-            gunzip ../binary/tibero*.tar.gz
-            tar -xvf ../binary/tibero*.tar -C $TB_HOME
-            export TB_HOME=$TB_HOME_CURRENT
-            FN_SUCCESS_MSG
-        fi     
-    fi
-    
-}
-
-FN_AUTO_TBINARY(){
-    STEP_FUNCTION="FN_AUTO_TBINARY"
-    if [ "$TIBERO_TBINARY" == "Y" ] || [ "$TIBERO_TBINARY" == "y" ]
-    then
-        echo
-        echo "############################################################"
-        echo "# tbis Progress> tbinary"
-        echo "############################################################"
-        echo
-        echo "tar -xvf ../binary/tbinary*.tar -C $USER_HOME"
-        echo
-        FN_AUTO_PROGRESS_CHECK
-        if [ "$YESNO" == "YES" ]
-        then
-            TBINARY_FILE_CHECK=`ls ../binary/tbinary*.tar 2>/dev/null`
-            if [ -z "$TBINARY_FILE_CHECK" ]
-            then
-                echo "tbis message> tibero tbinary file check"
-            elif [ -n "$TBINARY_FILE_CHECK" ]
-            then
-                tar -xvf ../binary/tbinary*.tar -C $USER_HOME
-                FN_SUCCESS_MSG
-            fi
-        fi
-    fi
-}
-
-FN_SUCCESS_MSG(){
-    echo
-    echo "  Success> Step : "$STEP_FUNCTION
-    echo
-}
-
-FN_AUTO_PROFILE(){
-    STEP_FUNCTION="FN_AUTO_PROFILE"
-    echo
-    echo "############################################################"
-    echo "# tbis Progress> Profile " 
-    echo "############################################################"
-    echo
-    echo ".bash_profile or .profile configuration"
-    echo
-    FN_AUTO_PROGRESS_CHECK
-    if [ "$YESNO" == "YES" ]
-    then
-        TIBERO_BASHPROFILE=$USER_HOME/.bash_profile
-        TIBERO_PROFILE=$USER_HOME/.profile
-        if [ -f "$TIBERO_PROFILE" ]
-        then
-            echo ""
-            TIBERO_PROFILE_CHECK=$TIBERO_PROFILE
-            . ./tbis.cfg USER_PROFILE >> $USER_HOME/.profile
-            . $TIBERO_PROFILE_CHECK
-            FN_SUCCESS_MSG
-        elif [ -f "$TIBERO_BASHPROFILE" ]
-        then
-            TIBERO_PROFILE_CHECK=$TIBERO_BASHPROFILE
-            sh tbis.cfg USER_PROFILE >> $USER_HOME/.bash_profile
-            . ./$TIBERO_PROFILE_CHECK
-            FN_SUCCESS_MSG
-        else
-            echo "tbis message> .bash_profile or .profile file check"
-            exit
-        fi
-
-    fi
-}
-
-FN_AUTO_LICENSE(){
-    STEP_FUNCTION="FN_AUTO_LICENSE"
-    echo
-    echo "############################################################"
-    echo "# tbis Progress> license "    
-    echo "############################################################"
-    echo
-    echo "cp ../binary/license.xml $TB_HOME/license/license.xml"
-    echo
-    FN_AUTO_PROGRESS_CHECK
-    if [ "$YESNO" == "YES" ]
-    then
-            cp ../binary/license.xml $TB_HOME/license/license.xml
-            FN_SUCCESS_MSG
-    fi
-}
-
-FN_AUTO_TB_SID_TIP(){
-    STEP_FUNCTION="FN_AUTO_TB_SID_TIP"
-    echo
-    echo "############################################################"
-    echo "# tbis Progress> TB_SID TIP File"
-    echo "############################################################"
-    echo
-    echo "sh tbis.cfg TB_SID_TIP > $TB_HOME/config/$TB_SID.tip"
-    echo
-    FN_AUTO_PROGRESS_CHECK        
-    if [ "$YESNO" == "YES" ]
-    then
-        if [ -z "$TB_SID" ]
-        then
-          echo "tbis message> \$TB_SID check"
-          exit
-        fi
-
-        if [ "$TIBERO_NODE" == "observer" ]
-        then
-            2>/dev/null
-        else
-            sh tbis.cfg TB_SID_TIP > $TB_HOME/config/$TB_SID.tip
-            FN_SUCCESS_MSG
-        fi
-    fi
-}
-
-FN_AUTO_CM_SID_TIP(){
-    STEP_FUNCTION="FN_AUTO_CM_SID_TIP"
-    echo
-    echo "############################################################"
-    echo "# tbis Progress> CM_SID TIP File"
-    echo "############################################################"
-    echo
-    echo "sh tbis.cfg CM_SID_TIP > $TB_HOME/config/$TIBERO_NODE.tip"
-    echo
-    FN_AUTO_PROGRESS_CHECK
-    if [ "$YESNO" == "YES" ]
-    then
-        if [ "$TIBERO_TYPE" == "SINGLE" ]
-        then
-            echo
-            echo $TIBERO_TYPE
-            echo $TIBERO_NODE
-            echo
-        else
-            sh tbis.cfg CM_SID_TIP > $TB_HOME/config/$TIBERO_NODE.tip
-            FN_SUCCESS_MSG
-        fi
-    fi
-}
-
-FN_AUTO_TBDSN(){
-    STEP_FUNCTION="FN_AUTO_TBDSN"
-    echo
-    echo "############################################################"
-    echo "# tbis Progress> TBDSN"
-    echo "############################################################"
-    echo
-    echo "sh tbis.cfg FN_TB_DSN > $TB_HOME/client/cofnig/tbdsn.tbr"
-    echo
-    FN_AUTO_PROGRESS_CHECK
-    if [ "$YESNO" == "YES" ]
-    then
-        
-        if [ -z "$TB_HOME" ]
-        then
-          echo "tbis message> \$TB_HOME check"
-          exit
-        fi
-
-        sh tbis.cfg TB_DSN > $TB_HOME/client/config/tbdsn.tbr
-        FN_SUCCESS_MSG
-    fi
-}
-
-FN_AUTO_TB_SID_NAME(){
-    if [ "$TIBERO_TYPE" == "SINGLE" ]
-    then
-        export TB_SID=`echo $DB_NAME`
-    elif [ "$TIBERO_TYPE" == "TSC" ]
-    then
-        if [ "$TIBERO_NODE" == "primary" ] 
-        then
-            export TB_SID=`echo "$DB_NAME"_p`
-        elif [ "$TIBERO_NODE" == "standby" ]
-        then
-            export TB_SID=`echo "$DB_NAME"_s`
-        elif [ "$TIBERO_NODE" == "observer" ]
-        then
-            export TB_SID="Observer_Not_TB_SID"
-        fi
-    elif [ "$TIBERO_TYPE" == "TAC" ]
-    then
-        if [ "$TIBERO_NODE" == "cm0" ]
-        then
-            export TB_SID=`echo "$DB_NAME"0`
-        elif [ "$TIBERO_NODE" == "cm1" ]
-        then
-            export TB_SID=`echo "$DB_NAME"1`
-        fi
-    fi
-}
-
-FN_AUTO_PROGRESS_PROFILE(){
-    TIBERO_BASHPROFILE=$USER_HOME/.bash_profile
-    TIBERO_PROFILE=$USER_HOME/.profile
-
-    if [ -f "$TIBERO_PROFILE" ]
-    then
-        TIBERO_PROFILE_CHECK=$TIBERO_PROFILE
-    elif [ -f "$TIBERO_BASHPROFILE" ]
-    then
-        TIBERO_PROFILE_CHECK=$TIBERO_BASHPROFILE
-    fi
-}
-
-FN_AUTO_CM_RESOURCE(){
-    STEP_FUNCTION="FN_AUTO_CM_RESOURCE"
-    echo
-    echo "############################################################"
-    echo "# tbis Progress> tbcm resource "    
-    echo "############################################################"
-    echo
-    sh tbis.cfg CM_RESOURCE
-    echo
-    FN_AUTO_PROGRESS_CHECK
-    FN_AUTO_PROGRESS_PROFILE
-    . $TIBERO_PROFILE_CHECK
-
-    if [ "$YESNO" == "YES" ]
-    then
-        if [ "$INSTALL_USER_NAME" == "root" ]
-        then
-            if [ "$TIBERO_TYPE" == "TSC" ]
-            then
-                if [ "$TIBERO_NODE" == "primary" ]
-                then
-                    su - $USER_NAME -c "cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT"
-                    if [ -z "$NODE1_VIP_ETH" ]
-                    then
-                        su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --cfile $TB_HOME/config/CMFILE_cls0"
-                        su - $USER_NAME -c "cmrctl start cluster --name cls0"
-                        if [ "$TIBERO_OBSERVER_ENABLE" == "Y" ] 
-                        then
-                            su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE_OBSERVER_IP --obsport $CM_OBSERVER_PORT"
-                        elif [ "$TIBERO_OBSERVER_ENABLE" == "N" ]
-                        then
-                            su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11"
-                        fi
-                        su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK"
-                    else
-                        su - $USER_NAME -c "cmrctl add network --name pub0 --nettype public --ifname $NODE1_VIP_ETH"
-                        su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --pubnet pub0 --cfile $TB_HOME/config/CMFILE_cls0"
-                        su - $USER_NAME -c "cmrctl start cluster --name cls0"
-                        if [ "$TIBERO_OBSERVER_ENABLE" == "Y" ] 
-                        then
-                            su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE_OBSERVER_IP --obsport $CM_OBSERVER_PORT"
-                        elif [ "$TIBERO_OBSERVER_ENABLE" == "N" ]
-                        then
-                            su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11"
-                        fi
-                        su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK"
-                        su - $USER_NAME -c "cmrctl add vip --name vip0 --svcname $DB_NAME --ipaddr $NODE1_VIP_IP"
-                    fi
-                elif [ "$TIBERO_NODE" == "standby" ]
-                then
-                    su - $USER_NAME -c "cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT"
-                        if [ -z "$NODE2_VIP_ETH" ]
-                        then
-                            su - $USER_NAME -c "cmrctl add cluster --name cls1 --incnet net1 --cfile $TB_HOME/config/CMFILE_cls1"
-                            su - $USER_NAME -c "cmrctl start cluster --name cls1"
-                            su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport $CM_OBSERVER_PORT"
-                            su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK"
-                        else
-                            su - $USER_NAME -c "cmrctl add network --name pub1 --nettype public --ifname $NODE2_VIP_ETH"
-                            su - $USER_NAME -c "cmrctl add cluster --name cls1 --incnet net1 --pubnet pub1 --cfile $TB_HOME/config/CMFILE_cls1"
-                            su - $USER_NAME -c "cmrctl start cluster --name cls1"
-                            su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport $CM_OBSERVER_PORT"
-                            su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK   "
-                            su - $USER_NAME -c "cmrctl add vip --name vip1 --svcname $DB_NAME --ipaddr $NODE2_VIP_IP"
-                        fi
-                elif [ "$TIBERO_NODE" == "observer" ]
-                then
-                    2>/dev/null
-                fi
-            elif [ "$TIBERO_TYPE" == "TAC" ]
-            then
-                2>/dev/null
-                if [ "$TIBERO_NODE" == "cm0" ]
-                then
-                    su - $USER_NAME -c "cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT"
-                    if [ -z "$NODE1_VIP_ETH" ]
-                    then
-                        su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --cfile $CFILE_PATH/CMFILE"
-                        su - $USER_NAME -c "cmrctl start cluster --name cls0"
-                        su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --type db"
-                        su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
-                    else
-                        su - $USER_NAME -c "cmrctl add network --name pub0 --nettype public --ifname $NODE1_VIP_ETH"
-                        su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --pubnet pub0 --cfile $CFILE_PATH/CMFILE"
-                        su - $USER_NAME -c "cmrctl start cluster --name cls0"
-                        su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --type db"
-                        su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
-                        su - $USER_NAME -c "cmrctl add vip --name vip0 --svcname $DB_NAME --ipaddr $NODE1_VIP_IP"
-                    fi
-                elif [ "$TIBERO_NODE" == "cm1" ]
-                then
-                    su - $USER_NAME -c "cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT"
-                    if [ -z "$NODE2_VIP_ETH" ]
-                    then
-                        su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net1  --cfile $CFILE_PATH/CMFILE"
-                        su - $USER_NAME -c "cmrctl start cluster --name cls0"
-                        su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
-                    else
-                        su - $USER_NAME -c "cmrctl add network --name pub1 --nettype public --ifname $NODE2_VIP_ETH"
-                        su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net1 --pubnet pub1 --cfile $CFILE_PATH/CMFILE"
-                        su - $USER_NAME -c "cmrctl start cluster --name cls0"
-                        su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
-                        su - $USER_NAME -c "cmrctl add vip --name vip1 --svcname $DB_NAME --ipaddr $NODE2_VIP_IP"
-                    fi
-                fi
-            fi    
-        elif [ "$INSTALL_USER_NAME" != "root" ]
-        then
-            if [ "$TIBERO_TYPE" == "TSC" ]
-            then
-                if [ "$TIBERO_NODE" == "primary" ]
-                then
-                    cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT
-                    if [ -z "$NODE1_VIP_ETH" ]
-                    then
-                        cmrctl add cluster --name cls0 --incnet net0 --cfile $TB_HOME/config/CMFILE_cls0
-                        cmrctl start cluster --name cls0
-                        if [ "$TIBERO_OBSERVER_ENABLE" == "Y" ] 
-                        then
-                            cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE_OBSERVER_IP --obsport $CM_OBSERVER_PORT
-                        elif [ "$TIBERO_OBSERVER_ENABLE" == "N" ]
-                        then
-                            cmrctl add service --name $DB_NAME --cname cls0 --tscid 11
-                        fi
-                        cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK
-                    fi
-                elif [ "$TIBERO_NODE" == "standby" ]
-                then
-                    cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT
-                        if [ -z $NODE2_VIP_ETH ]
-                        then
-                            cmrctl add cluster --name cls1 --incnet net1 --cfile $TB_HOME/config/CMFILE_cls1
-                            cmrctl start cluster --name cls1
-                            cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport $CM_OBSERVER_PORT
-                            cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK
-                        fi
-                elif [ "$TIBERO_NODE" == "observer" ]
-                then
-                    2>/dev/null
-                fi
-            elif [ "$TIBERO_TYPE" == "TAC" ]
-            then
-                2>/dev/null
-                if [ "$TIBERO_NODE" == "cm0" ]
-                then
-                    cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT
-                    if [ -z $NODE1_VIP_ETH ]
-                    then
-                        cmrctl add cluster --name cls0 --incnet net0 --cfile $CFILE_PATH/CMFILE
-                        cmrctl start cluster --name cls0
-                        cmrctl add service --name $DB_NAME --cname cls0 --type db
-                        cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME
-                    fi
-                elif [ "$TIBERO_NODE" == "cm1" ]
-                then
-                    cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT
-                    if [ -z "$NODE2_VIP_ETH" ]
-                    then
-                        cmrctl add cluster --name cls0 --incnet net1  --cfile $CFILE_PATH/CMFILE
-                        cmrctl start cluster --name cls0
-                        cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME
-                    fi
-                fi
-            fi    
-        fi
-        sleep 1
-        FN_SUCCESS_MSG
-    fi
-}
-
-FN_AUTO_CM_BOOT(){
-    STEP_FUNCTION="FN_AUTO_CM_BOOT"
-    echo
-    echo "############################################################"
-    echo "# tbis Progress> tbcm boot "    
-    echo "############################################################"
-    echo
-    echo "tbcm boot $CM_BOOT_OPTION"
-    echo 
-    FN_AUTO_PROGRESS_CHECK
-    echo
-    if [ "$YESNO" == "YES" ]
-    then
-        if [ "$TIBERO_NODE" == "observer" ]
-        then
-            if [ "$INSTALL_USER_NAME" == "root" ]
-            then
-                su - $USER_NAME -c "tbcmobs -b"
-            elif [ "$INSTALL_USER_NAME" != "root" ]
-            then
-                tbcmobs -b
-            fi        
-        else
-           if [ "$INSTALL_USER_NAME" == "root" ]
-           then
-                if [ -z "$NODE1_VIP_ETH" ]
-                then
-                    su - $USER_NAME -c "tbcm -b"
-                elif [ -n "$NODE1_VIP_ETH" ]
-                then
-                    FN_AUTO_PROGRESS_PROFILE
-                    . $TIBERO_PROFILE_CHECK
-                    tbcm -b                                
-                fi
-            elif [ "$INSTALL_USER_NAME" != "root" ]
-            then
-                tbcm -b
-            fi
-        fi
-        sleep 1 
-        FN_SUCCESS_MSG
-    fi
-    
-}
-
-FN_AUTO_CM_DOWN(){
-    STEP_FUNCTION="FN_AUTO_CM_DOWN"
-    echo
-    echo "############################################################"
-    echo "# tbis Progress> tbcm down "    
-    echo "############################################################"
-    echo
-    echo "tbcm down"
-    echo
-    FN_AUTO_PROGRESS_CHECK
-    echo
-    CM_DOWN_OPTION=$1
-    if [ "$YESNO" == "YES" ]
-    then
-        if [ "$INSTALL_USER_NAME" == "root" ]
-        then
-            if [ -z "$NODE1_VIP_ETH" ]
-            then
-                su - $USER_NAME -c "tbcm -d"
-            elif [ -n "$NODE1_VIP_ETH" ]
-            then
-                FN_AUTO_PROGRESS_PROFILE
-                . $TIBERO_PROFILE_CHECK
-                tbcm -d
-            fi
-        elif [ "$INSTALL_USER_NAME" != "root" ]
-        then
-            tbcm -d
-        fi
-        sleep 1
-        FN_SUCCESS_MSG
-    fi
- 
-}
-
-FN_AUTO_CHANGE_OWNER(){
-    STEP_FUNCTION="FN_AUTO_CHANGE_OWNER"
-    echo "############################################################"
-    echo "#  tbis Progress> Change Owner"
-    echo "############################################################"
-    echo
-    echo "chwon -R $USER_NAME:$GROUP_NAME $USER_HOME"
-    echo
-    FN_AUTO_PROGRESS_CHECK
-    if [ "$YESNO" == "YES" ]
-    then
-        chown -R $USER_NAME:$GROUP_NAME $USER_HOME
-        chown -R $USER_NAME:$GROUP_NAME $TB_HOME
-        FN_SUCCESS_MSG
     fi    
 }
 
-FN_AUTO_PROCESS_CHECK(){
-    PROCESS_CHECK_OPTION=$1
-    TIBERO_PROCESS=`ps -ef |grep tbsvr |grep -w $USER_NAME |grep -v grep |tail -n 1`
-    TIBERO_SHM=`ipcs |grep -w $USER_NAME |tail -n 1`
-
-    if [ -z "$TIBERO_PROCESS" ] || [ -z "$TIBERO_SHM" ]
-    then
-        echo "tbis message> tibero Process check"
-        echo "  error> tbsvr process check"
-        ps 
-        ps -ef |grep tbsvr |grep -w $USER_NAME |grep -v grep 
-        echo "  error> TIBERO Shared Memory & Semaphore"
-        ipcs |grep $USER_NAME |head -n 3
-        echo "...skip"        
-        if [ "$PROCESS_CHECK_OPTION" == "EXIT" ]
-        then
-            exit
-        elif [ "$PROCESS_CHECK_OPTION" == "CHECK" ] 
-        then
-            echo
-        fi
-    fi
-}
-
-FN_AUTO_TB_BOOT(){
-    TB_BOOT_OPTION=$1
-    STEP_FUNCTION="FN_AUTO_TB_BOOT"
-    echo "############################################################"
-    echo "#  tbis Progress> tbboot"
-    echo "############################################################"
-    echo
-    echo "tbboot "$TB_BOOT_OPTION
-    echo
-
-    FN_AUTO_PROGRESS_CHECK
-    if [ "$YESNO" == "YES" ]
-    then
-        if [ "$INSTALL_USER_NAME" == "root" ]
-        then
-            su - $USER_NAME -c "tbboot $TB_BOOT_OPTION"
-            echo
-            echo
-            FN_SUCCESS_MSG
-        elif [ "$INSTALL_USER_NAME" != "root" ]
-        then
-            tbboot $TB_BOOT_OPTION
-            echo
-            echo
-            FN_SUCCESS_MSG
-        fi
-        sleep 1
-    fi
-    
-}
-
-FN_AUTO_TB_DOWN(){
-    TB_DOWN_OPTION=$1
-    STEP_FUNCTION="FN_AUTO_TB_DOWN"
-    echo "############################################################"
-    echo "#  tbis Progress> tbdown"
-    echo "############################################################"
-    echo
-    echo "tbboot "$TB_DOWN_OPTION
-    echo
-    FN_AUTO_PROGRESS_CHECK
-    echo
-    if [ "$YESNO" == "YES" ]
-    then
-        FN_AUTO_PROCESS_CHECK EXIT
-        if [ "$INSTALL_USER_NAME" == "root" ]
-        then
-            su - $USER_NAME -c "tbdown $TB_DOWN_OPTION"        
-            FN_SUCCESS_MSG
-        elif [ "$INSTALL_USER_NAME" != "root" ]
-        then
-            tbdown $TB_DOWN_OPTION
-            FN_SUCCESS_MSG
-        fi
-        sleep 1
-    fi
-}
-
-FN_AUTO_CREATEDB(){
-    STEP_FUNCTION="FN_AUTO_CREATEDB"
-    echo "############################################################"
-    echo "#  tbis Progress> CREATE DATABASE"
-    echo "############################################################"
-    echo
-    echo "Execution SQL FILE : $TBIS_CWD_PATH/tbis.sql"
-    cat $TBIS_CWD_PATH/tbis.sql
-    echo
-    echo
-    FN_AUTO_PROGRESS_CHECK
-    echo
-    if [ "$YESNO" == "YES" ]
-    then
-        FN_AUTO_PROCESS_CHECK EXIT
-        if [ "$INSTALL_USER_NAME" == "root" ]
-        then
-            su - $USER_NAME -c "
-            tbsql -s sys/tibero < $TBIS_CWD_PATH/tbis.sql
-            "
-            echo
-            echo
-            FN_SUCCESS_MSG
-        elif [ "$INSTALL_USER_NAME" != "root" ]
-        then
-            tbsql sys/tibero < $TBIS_CWD_PATH/tbis.sql
-            echo
-            echo
-            FN_SUCCESS_MSG
-        else
-            exit
-        fi
-        sleep 1
-    fi
-}
-
-FN_AUTO_SYSTEM_SHELL(){
-    STEP_FUNCTION="FN_AUTO_SYSTEM_SHELL"
-    echo "############################################################"
-    echo "#  tbis Progress> system.sh"
-    echo "############################################################"
-    echo
-    echo "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
-    echo
-    FN_AUTO_PROGRESS_CHECK
-    echo
-    if [ "$YESNO" == "YES" ]
-    then
-        FN_AUTO_PROCESS_CHECK EXIT
-        if [ "$INSTALL_USER_NAME" == "root" ]
-        then 
-            su - $USER_NAME -c "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
-            echo
-            echo
-            FN_SUCCESS_MSG
-        elif [ "$INSTALL_USER_NAME" != "root" ]
-        then
-            sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y
-            echo
-            echo
-            FN_SUCCESS_MSG
-        fi    
-        sleep 1
-    fi    
-}
-
-FN_AUTO_ARCHIVE_DIR(){
-    if [ "$TIBERO_TYPE" == "SINGLE" ]
-    then
-        ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch`
-        mkdir -p $ARCHIVE_LOG_FILE_PATH
-    elif [ "$TIBERO_TYPE" == "TSC" ]
-    then
-        2>/dev/null
-        if [ "$TIBERO_NODE" == "observer" ]
-        then
-            2>/dev/null
-        elif [ "$TIBERO_NODE" == "primary" ]
-        then
-            ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch`
-            mkdir -p $ARCHIVE_LOG_FILE_PATH
-        fi
-    elif [ "$TIBERO_TYPE" == "TAC" ]
-    then
-        2>/dev/null
-        if [ "$TIBERO_NODE" == "cm0" ]
-        then
-            ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch0`
-            mkdir -p $ARCHIVE_LOG_FILE_PATH
-        elif [ "$TIBERO_NODE" == "cm1" ]
-        then
-            ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch1`
-            mkdir -p $ARCHIVE_LOG_FILE_PATH
-        fi
-    fi
-    chown -R $USER_NAME:$GROUP_NAME $ARCHIVE_LOG_FILE_PATH
-}
-
-FN_AUTO_TSC_COPY(){
-    STEP_FUNCTION="FN_AUTO_TSC_COPY"
-    echo "############################################################"
-    echo "#  tbis Progress> CF/DF/ARCH COPY to Target node"
-    echo "############################################################"
-    echo
-    echo "scp -P $SCP_PORT -r $CONTROL_FILE_PATH1/tbctl1 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH1/tbctl1"
-    echo "scp -P $SCP_PORT -r $CONTROL_FILE_PATH2/tbctl2 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH2/tbctl2"
-    echo "scp -P $SCP_PORT -r $DB_CREATE_FILE_DEST/tbdata "$USER_NAME"@"$NODE2_INTER_IP":$DB_CREATE_FILE_DEST/tbdata"
-    echo "scp -P $SCP_PORT -r $LOG_ARCHIVE_DEST/tbarch "$USER_NAME"@"$NODE2_INTER_IP":$LOG_ARCHIVE_DEST/tbarch"
-    echo
-    FN_AUTO_PROGRESS_CHECK
-    echo
-    if [ "$YESNO" == "YES" ]
-    then  
-        scp -P $SCP_PORT -r $CONTROL_FILE_PATH1/tbctl1 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH1/tbctl1
-        scp -P $SCP_PORT -r $CONTROL_FILE_PATH2/tbctl2 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH2/tbctl2
-        scp -P $SCP_PORT -r $DB_CREATE_FILE_DEST/tbdata "$USER_NAME"@"$NODE2_INTER_IP":$DB_CREATE_FILE_DEST/tbdata
-        scp -P $SCP_PORT -r $LOG_ARCHIVE_DEST/tbarch "$USER_NAME"@"$NODE2_INTER_IP":$LOG_ARCHIVE_DEST/tbarch
-        FN_SUCCESS_MSG
-    fi    
-}
-
-FN_AUTO_TSC_CFG(){
-    STEP_FUNCTION="FN_AUTO_TSC_CFG"
-    echo "############################################################"
-    echo "#  tbis Progress> Target TSC Configuration"
-    echo "############################################################"
-    echo
-    echo "ALTER DATABASE STANDBY CONTROLFILE;"
-    echo
-    FN_AUTO_PROGRESS_CHECK
-    echo
-    if [ "$YESNO" == "YES" ]
-    then   
-        if [ "$INSTALL_USER_NAME" == "root" ]
-        then
-            su - $USER_NAME -c "
-                tbsql -s sys/tibero <<EOF
-                ALTER DATABASE STANDBY CONTROLFILE;
-                exit
-                EOF
-            "        
-        elif [ "$INSTALL_USER_NAME" != "root" ]
-        then
-tbsql -s sys/tibero <<EOF
-ALTER DATABASE STANDBY CONTROLFILE;
-exit
-EOF
-        fi        
-        sleep 1
-        FN_SUCCESS_MSG
-    fi
-}
-
-FN_AUTO_SUCCESS(){
-    TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
-    TBIS_END_TIME=$TBIS_AUTO_TIME
-    echo "############################################################"
-    echo "# tbis auto installation end"
-    echo "############################################################"
-    echo "# tbis Progress> time: "$TBIS_END_TIME
-    echo "# Installation Mode"
-    echo "- Installation type : $TIBERO_TYPE"
-    echo "- Installation node : $TIBERO_NODE"
-    echo "-----------------------------------------------------------------"
-    echo "# TIBERO DATABASE FILE DEST"
-    echo "- TB_HOME PATH : $TB_HOME"
-    echo "- TBINARY PATH : $TB_HOME/tbinary"
-    echo "- CONTROL1_FILE : $CONTROL_FILE_PATH1/tbctl1/c1.ctl"
-    echo "- CONTROL2_FILE : $CONTROL_FILE_PATH2/tbctl2/c2.ctl"
-    echo "- DB_CREATE_FILE : $DB_CREATE_FILE_DEST/tbdata"
-    echo "-----------------------------------------------------------------"
-    
-    if [ "$TIBERO_TYPE" != "SINGLE" ]
-    then
-        echo "# tbcm Process"
-        ps -ef |grep -E "root|$USER_NAME" |grep -E "tbcm" |grep -v "grep"
-        echo "-----------------------------------------------------------------"
-    fi
-
-    if [ "$TIBERO_TYPE" != "observer" ]
-    then
-        
-        echo "# tbsvr Process"
-        ps -ef |grep $USER_NAME |grep -E "tbsvr" |grep -v "grep"
-        echo
-        echo
-    fi
-    exit
-}
-
-FN_AUTO_TAC_CFG(){
-    STEP_FUNCTION="FN_AUTO_TAC_CFG"
-    echo "############################################################"
-    echo "#  tbis Progress> TAC Configuration"
-    echo "############################################################"
-    echo
-    echo "CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $THREAD1_UNDO1_SIZE AUTOEXTEND OFF;"
-    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $THREAD1_REDO_SIZE;"
-    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $THREAD1_REDO_SIZE;"
-    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 7 ('$DB_CREATE_FILE_DEST/tbdata/system/redo071.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo072.redo') SIZE $THREAD1_REDO_SIZE;"
-    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 8 ('$DB_CREATE_FILE_DEST/tbdata/system/redo081.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo082.redo') SIZE $THREAD1_REDO_SIZE;"
-    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 9 ('$DB_CREATE_FILE_DEST/tbdata/system/redo091.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo092.redo') SIZE $THREAD1_REDO_SIZE;"
-    echo "ALTER DATABASE ENABLE PUBLIC THREAD 1;"
-    echo
-    FN_AUTO_PROGRESS_CHECK
-    echo
-    if [ "$YESNO" == "YES" ]
-    then
-        if [ "$INSTALL_USER_NAME" == "root" ]
-        then
-            su - $USER_NAME -c "
-                tbsql -s sys/tibero <<EOF
-                CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $THREAD1_UNDO1_SIZE AUTOEXTEND OFF;
-                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $THREAD1_REDO_SIZE;
-                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $THREAD1_REDO_SIZE;
-                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 7 ('$DB_CREATE_FILE_DEST/tbdata/system/redo071.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo072.redo') SIZE $THREAD1_REDO_SIZE;
-                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 8 ('$DB_CREATE_FILE_DEST/tbdata/system/redo081.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo082.redo') SIZE $THREAD1_REDO_SIZE;
-                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 9 ('$DB_CREATE_FILE_DEST/tbdata/system/redo091.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo092.redo') SIZE $THREAD1_REDO_SIZE;
-                ALTER DATABASE ENABLE PUBLIC THREAD 1;
-                exit
-EOF
-            "
-        elif [ "$INSTALL_USER_NAME" != "root" ]
-        then
-                tbsql -s sys/tibero <<EOF
-                CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $THREAD1_UNDO1_SIZE AUTOEXTEND OFF;
-                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $THREAD1_REDO_SIZE;
-                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $THREAD1_REDO_SIZE;
-                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 7 ('$DB_CREATE_FILE_DEST/tbdata/system/redo071.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo072.redo') SIZE $THREAD1_REDO_SIZE;
-                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 8 ('$DB_CREATE_FILE_DEST/tbdata/system/redo081.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo082.redo') SIZE $THREAD1_REDO_SIZE;
-                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 9 ('$DB_CREATE_FILE_DEST/tbdata/system/redo091.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo092.redo') SIZE $THREAD1_REDO_SIZE;
-                ALTER DATABASE ENABLE PUBLIC THREAD 1;
-                exit
-EOF
-        fi
-        sleep 1
-        FN_SUCCESS_MSG
-    fi
-}
-
-FN_AUTO_INSTALL_CHECK(){
-    clear
-    echo "[*] TIBERO Auto installation Tools Configuration Checking STEP"
-    echo "-----------------------------------------------------------------"
-    echo "# Installation Mode"
-    echo "- Installation type : $TIBERO_TYPE"
-    echo "- Installation node : $TIBERO_NODE"
-    FN_AUTO_TB_SID_NAME
-    echo "-----------------------------------------------------------------"
-    echo "# OS USER & GROUP"
-    echo "- OS user : $USER_NAME"
-    echo "- OS home : $USER_HOME"
-    echo "- OS user group : $GROUP_NAME"    
-    echo "-----------------------------------------------------------------"
-    echo "# TIBERO DATABASE"
-    echo "- TB_SID : $TB_SID"
-    echo "- TB_HOME : $TB_HOME"
-    echo "- DB_NAME : $DB_NAME"
-    echo "- LISTENER_PORT : $LISTENER_PORT"
-    echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
-    if [ "$TIBERO_NODE" != "SINGLE" ]
-    then
-        echo "-----------------------------------------------------------------"
-        echo "# TIBERO CM"
-        echo "- CM_SID : $TIBERO_NODE"
-        echo "- CM_HOME : $TB_HOME"
-        echo "- NODE1_INTER_IP : $NODE1_INTER_IP"
-        echo "- NODE2_INTER_IP : $NODE2_INTER_IP"
-        if [ "$TIBERO_TYPE" == "TSC" ]
-        then
-            if [ "$TIBERO_OBSERVER_ENABLE" == "Y" ]
-            then
-                echo "- TIBERO_OBSERVER_ENABLE : $TIBERO_OBSERVER_ENABLE"
-                echo "- NODE_OBSERVER_IP : $NODE_OBSERVER_IP"
-            fi
-            echo "- TSC VIP_ETH : $NODE1_VIP_ETH"
-            echo "- TSC VIP : $NODE1_VIP_IP"
-        elif [ "$TIBERO_TYPE" == "TAC" ]
-        then
-            echo "- NODE1_VIP_ETH : $NODE1_VIP_ETH"
-            echo "- NODE1_VIP_IP : $NODE1_VIP_IP"
-            echo "- NODE2_VIP_ETH : $NODE2_VIP_ETH"
-            echo "- NODE2_VIP_IP : $NODE2_VIP_IP"
-        fi
-    fi    
-    echo "-----------------------------------------------------------------"
-    echo "# TIBERO DATABASE FILE DEST"
-    echo "- TB_HOME PATH : $TB_HOME"
-    echo "- TBINARY PATH : $TB_HOME/tbinary"
-    echo "- CONTROL1_FILE : $CONTROL_FILE_PATH1/tbctl1/c1.ctl"
-    echo "- CONTROL2_FILE : $CONTROL_FILE_PATH2/tbctl2/c2.ctl"
-    echo "- DB_CREATE_FILE : $DB_CREATE_FILE_DEST/tbdata"
-    
-    if [ "$TIBERO_TYPE" == "SINGLE" ]
-    then
-        echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch"
-    elif [ "$TIBERO_TYPE" == "TSC" ]
-    then
-        echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch"
-    elif [ "$TIBERO_TYPE" == "TAC" ]
-    then
-        if [ "$TIBERO_NODE" == "cm0" ]
-        then
-            echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch0"
-        elif [ "$TIBERO_NODE" == "cm1" ]
-        then
-            echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch1"
-        fi
-    fi
-    echo "-----------------------------------------------------------------"
-    echo "# TIBERO INSTALLATION BINARY "
-    TIBERO_LICENSE_FILE=`ls ../binary/license.xml 2>/dev/null`
-    if [ -f "$TIBERO_LICENSE_FILE" ]
-    then
-        echo "- LICENSE FILE : "$TIBERO_LICENSE_FILE
-    else
-        echo "tbis message> license.xml file check"
-    fi
-
-    TIBERO_ENGINE_FILE=`ls ../binary/tibero* 2>/dev/null`
-    if [ -f "$TIBERO_ENGINE_FILE" ]
-    then
-        
-        echo "- ENGINE FILE : "$TIBERO_ENGINE_FILE
-    else
-        echo "tbis message> TIBERO ENGINE file check"
-    fi
-
-    TIBERO_TBINARY_FILE=`ls ../binary/tbinary* 2>/dev/null`
-    if [ -f "$TIBERO_TBINARY_FILE" ]
-    then
-        echo "- TBINARY FILE : "$TIBERO_TBINARY_FILE
-    else
-        echo "tbis message> TBINARY file check"
-    fi    
-    echo "-----------------------------------------------------------------"
-    echo "# TIBERO Configuration Files"
-    echo "- cat tbis.cfg : TIBERO Configuration File"
-    echo "- cat tbis.sql : CREATE DATABASE SQL File"
-    echo "-----------------------------------------------------------------"
-    
-    ### IN PROCESS
-    echo
-    printf "continue ? ( [Y]es / [N]o / [AA] All Auto] ) : "
-    read INPUT_YESNO
-    case $INPUT_YESNO in
-        "YES"|"Yes"|"yes"|"y"|"Y")
-            INSTALL_MODE=YES;;
-        "NO"|"No"|"no"|"n"|"N")
-            exit;;
-        "AA"|"aa")
-            INSTALL_MODE=ALL;;
-        *)
-            exit;;
-    esac
-    echo
-    ###
-}
-
-############################################################
-# Function Lists
-# 1. tbis Installation Tools
-############################################################
-FN_AUTO_INSTALL(){
-    ############# In Progress
-    chmod 655 tbis.log
-    TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
-    TBIS_START_TIME=$TBIS_AUTO_TIME
-    echo "############################################################"
-    echo "# tbis Start Log"
-    echo "############################################################"
-    echo "# start time : $TBIS_START_TIME"
-    echo
-    echo
-    cat ./tbis.cfg |grep "export" |grep -v "echo"
-    clear
-    . ./tbis.cfg
-
-    FN_AUTO_CNF_CHECK
-    FN_AUTO_INSTALL_CHECK     
-    FN_AUTO_ENGINE
-    FN_AUTO_TBINARY
-    FN_AUTO_PROFILE
-    if [ "$TIBERO_TYPE" == "SINGLE" ]
-    then
-        FN_AUTO_TB_SID_TIP
-        FN_AUTO_TBDSN
-        FN_AUTO_LICENSE
-        FN_AUTO_CHANGE_OWNER
-        FN_AUTO_TB_BOOT NOMOUNT
-        FN_AUTO_CREATEDB
-        FN_AUTO_TB_BOOT NORMAL
-        FN_AUTO_SYSTEM_SHELL
-        FN_AUTO_ARCHIVE_DIR
-    elif [ "$TIBERO_TYPE" == "TSC" ]
-    then
-        if [ "$TIBERO_NODE" == "primary" ]
-        then
-            FN_AUTO_TB_SID_TIP
-            FN_AUTO_TBDSN
-            FN_AUTO_LICENSE
-            FN_AUTO_CM_SID_TIP
-            FN_AUTO_CHANGE_OWNER
-            FN_AUTO_CM_BOOT
-            FN_AUTO_CM_RESOURCE
-            if [ -z "$NODE1_VIP_ETH" ]
-            then
-                FN_AUTO_CHANGE_OWNER
-                FN_AUTO_CM_DOWN
-                FN_AUTO_CHANGE_OWNER
-                FN_AUTO_CM_BOOT
-            else
-                2>/dev/null
-            fi
-            FN_AUTO_CHANGE_OWNER
-            FN_AUTO_TB_BOOT NOMOUNT
-            FN_AUTO_CREATEDB
-            FN_AUTO_TB_BOOT NORMAL
-            FN_AUTO_SYSTEM_SHELL
-            FN_AUTO_TB_DOWN IMMEDIATE
-            FN_AUTO_TSC_COPY
-            FN_AUTO_ARCHIVE_DIR
-        elif [ "$TIBERO_NODE" == "standby" ]
-        then
-            FN_AUTO_TB_SID_TIP
-            FN_AUTO_TBDSN
-            FN_AUTO_LICENSE
-            FN_AUTO_CM_SID_TIP
-            FN_AUTO_CHANGE_OWNER
-            FN_AUTO_CM_BOOT ROOT
-            FN_AUTO_CM_RESOURCE
-            if [ -z "$NODE2_VIP_ETH" ]
-            then
-                FN_AUTO_CHANGE_OWNER
-                FN_AUTO_CM_DOWN
-                FN_AUTO_CHANGE_OWNER
-                FN_AUTO_CM_BOOT
-            else
-                2>/dev/null
-            fi            
-            FN_AUTO_CHANGE_OWNER
-            FN_AUTO_TB_BOOT MOUNT
-            FN_AUTO_TSC_CFG
-            FN_AUTO_TB_DOWN IMMEDIATE
-            FN_AUTO_ARCHIVE_DIR
-        elif [ "$TIBERO_NODE" == "observer" ]
-        then
-            FN_AUTO_CHANGE_OWNER
-            FN_AUTO_CM_SID_TIP
-            FN_AUTO_CHANGE_OWNER
-            FN_AUTO_CM_BOOT
-        fi
-    elif [ "$TIBERO_TYPE" == "TAC" ]
-    then
-        if [ "$TIBERO_NODE" == "cm0" ]
-        then
-            FN_AUTO_TB_SID_TIP
-            FN_AUTO_TBDSN
-            FN_AUTO_LICENSE
-            FN_AUTO_CM_SID_TIP
-            FN_AUTO_CHANGE_OWNER
-            FN_AUTO_CM_BOOT ROOT
-            FN_AUTO_CM_RESOURCE
-            if [ -z "$NODE1_VIP_ETH" ]
-            then
-                FN_AUTO_CHANGE_OWNER
-                FN_AUTO_CM_DOWN
-                FN_AUTO_CHANGE_OWNER
-                FN_AUTO_CM_BOOT
-            else
-                2>/dev/null
-            fi
-            FN_AUTO_CHANGE_OWNER
-            FN_AUTO_TB_BOOT NOMOUNT
-            FN_AUTO_CREATEDB
-            FN_AUTO_TB_BOOT NORMAL
-            FN_AUTO_SYSTEM_SHELL
-            FN_AUTO_TAC_CFG
-            FN_AUTO_ARCHIVE_DIR
-        elif [ "$TIBERO_NODE" == "cm1" ]
-        then
-            FN_AUTO_TB_SID_TIP
-            FN_AUTO_TBDSN
-            FN_AUTO_LICENSE
-            FN_AUTO_CM_SID_TIP
-            FN_AUTO_CHANGE_OWNER
-            FN_AUTO_CM_BOOT ROOT
-            FN_AUTO_CM_RESOURCE
-            if [ -z "$NODE2_VIP_ETH" ]
-            then
-                FN_AUTO_CHANGE_OWNER
-                FN_AUTO_CM_DOWN
-                FN_AUTO_CHANGE_OWNER
-                FN_AUTO_CM_BOOT
-            else
-                2>/dev/null
-            fi
-            FN_AUTO_CHANGE_OWNER
-            FN_AUTO_TB_BOOT NORMAL
-            FN_AUTO_ARCHIVE_DIR
-        fi
-    fi
-    FN_AUTO_SUCCESS
-}
-
+# Exception error
 FN_AUTO_CNF_CHECK(){
     echo "############################################################"
     echo "# tbis warning step"
@@ -1370,19 +277,1165 @@ FN_AUTO_CNF_CHECK(){
         exit
     elif [ "$TB_FAIL_CHK" == "N" ] && [ "$TB_FAIL_OS_PARAM" == "N" ]  && [ "$TB_FAIL_FILE_PARAM" == "N" ]
     then
-        echo "Pass"
+        echo 
     fi
     #-------------------------
 }
 
+FN_AUTO_PROCESS_CHECK(){
+    STEP_FUNCTION="FN_AUTO_PROCESS_CHECK"
+    PROCESS_CHECK_OPTION=$1
+    TIBERO_PROCESS_TBSVR=`ps -ef |grep tbsvr |grep -w $USER_NAME |grep -v grep |tail -n 1`
+    TIBERO_PROCESS_SHM=`ipcs |grep -w $USER_NAME |tail -n 1`
+    TIBERO_PROCESS_TBCM=`ps -ef |grep -v "tbcmobs" |grep "tbcm" |grep -v grep`
+    TIBERO_PROCESS_OBS=`ps -ef |grep "tbcmobs" |grep -v grep`
+
+    if [ -n "$TIBERO_PROCESS" ] || [ -n "$TIBERO_SHM" ] || [ -n $TIBERO_PROCESS_TBCM ] || [ -n $TIBERO_PROCESS_OBS ]
+    then
+        if [ "$PROCESS_CHECK_OPTION" == "TBSVR" ]
+        then
+            echo "tbis message> tibero Process check"
+            echo "----------------------------------------------------"
+            echo "  error> tbsvr process check"
+            echo "----------------------------------------------------"
+            ps -ef |grep tbsvr |grep -w $USER_NAME |grep -v grep 
+            echo "----------------------------------------------------"
+            echo "  error> TIBERO Shared Memory & Semaphore"
+            echo "----------------------------------------------------"
+            ipcs |grep $USER_NAME |head -n 3
+            echo "...skip"
+            echo "----------------------------------------------------"
+            FN_SUCCESS_MSG
+            exit
+        elif [ "$PROCESS_CHECK_OPTION" == "TBCM" ]
+        then
+            echo "tbis message> tibero Process check"
+            echo "----------------------------------------------------"
+            echo "  error> tbsvr process check"
+            echo "----------------------------------------------------"
+            ps -ef |grep -v "tbcmobs" |grep tbcm |grep $INSTALL_USER_NAME |grep -v grep
+            echo "----------------------------------------------------"
+            FN_SUCCESS_MSG
+            exit
+        elif [ "$PROCESS_CHECK_OPTION" == "OBS" ]
+        then
+            echo "tbis message> tibero Process check"
+            echo "----------------------------------------------------"
+            echo "  error> tbsvr process check"
+            echo "----------------------------------------------------"
+            ps -ef |grep "tbcmobs" |grep -w $USER_NAME |grep -v grep 
+            echo "----------------------------------------------------"
+            FN_SUCCESS_MSG
+            exit
+        fi            
+    fi
+}
+
+############################################################
+#
+# tbis Configuration function
+############################################################
+# User porfile config
+FN_AUTO_PROGRESS_PROFILE(){
+    TIBERO_BASHPROFILE=$USER_HOME/.bash_profile
+    TIBERO_PROFILE=$USER_HOME/.profile
+
+    if [ -f "$TIBERO_PROFILE" ]
+    then
+        TIBERO_PROFILE_CHECK=$TIBERO_PROFILE
+    elif [ -f "$TIBERO_BASHPROFILE" ]
+    then
+        TIBERO_PROFILE_CHECK=$TIBERO_BASHPROFILE
+    fi
+}
+
+# $TB_SID config
+FN_AUTO_TB_SID_NAME(){
+    if [ "$TIBERO_TYPE" == "SINGLE" ]
+    then
+        export TB_SID=`echo $DB_NAME`
+    elif [ "$TIBERO_TYPE" == "TSC" ]
+    then
+        if [ "$TIBERO_NODE" == "primary" ] 
+        then
+            export TB_SID=`echo "$DB_NAME"_p`
+        elif [ "$TIBERO_NODE" == "standby" ]
+        then
+            export TB_SID=`echo "$DB_NAME"_s`
+        elif [ "$TIBERO_NODE" == "observer" ]
+        then
+            export TB_SID="Observer_Not_TB_SID"
+        fi
+    elif [ "$TIBERO_TYPE" == "TAC" ]
+    then
+        if [ "$TIBERO_NODE" == "cm0" ]
+        then
+            export TB_SID=`echo "$DB_NAME"0`
+        elif [ "$TIBERO_NODE" == "cm1" ]
+        then
+            export TB_SID=`echo "$DB_NAME"1`
+        fi
+    fi
+}
+
+############################################################
+# Detail functions
+# 1. tbis Installation Tools
+############################################################
+# Owner chagne
+FN_AUTO_CHANGE_OWNER(){
+    STEP_FUNCTION="FN_AUTO_CHANGE_OWNER"
+    echo "############################################################"
+    echo "#  tbis Progress> Change Owner"
+    echo "############################################################"
+    echo
+    echo "chwon -R $USER_NAME:$GROUP_NAME $USER_HOME"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    if [ "$YESNO" == "YES" ]
+    then
+        chown -R $USER_NAME:$GROUP_NAME $USER_HOME
+        chown -R $USER_NAME:$GROUP_NAME $TB_HOME
+        FN_SUCCESS_MSG
+    fi    
+}
+
+# Engin uncompress
+FN_AUTO_ENGINE(){
+    STEP_FUNCTION="FN_AUTO_ENGINE"
+    if [ "$TIBERO_ENGINE" == "Y" ] || [ "$TIBERO_ENGINE" == "y" ]
+    then
+        echo
+        echo "############################################################"
+        echo "# tbis Progress> Engine"
+        echo "############################################################"
+        echo
+        echo "gunzip ../binary/tibero*.tar.gz"
+        echo "tar -xvf ../binary/tibero*.tar -C $USER_HOME"
+        echo
+        FN_AUTO_PROGRESS_CHECK
+        if [ "$YESNO" == "YES" ]
+        then
+            TB_HOME_CURRENT=$TB_HOME
+            TB_HOME_EDIT=`echo $TB_HOME |sed 's/\// /g' |awk '{print $NF}'`
+            TB_HOME=`echo $TB_HOME | sed 's/\/'$TB_HOME_EDIT'//g'`
+
+            gunzip ../binary/tibero*.tar.gz
+            tar -xvf ../binary/tibero*.tar -C $TB_HOME
+            export TB_HOME=$TB_HOME_CURRENT
+            FN_SUCCESS_MSG
+        fi     
+    fi
+    
+}
+
+# tbinary tools uncompress
+FN_AUTO_TBINARY(){
+    STEP_FUNCTION="FN_AUTO_TBINARY"
+    if [ "$TIBERO_TBINARY" == "Y" ] || [ "$TIBERO_TBINARY" == "y" ]
+    then
+        echo
+        echo "############################################################"
+        echo "# tbis Progress> tbinary"
+        echo "############################################################"
+        echo
+        echo "tar -xvf ../binary/tbinary*.tar -C $USER_HOME"
+        echo
+        FN_AUTO_PROGRESS_CHECK
+        if [ "$YESNO" == "YES" ]
+        then
+            TBINARY_FILE_CHECK=`ls ../binary/tbinary*.tar 2>/dev/null`
+            if [ -z "$TBINARY_FILE_CHECK" ]
+            then
+                echo "tbis message> tibero tbinary file check"
+            elif [ -n "$TBINARY_FILE_CHECK" ]
+            then
+                tar -xvf ../binary/tbinary*.tar -C $USER_HOME
+                FN_SUCCESS_MSG
+            fi
+        fi
+    fi
+}
+
+# OS profile apply
+FN_AUTO_PROFILE(){
+    STEP_FUNCTION="FN_AUTO_PROFILE"
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> Profile " 
+    echo "############################################################"
+    echo
+    echo ".bash_profile or .profile configuration"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    if [ "$YESNO" == "YES" ]
+    then
+        TIBERO_BASHPROFILE=$USER_HOME/.bash_profile
+        TIBERO_PROFILE=$USER_HOME/.profile
+        if [ -f "$TIBERO_PROFILE" ]
+        then
+            echo ""
+            TIBERO_PROFILE_CHECK=$TIBERO_PROFILE
+            . ./tbis.cfg USER_PROFILE >> $USER_HOME/.profile
+            . $TIBERO_PROFILE_CHECK
+            FN_SUCCESS_MSG
+        elif [ -f "$TIBERO_BASHPROFILE" ]
+        then
+            TIBERO_PROFILE_CHECK=$TIBERO_BASHPROFILE
+            $TBIS_SHELL tbis.cfg USER_PROFILE >> $USER_HOME/.bash_profile
+            . ./$TIBERO_PROFILE_CHECK
+            FN_SUCCESS_MSG
+        else
+            echo "tbis message> .bash_profile or .profile file check"
+            exit
+        fi
+
+    fi
+}
+
+# TIBERO license apply
+FN_AUTO_LICENSE(){
+    STEP_FUNCTION="FN_AUTO_LICENSE"
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> license "    
+    echo "############################################################"
+    echo
+    echo "cp ../binary/license.xml $TB_HOME/license/license.xml"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    if [ "$YESNO" == "YES" ]
+    then
+            cp ../binary/license.xml $TB_HOME/license/license.xml
+            FN_SUCCESS_MSG
+    fi
+}
+
+# Instance tip apply
+FN_AUTO_TB_SID_TIP(){
+    STEP_FUNCTION="FN_AUTO_TB_SID_TIP"
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> TB_SID TIP File"
+    echo "############################################################"
+    echo
+    echo "sh tbis.cfg TB_SID_TIP > $TB_HOME/config/$TB_SID.tip"
+    echo
+    FN_AUTO_PROGRESS_CHECK        
+    if [ "$YESNO" == "YES" ]
+    then
+        if [ -z "$TB_SID" ]
+        then
+          echo "tbis message> \$TB_SID check"
+          exit
+        fi
+
+        if [ "$TIBERO_NODE" == "observer" ]
+        then
+            2>/dev/null
+        else
+            $TBIS_SHELL tbis.cfg TB_SID_TIP > $TB_HOME/config/$TB_SID.tip
+            FN_SUCCESS_MSG
+        fi
+    fi
+}
+
+# tbboot
+FN_AUTO_TB_BOOT(){
+    TB_BOOT_OPTION=$1
+    STEP_FUNCTION="FN_AUTO_TB_BOOT"
+    echo "############################################################"
+    echo "#  tbis Progress> tbboot"
+    echo "############################################################"
+    echo
+    echo "tbboot "$TB_BOOT_OPTION
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    if [ "$YESNO" == "YES" ]
+    then
+        FN_AUTO_PROCESS_CHECK TBSVR
+        if [ "$INSTALL_USER_NAME" == "root" ]
+        then
+            su - $USER_NAME -c "tbboot $TB_BOOT_OPTION"
+            echo
+            echo
+            FN_SUCCESS_MSG
+        elif [ "$INSTALL_USER_NAME" != "root" ]
+        then
+            tbboot $TB_BOOT_OPTION
+            echo
+            echo
+            FN_SUCCESS_MSG
+        fi
+        sleep 1
+    fi
+    
+}
+
+# tbdown
+FN_AUTO_TB_DOWN(){
+    TB_DOWN_OPTION=$1
+    STEP_FUNCTION="FN_AUTO_TB_DOWN"
+    echo "############################################################"
+    echo "#  tbis Progress> tbdown"
+    echo "############################################################"
+    echo
+    echo "tbboot "$TB_DOWN_OPTION
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    if [ "$YESNO" == "YES" ]
+    then
+        if [ "$INSTALL_USER_NAME" == "root" ]
+        then
+            su - $USER_NAME -c "tbdown $TB_DOWN_OPTION"        
+            FN_SUCCESS_MSG
+        elif [ "$INSTALL_USER_NAME" != "root" ]
+        then
+            tbdown $TB_DOWN_OPTION
+            FN_SUCCESS_MSG
+        fi
+        sleep 1
+    fi
+}
+
+# CREATE DATABASE sql run
+FN_AUTO_CREATEDB(){
+    STEP_FUNCTION="FN_AUTO_CREATEDB"
+    echo "############################################################"
+    echo "#  tbis Progress> CREATE DATABASE"
+    echo "############################################################"
+    echo
+    echo "Execution SQL FILE : $TBIS_CWD_PATH/tbis.sql"
+    cat $TBIS_CWD_PATH/tbis.sql
+    echo
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    if [ "$YESNO" == "YES" ]
+    then
+        if [ "$INSTALL_USER_NAME" == "root" ]
+        then
+            su - $USER_NAME -c "
+            tbsql -s sys/tibero < $TBIS_CWD_PATH/tbis.sql
+            "
+            echo
+            echo
+            FN_SUCCESS_MSG
+        elif [ "$INSTALL_USER_NAME" != "root" ]
+        then
+            tbsql sys/tibero < $TBIS_CWD_PATH/tbis.sql
+            echo
+            echo
+            FN_SUCCESS_MSG
+        else
+            exit
+        fi
+        sleep 1
+    fi
+}
+
+# system.sh run
+FN_AUTO_SYSTEM_SHELL(){
+    STEP_FUNCTION="FN_AUTO_SYSTEM_SHELL"
+    echo "############################################################"
+    echo "#  tbis Progress> system.sh"
+    echo "############################################################"
+    echo
+    echo "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    if [ "$YESNO" == "YES" ]
+    then
+        if [ "$INSTALL_USER_NAME" == "root" ]
+        then 
+            su - $USER_NAME -c "$TBIS_SHELL $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
+            echo
+            echo
+            FN_SUCCESS_MSG
+        elif [ "$INSTALL_USER_NAME" != "root" ]
+        then
+            $TBIS_SHELL $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y
+            echo
+            echo
+            FN_SUCCESS_MSG
+        fi    
+        sleep 1
+    fi    
+}
+
+# Archive directory mkdir
+FN_AUTO_ARCHIVE_DIR(){
+    if [ "$TIBERO_TYPE" == "SINGLE" ]
+    then
+        ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch`
+        mkdir -p $ARCHIVE_LOG_FILE_PATH
+    elif [ "$TIBERO_TYPE" == "TSC" ]
+    then
+        2>/dev/null
+        if [ "$TIBERO_NODE" == "observer" ]
+        then
+            2>/dev/null
+        elif [ "$TIBERO_NODE" == "primary" ]
+        then
+            ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch`
+            mkdir -p $ARCHIVE_LOG_FILE_PATH
+        fi
+    elif [ "$TIBERO_TYPE" == "TAC" ]
+    then
+        2>/dev/null
+        if [ "$TIBERO_NODE" == "cm0" ]
+        then
+            ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch0`
+            mkdir -p $ARCHIVE_LOG_FILE_PATH
+        elif [ "$TIBERO_NODE" == "cm1" ]
+        then
+            ARCHIVE_LOG_FILE_PATH=`echo $LOG_ARCHIVE_DEST/tbarch1`
+            mkdir -p $ARCHIVE_LOG_FILE_PATH
+        fi
+    fi
+    chown -R $USER_NAME:$GROUP_NAME $ARCHIVE_LOG_FILE_PATH
+}
+
+# tbdsn.tbr apply
+FN_AUTO_TBDSN(){
+    STEP_FUNCTION="FN_AUTO_TBDSN"
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> TBDSN"
+    echo "############################################################"
+    echo
+    echo "sh tbis.cfg FN_TB_DSN > $TB_HOME/client/cofnig/tbdsn.tbr"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    if [ "$YESNO" == "YES" ]
+    then
+        
+        if [ -z "$TB_HOME" ]
+        then
+          echo "tbis message> \$TB_HOME check"
+          exit
+        fi
+
+        $TBIS_SHELL tbis.cfg TB_DSN > $TB_HOME/client/config/tbdsn.tbr
+        FN_SUCCESS_MSG
+    fi
+}
+
+# CM tip apply
+FN_AUTO_CM_SID_TIP(){
+    STEP_FUNCTION="FN_AUTO_CM_SID_TIP"
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> CM_SID TIP File"
+    echo "############################################################"
+    echo
+    echo "sh tbis.cfg CM_SID_TIP > $TB_HOME/config/$TIBERO_NODE.tip"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    if [ "$YESNO" == "YES" ]
+    then
+        if [ "$TIBERO_TYPE" == "SINGLE" ]
+        then
+            echo
+            echo $TIBERO_TYPE
+            echo $TIBERO_NODE
+            echo
+        else
+            $TBIS_SHELL tbis.cfg CM_SID_TIP > $TB_HOME/config/$TIBERO_NODE.tip
+            FN_SUCCESS_MSG
+        fi
+    fi
+}
+
+# CM resource apply
+FN_AUTO_CM_RESOURCE(){
+    STEP_FUNCTION="FN_AUTO_CM_RESOURCE"
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> tbcm resource "    
+    echo "############################################################"
+    echo
+    $TBIS_SHELL tbis.cfg CM_RESOURCE
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    FN_AUTO_PROGRESS_PROFILE
+    . $TIBERO_PROFILE_CHECK
+
+    if [ "$YESNO" == "YES" ]
+    then
+        if [ "$INSTALL_USER_NAME" == "root" ]
+        then
+            if [ "$TIBERO_TYPE" == "TSC" ]
+            then
+                if [ "$TIBERO_NODE" == "primary" ]
+                then
+                    su - $USER_NAME -c "cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT"
+                    if [ -z "$NODE1_VIP_ETH" ]
+                    then
+                        su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --cfile $TB_HOME/config/CMFILE_cls0"
+                        su - $USER_NAME -c "cmrctl start cluster --name cls0"
+                        if [ "$TIBERO_OBSERVER_ENABLE" == "Y" ] 
+                        then
+                            su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE_OBSERVER_IP --obsport $CM_OBSERVER_PORT"
+                        elif [ "$TIBERO_OBSERVER_ENABLE" == "N" ]
+                        then
+                            su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11"
+                        fi
+                        su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK"
+                    else
+                        su - $USER_NAME -c "cmrctl add network --name pub0 --nettype public --ifname $NODE1_VIP_ETH"
+                        su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --pubnet pub0 --cfile $TB_HOME/config/CMFILE_cls0"
+                        su - $USER_NAME -c "cmrctl start cluster --name cls0"
+                        if [ "$TIBERO_OBSERVER_ENABLE" == "Y" ] 
+                        then
+                            su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE_OBSERVER_IP --obsport $CM_OBSERVER_PORT"
+                        elif [ "$TIBERO_OBSERVER_ENABLE" == "N" ]
+                        then
+                            su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11"
+                        fi
+                        su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK"
+                        su - $USER_NAME -c "cmrctl add vip --name vip0 --svcname $DB_NAME --ipaddr $NODE1_VIP_IP"
+                    fi
+                elif [ "$TIBERO_NODE" == "standby" ]
+                then
+                    su - $USER_NAME -c "cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT"
+                        if [ -z "$NODE2_VIP_ETH" ]
+                        then
+                            su - $USER_NAME -c "cmrctl add cluster --name cls1 --incnet net1 --cfile $TB_HOME/config/CMFILE_cls1"
+                            su - $USER_NAME -c "cmrctl start cluster --name cls1"
+                            su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport $CM_OBSERVER_PORT"
+                            su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK"
+                        else
+                            su - $USER_NAME -c "cmrctl add network --name pub1 --nettype public --ifname $NODE2_VIP_ETH"
+                            su - $USER_NAME -c "cmrctl add cluster --name cls1 --incnet net1 --pubnet pub1 --cfile $TB_HOME/config/CMFILE_cls1"
+                            su - $USER_NAME -c "cmrctl start cluster --name cls1"
+                            su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport $CM_OBSERVER_PORT"
+                            su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK   "
+                            su - $USER_NAME -c "cmrctl add vip --name vip1 --svcname $DB_NAME --ipaddr $NODE2_VIP_IP"
+                        fi
+                elif [ "$TIBERO_NODE" == "observer" ]
+                then
+                    2>/dev/null
+                fi
+            elif [ "$TIBERO_TYPE" == "TAC" ]
+            then
+                2>/dev/null
+                if [ "$TIBERO_NODE" == "cm0" ]
+                then
+                    su - $USER_NAME -c "cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT"
+                    if [ -z "$NODE1_VIP_ETH" ]
+                    then
+                        su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --cfile $CFILE_PATH/CMFILE"
+                        su - $USER_NAME -c "cmrctl start cluster --name cls0"
+                        su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --type db"
+                        su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
+                    else
+                        su - $USER_NAME -c "cmrctl add network --name pub0 --nettype public --ifname $NODE1_VIP_ETH"
+                        su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net0 --pubnet pub0 --cfile $CFILE_PATH/CMFILE"
+                        su - $USER_NAME -c "cmrctl start cluster --name cls0"
+                        su - $USER_NAME -c "cmrctl add service --name $DB_NAME --cname cls0 --type db"
+                        su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
+                        su - $USER_NAME -c "cmrctl add vip --name vip0 --svcname $DB_NAME --ipaddr $NODE1_VIP_IP"
+                    fi
+                elif [ "$TIBERO_NODE" == "cm1" ]
+                then
+                    su - $USER_NAME -c "cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT"
+                    if [ -z "$NODE2_VIP_ETH" ]
+                    then
+                        su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net1  --cfile $CFILE_PATH/CMFILE"
+                        su - $USER_NAME -c "cmrctl start cluster --name cls0"
+                        su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
+                    else
+                        su - $USER_NAME -c "cmrctl add network --name pub1 --nettype public --ifname $NODE2_VIP_ETH"
+                        su - $USER_NAME -c "cmrctl add cluster --name cls0 --incnet net1 --pubnet pub1 --cfile $CFILE_PATH/CMFILE"
+                        su - $USER_NAME -c "cmrctl start cluster --name cls0"
+                        su - $USER_NAME -c "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
+                        su - $USER_NAME -c "cmrctl add vip --name vip1 --svcname $DB_NAME --ipaddr $NODE2_VIP_IP"
+                    fi
+                fi
+            fi    
+        elif [ "$INSTALL_USER_NAME" != "root" ]
+        then
+            if [ "$TIBERO_TYPE" == "TSC" ]
+            then
+                if [ "$TIBERO_NODE" == "primary" ]
+                then
+                    cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT
+                    if [ -z "$NODE1_VIP_ETH" ]
+                    then
+                        cmrctl add cluster --name cls0 --incnet net0 --cfile $TB_HOME/config/CMFILE_cls0
+                        cmrctl start cluster --name cls0
+                        if [ "$TIBERO_OBSERVER_ENABLE" == "Y" ] 
+                        then
+                            cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE_OBSERVER_IP --obsport $CM_OBSERVER_PORT
+                        elif [ "$TIBERO_OBSERVER_ENABLE" == "N" ]
+                        then
+                            cmrctl add service --name $DB_NAME --cname cls0 --tscid 11
+                        fi
+                        cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK
+                    fi
+                elif [ "$TIBERO_NODE" == "standby" ]
+                then
+                    cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT
+                        if [ -z $NODE2_VIP_ETH ]
+                        then
+                            cmrctl add cluster --name cls1 --incnet net1 --cfile $TB_HOME/config/CMFILE_cls1
+                            cmrctl start cluster --name cls1
+                            cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE2_INTER_IP --obsport $CM_OBSERVER_PORT
+                            cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK
+                        fi
+                elif [ "$TIBERO_NODE" == "observer" ]
+                then
+                    2>/dev/null
+                fi
+            elif [ "$TIBERO_TYPE" == "TAC" ]
+            then
+                2>/dev/null
+                if [ "$TIBERO_NODE" == "cm0" ]
+                then
+                    cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT
+                    if [ -z $NODE1_VIP_ETH ]
+                    then
+                        cmrctl add cluster --name cls0 --incnet net0 --cfile $CFILE_PATH/CMFILE
+                        cmrctl start cluster --name cls0
+                        cmrctl add service --name $DB_NAME --cname cls0 --type db
+                        cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME
+                    fi
+                elif [ "$TIBERO_NODE" == "cm1" ]
+                then
+                    cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT
+                    if [ -z "$NODE2_VIP_ETH" ]
+                    then
+                        cmrctl add cluster --name cls0 --incnet net1  --cfile $CFILE_PATH/CMFILE
+                        cmrctl start cluster --name cls0
+                        cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME
+                    fi
+                fi
+            fi    
+        fi
+        sleep 1
+        FN_SUCCESS_MSG
+    fi
+}
+
+# TBCM BOOT
+FN_AUTO_CM_BOOT(){
+    STEP_FUNCTION="FN_AUTO_CM_BOOT"
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> tbcm boot "    
+    echo "############################################################"
+    echo
+    echo "tbcm boot $CM_BOOT_OPTION"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    if [ "$YESNO" == "YES" ]
+    then
+        if [ "$TIBERO_NODE" == "observer" ]
+        then
+            FN_AUTO_PROCESS_CHECK OBS
+            if [ "$INSTALL_USER_NAME" == "root" ]
+            then
+                su - $USER_NAME -c "tbcmobs -b"
+            elif [ "$INSTALL_USER_NAME" != "root" ]
+            then
+                tbcmobs -b
+            fi        
+        else
+            FN_AUTO_PROCESS_CHECK TBCM
+           if [ "$INSTALL_USER_NAME" == "root" ]
+           then
+                if [ -z "$NODE1_VIP_ETH" ]
+                then
+                    su - $USER_NAME -c "tbcm -b"
+                elif [ -n "$NODE1_VIP_ETH" ]
+                then
+                    FN_AUTO_PROGRESS_PROFILE
+                    . $TIBERO_PROFILE_CHECK
+                    tbcm -b                                
+                fi
+            elif [ "$INSTALL_USER_NAME" != "root" ]
+            then
+                tbcm -b
+            fi
+        fi
+        sleep 1 
+        FN_SUCCESS_MSG
+    fi
+    
+}
+
+# TBCM DONW
+FN_AUTO_CM_DOWN(){
+    STEP_FUNCTION="FN_AUTO_CM_DOWN"
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> tbcm down "    
+    echo "############################################################"
+    echo
+    echo "tbcm down"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    CM_DOWN_OPTION=$1
+    if [ "$YESNO" == "YES" ]
+    then
+        if [ "$INSTALL_USER_NAME" == "root" ]
+        then
+            if [ -z "$NODE1_VIP_ETH" ]
+            then
+                su - $USER_NAME -c "tbcm -d"
+            elif [ -n "$NODE1_VIP_ETH" ]
+            then
+                FN_AUTO_PROGRESS_PROFILE
+                . $TIBERO_PROFILE_CHECK
+                tbcm -d
+            fi
+        elif [ "$INSTALL_USER_NAME" != "root" ]
+        then
+            tbcm -d
+        fi
+        sleep 1
+        FN_SUCCESS_MSG
+    fi
+ 
+}
+
+# TSC primary to standby file
+FN_AUTO_TSC_COPY(){
+    STEP_FUNCTION="FN_AUTO_TSC_COPY"
+    echo "############################################################"
+    echo "#  tbis Progress> CF/DF/ARCH COPY to Target node"
+    echo "############################################################"
+    echo
+    echo "scp -P $SCP_PORT -r $CONTROL_FILE_PATH1/tbctl1 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH1/tbctl1"
+    echo "scp -P $SCP_PORT -r $CONTROL_FILE_PATH2/tbctl2 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH2/tbctl2"
+    echo "scp -P $SCP_PORT -r $DB_CREATE_FILE_DEST/tbdata "$USER_NAME"@"$NODE2_INTER_IP":$DB_CREATE_FILE_DEST/tbdata"
+    echo "scp -P $SCP_PORT -r $LOG_ARCHIVE_DEST/tbarch "$USER_NAME"@"$NODE2_INTER_IP":$LOG_ARCHIVE_DEST/tbarch"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    if [ "$YESNO" == "YES" ]
+    then  
+        scp -P $SCP_PORT -r $CONTROL_FILE_PATH1/tbctl1 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH1/tbctl1
+        scp -P $SCP_PORT -r $CONTROL_FILE_PATH2/tbctl2 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH2/tbctl2
+        scp -P $SCP_PORT -r $DB_CREATE_FILE_DEST/tbdata "$USER_NAME"@"$NODE2_INTER_IP":$DB_CREATE_FILE_DEST/tbdata
+        scp -P $SCP_PORT -r $LOG_ARCHIVE_DEST/tbarch "$USER_NAME"@"$NODE2_INTER_IP":$LOG_ARCHIVE_DEST/tbarch
+        FN_SUCCESS_MSG
+    fi    
+}
+
+# TSC standby Controlfile apply
+FN_AUTO_TSC_CFG(){
+    STEP_FUNCTION="FN_AUTO_TSC_CFG"
+    echo "############################################################"
+    echo "#  tbis Progress> Target TSC Configuration"
+    echo "############################################################"
+    echo
+    echo "ALTER DATABASE STANDBY CONTROLFILE;"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    if [ "$YESNO" == "YES" ]
+    then   
+        if [ "$INSTALL_USER_NAME" == "root" ]
+        then
+            su - $USER_NAME -c "
+                tbsql -s sys/tibero <<EOF
+                ALTER DATABASE STANDBY CONTROLFILE;
+                exit
+                EOF
+            "        
+        elif [ "$INSTALL_USER_NAME" != "root" ]
+        then
+tbsql -s sys/tibero <<EOF
+ALTER DATABASE STANDBY CONTROLFILE;
+exit
+EOF
+        fi        
+        sleep 1
+        FN_SUCCESS_MSG
+    fi
+}
+
+# TAC THREAD1 enable apply
+FN_AUTO_TAC_CFG(){
+    STEP_FUNCTION="FN_AUTO_TAC_CFG"
+    echo "############################################################"
+    echo "#  tbis Progress> TAC Configuration"
+    echo "############################################################"
+    echo
+    echo "CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $THREAD1_UNDO1_SIZE AUTOEXTEND OFF;"
+    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $THREAD1_REDO_SIZE;"
+    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $THREAD1_REDO_SIZE;"
+    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 7 ('$DB_CREATE_FILE_DEST/tbdata/system/redo071.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo072.redo') SIZE $THREAD1_REDO_SIZE;"
+    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 8 ('$DB_CREATE_FILE_DEST/tbdata/system/redo081.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo082.redo') SIZE $THREAD1_REDO_SIZE;"
+    echo "ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 9 ('$DB_CREATE_FILE_DEST/tbdata/system/redo091.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo092.redo') SIZE $THREAD1_REDO_SIZE;"
+    echo "ALTER DATABASE ENABLE PUBLIC THREAD 1;"
+    echo
+    FN_AUTO_PROGRESS_CHECK
+    echo
+    if [ "$YESNO" == "YES" ]
+    then
+        if [ "$INSTALL_USER_NAME" == "root" ]
+        then
+            su - $USER_NAME -c "
+                tbsql -s sys/tibero <<EOF
+                CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $THREAD1_UNDO1_SIZE AUTOEXTEND OFF;
+                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $THREAD1_REDO_SIZE;
+                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $THREAD1_REDO_SIZE;
+                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 7 ('$DB_CREATE_FILE_DEST/tbdata/system/redo071.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo072.redo') SIZE $THREAD1_REDO_SIZE;
+                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 8 ('$DB_CREATE_FILE_DEST/tbdata/system/redo081.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo082.redo') SIZE $THREAD1_REDO_SIZE;
+                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 9 ('$DB_CREATE_FILE_DEST/tbdata/system/redo091.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo092.redo') SIZE $THREAD1_REDO_SIZE;
+                ALTER DATABASE ENABLE PUBLIC THREAD 1;
+                exit
+EOF
+            "
+        elif [ "$INSTALL_USER_NAME" != "root" ]
+        then
+                tbsql -s sys/tibero <<EOF
+                CREATE UNDO TABLESPACE UNDO1 DATAFILE 'system/undo101.dtf' SIZE $THREAD1_UNDO1_SIZE AUTOEXTEND OFF;
+                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 5 ('$DB_CREATE_FILE_DEST/tbdata/system/redo051.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo052.redo') SIZE $THREAD1_REDO_SIZE;
+                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 6 ('$DB_CREATE_FILE_DEST/tbdata/system/redo061.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo062.redo') SIZE $THREAD1_REDO_SIZE;
+                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 7 ('$DB_CREATE_FILE_DEST/tbdata/system/redo071.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo072.redo') SIZE $THREAD1_REDO_SIZE;
+                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 8 ('$DB_CREATE_FILE_DEST/tbdata/system/redo081.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo082.redo') SIZE $THREAD1_REDO_SIZE;
+                ALTER DATABASE ADD LOGFILE THREAD 1 GROUP 9 ('$DB_CREATE_FILE_DEST/tbdata/system/redo091.redo','$DB_CREATE_FILE_DEST/tbdata/system/redo092.redo') SIZE $THREAD1_REDO_SIZE;
+                ALTER DATABASE ENABLE PUBLIC THREAD 1;
+                exit
+EOF
+        fi
+        sleep 1
+        FN_SUCCESS_MSG
+    fi
+}
+
+# start/end log apply
+FN_AUTO_LOGFILE(){
+    TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
+    if [ -f "$TBIS_AUTO_LOGFILE" ]
+    then
+        mv $TBIS_AUTO_LOGFILE "$TBIS_AUTO_LOGFILE"_"$TBIS_AUTO_TIME"
+    fi
+}
+
+FN_AUTO_SUCCESS(){
+    TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
+    TBIS_END_TIME=$TBIS_AUTO_TIME
+    echo "############################################################"
+    echo "# tbis auto installation end"
+    echo "############################################################"
+    echo "# tbis Progress> time: "$TBIS_END_TIME
+    echo "# Installation Mode"
+    echo "- Installation type : $TIBERO_TYPE"
+    echo "- Installation node : $TIBERO_NODE"
+    echo "-----------------------------------------------------------------"
+    echo "# TIBERO DATABASE FILE DEST"
+    echo "- TB_HOME PATH : $TB_HOME"
+    echo "- TBINARY PATH : $TB_HOME/tbinary"
+    echo "- CONTROL1_FILE : $CONTROL_FILE_PATH1/tbctl1/c1.ctl"
+    echo "- CONTROL2_FILE : $CONTROL_FILE_PATH2/tbctl2/c2.ctl"
+    echo "- DB_CREATE_FILE : $DB_CREATE_FILE_DEST/tbdata"
+    echo "-----------------------------------------------------------------"
+    
+    if [ "$TIBERO_TYPE" != "SINGLE" ]
+    then
+        echo "# tbcm Process"
+        ps -ef |grep -E "root|$USER_NAME" |grep -E "tbcm" |grep -v "grep"
+        echo "-----------------------------------------------------------------"
+    fi
+
+    if [ "$TIBERO_TYPE" != "observer" ]
+    then
+        
+        echo "# tbsvr Process"
+        ps -ef |grep $USER_NAME |grep -E "tbsvr" |grep -v "grep"
+        echo
+        echo
+    fi
+    exit
+}
+
+############################################################
+# Running functions
+# 1. tbis Installation Tools 
+############################################################
+FN_AUTO_INSTALL_CHECK(){
+    clear
+    echo "[*] TIBERO Auto installation Tools Configuration Checking STEP"
+    echo "-----------------------------------------------------------------"
+    echo "# Installation Mode"
+    echo "- Installation type : $TIBERO_TYPE"
+    echo "- Installation node : $TIBERO_NODE"
+    FN_AUTO_TB_SID_NAME
+    echo "-----------------------------------------------------------------"
+    echo "# OS USER & GROUP"
+    echo "- OS user : $USER_NAME"
+    echo "- OS home : $USER_HOME"
+    echo "- OS user group : $GROUP_NAME"    
+    echo "-----------------------------------------------------------------"
+    echo "# TIBERO DATABASE"
+    echo "- TB_SID : $TB_SID"
+    echo "- TB_HOME : $TB_HOME"
+    echo "- DB_NAME : $DB_NAME"
+    echo "- LISTENER_PORT : $LISTENER_PORT"
+    echo "- CHARACTER SET : `cat tbis.sql|grep CHARACTER |awk '{print $NF}'`"
+    if [ "$TIBERO_NODE" != "SINGLE" ]
+    then
+        echo "-----------------------------------------------------------------"
+        echo "# TIBERO CM"
+        echo "- CM_SID : $TIBERO_NODE"
+        echo "- CM_HOME : $TB_HOME"
+        echo "- NODE1_INTER_IP : $NODE1_INTER_IP"
+        echo "- NODE2_INTER_IP : $NODE2_INTER_IP"
+        if [ "$TIBERO_TYPE" == "TSC" ]
+        then
+            if [ "$TIBERO_OBSERVER_ENABLE" == "Y" ]
+            then
+                echo "- TIBERO_OBSERVER_ENABLE : $TIBERO_OBSERVER_ENABLE"
+                echo "- NODE_OBSERVER_IP : $NODE_OBSERVER_IP"
+            fi
+            echo "- TSC VIP_ETH : $NODE1_VIP_ETH"
+            echo "- TSC VIP : $NODE1_VIP_IP"
+        elif [ "$TIBERO_TYPE" == "TAC" ]
+        then
+            echo "- NODE1_VIP_ETH : $NODE1_VIP_ETH"
+            echo "- NODE1_VIP_IP : $NODE1_VIP_IP"
+            echo "- NODE2_VIP_ETH : $NODE2_VIP_ETH"
+            echo "- NODE2_VIP_IP : $NODE2_VIP_IP"
+        fi
+    fi    
+    echo "-----------------------------------------------------------------"
+    echo "# TIBERO DATABASE FILE DEST"
+    echo "- TB_HOME PATH : $TB_HOME"
+    echo "- TBINARY PATH : $TB_HOME/tbinary"
+    echo "- CONTROL1_FILE : $CONTROL_FILE_PATH1/tbctl1/c1.ctl"
+    echo "- CONTROL2_FILE : $CONTROL_FILE_PATH2/tbctl2/c2.ctl"
+    echo "- DB_CREATE_FILE : $DB_CREATE_FILE_DEST/tbdata"
+    
+    if [ "$TIBERO_TYPE" == "SINGLE" ]
+    then
+        echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch"
+    elif [ "$TIBERO_TYPE" == "TSC" ]
+    then
+        echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch"
+    elif [ "$TIBERO_TYPE" == "TAC" ]
+    then
+        if [ "$TIBERO_NODE" == "cm0" ]
+        then
+            echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch0"
+        elif [ "$TIBERO_NODE" == "cm1" ]
+        then
+            echo "- LOG_ARCHIVE_FILE : $LOG_ARCHIVE_DEST/tbarch1"
+        fi
+    fi
+    echo "-----------------------------------------------------------------"
+    echo "# TIBERO INSTALLATION BINARY "
+    TIBERO_LICENSE_FILE=`ls ../binary/license.xml 2>/dev/null`
+    if [ -f "$TIBERO_LICENSE_FILE" ]
+    then
+        echo "- LICENSE FILE : "$TIBERO_LICENSE_FILE
+    else
+        echo "tbis message> license.xml file check"
+    fi
+
+    TIBERO_ENGINE_FILE=`ls ../binary/tibero* 2>/dev/null`
+    if [ -f "$TIBERO_ENGINE_FILE" ]
+    then
+        
+        echo "- ENGINE FILE : "$TIBERO_ENGINE_FILE
+    else
+        echo "tbis message> TIBERO ENGINE file check"
+    fi
+
+    TIBERO_TBINARY_FILE=`ls ../binary/tbinary* 2>/dev/null`
+    if [ -f "$TIBERO_TBINARY_FILE" ]
+    then
+        echo "- TBINARY FILE : "$TIBERO_TBINARY_FILE
+    else
+        echo "tbis message> TBINARY file check"
+    fi    
+    echo "-----------------------------------------------------------------"
+    echo "# TIBERO Configuration Files"
+    echo "- cat tbis.cfg : TIBERO Configuration File"
+    echo "- cat tbis.sql : CREATE DATABASE SQL File"
+    echo "-----------------------------------------------------------------"
+    
+    ### IN PROCESS
+    echo
+    printf "continue ? ( [Y]es / [N]o / [AA] All Auto] ) : "
+    read INPUT_YESNO
+    case $INPUT_YESNO in
+        "YES"|"Yes"|"yes"|"y"|"Y")
+            INSTALL_MODE=YES;;
+        "NO"|"No"|"no"|"n"|"N")
+            exit;;
+        "AA"|"aa")
+            INSTALL_MODE=ALL;;
+        *)
+            exit;;
+    esac
+    echo
+    ###
+}
+
+FN_AUTO_INSTALL(){
+    ############# In Progress
+    chmod 655 tbis.log
+    TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
+    TBIS_START_TIME=$TBIS_AUTO_TIME
+    echo "############################################################"
+    echo "# tbis Start Log"
+    echo "############################################################"
+    echo "# start time : $TBIS_START_TIME"
+    echo
+    echo
+    cat ./tbis.cfg |grep "export" |grep -v "echo"
+    clear
+    . ./tbis.cfg
+
+    FN_AUTO_CNF_CHECK
+    FN_AUTO_INSTALL_CHECK     
+    FN_AUTO_ENGINE
+    FN_AUTO_TBINARY
+    FN_AUTO_PROFILE
+    if [ "$TIBERO_TYPE" == "SINGLE" ]
+    then
+        FN_AUTO_TB_SID_TIP
+        FN_AUTO_TBDSN
+        FN_AUTO_LICENSE
+        FN_AUTO_CHANGE_OWNER
+        FN_AUTO_TB_BOOT NOMOUNT
+        FN_AUTO_CREATEDB
+        FN_AUTO_TB_BOOT NORMAL
+        FN_AUTO_SYSTEM_SHELL
+        FN_AUTO_ARCHIVE_DIR
+    elif [ "$TIBERO_TYPE" == "TSC" ]
+    then
+        if [ "$TIBERO_NODE" == "primary" ]
+        then
+            FN_AUTO_TB_SID_TIP
+            FN_AUTO_TBDSN
+            FN_AUTO_LICENSE
+            FN_AUTO_CM_SID_TIP
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_CM_BOOT
+            FN_AUTO_CM_RESOURCE
+            if [ -z "$NODE1_VIP_ETH" ]
+            then
+                FN_AUTO_CHANGE_OWNER
+                FN_AUTO_CM_DOWN
+                FN_AUTO_CHANGE_OWNER
+                FN_AUTO_CM_BOOT
+            else
+                2>/dev/null
+            fi
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_TB_BOOT NOMOUNT
+            FN_AUTO_CREATEDB
+            FN_AUTO_TB_BOOT NORMAL
+            FN_AUTO_SYSTEM_SHELL
+            FN_AUTO_TB_DOWN IMMEDIATE
+            FN_AUTO_TSC_COPY
+            FN_AUTO_ARCHIVE_DIR
+        elif [ "$TIBERO_NODE" == "standby" ]
+        then
+            FN_AUTO_TB_SID_TIP
+            FN_AUTO_TBDSN
+            FN_AUTO_LICENSE
+            FN_AUTO_CM_SID_TIP
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_CM_BOOT ROOT
+            FN_AUTO_CM_RESOURCE
+            if [ -z "$NODE2_VIP_ETH" ]
+            then
+                FN_AUTO_CHANGE_OWNER
+                FN_AUTO_CM_DOWN
+                FN_AUTO_CHANGE_OWNER
+                FN_AUTO_CM_BOOT
+            else
+                2>/dev/null
+            fi            
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_TB_BOOT MOUNT
+            FN_AUTO_TSC_CFG
+            FN_AUTO_TB_DOWN IMMEDIATE
+            FN_AUTO_ARCHIVE_DIR
+        elif [ "$TIBERO_NODE" == "observer" ]
+        then
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_CM_SID_TIP
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_CM_BOOT
+        fi
+    elif [ "$TIBERO_TYPE" == "TAC" ]
+    then
+        if [ "$TIBERO_NODE" == "cm0" ]
+        then
+            FN_AUTO_TB_SID_TIP
+            FN_AUTO_TBDSN
+            FN_AUTO_LICENSE
+            FN_AUTO_CM_SID_TIP
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_CM_BOOT ROOT
+            FN_AUTO_CM_RESOURCE
+            if [ -z "$NODE1_VIP_ETH" ]
+            then
+                FN_AUTO_CHANGE_OWNER
+                FN_AUTO_CM_DOWN
+                FN_AUTO_CHANGE_OWNER
+                FN_AUTO_CM_BOOT
+            else
+                2>/dev/null
+            fi
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_TB_BOOT NOMOUNT
+            FN_AUTO_CREATEDB
+            FN_AUTO_TB_BOOT NORMAL
+            FN_AUTO_SYSTEM_SHELL
+            FN_AUTO_TAC_CFG
+            FN_AUTO_ARCHIVE_DIR
+        elif [ "$TIBERO_NODE" == "cm1" ]
+        then
+            FN_AUTO_TB_SID_TIP
+            FN_AUTO_TBDSN
+            FN_AUTO_LICENSE
+            FN_AUTO_CM_SID_TIP
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_CM_BOOT ROOT
+            FN_AUTO_CM_RESOURCE
+            if [ -z "$NODE2_VIP_ETH" ]
+            then
+                FN_AUTO_CHANGE_OWNER
+                FN_AUTO_CM_DOWN
+                FN_AUTO_CHANGE_OWNER
+                FN_AUTO_CM_BOOT
+            else
+                2>/dev/null
+            fi
+            FN_AUTO_CHANGE_OWNER
+            FN_AUTO_TB_BOOT NORMAL
+            FN_AUTO_ARCHIVE_DIR
+        fi
+    fi
+    FN_AUTO_SUCCESS
+}
+
+
+
+############################################################
+# Detail/Running functions
+# 2. tbis Installation Report
+############################################################
+# Detail Functions
 FN_RUN_SQL(){
 	tbsql -s sys/tibero @tbis_report/$1
 }
 
-############################################################
-# Function Lists
-# 2. tbis Installation Report
-############################################################
+# Running fucnctions
 FN_AUTO_INSTALL_REPORT(){
     clear
     . ./tbis.cfg
@@ -1417,7 +1470,7 @@ FN_AUTO_INSTALL_REPORT(){
         FN_AUTO_INSTALL_REPORT;;
     2)
         clear
-        sh ./tbis_report/ncpu/chk_cpu_for_license.sh TIBERO
+        $TBIS_SHELL ./tbis_report/ncpu/chk_cpu_for_license.sh TIBERO
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY         
         FN_AUTO_INSTALL_REPORT;;
@@ -1528,13 +1581,10 @@ FN_AUTO_INSTALL_REPORT(){
 }
 
 ############################################################
-# Function Lists
+# Detail/Running Functions
 # 3. tbis Configuration Text
 ############################################################
-FN_PRINT_PRESS(){
-    echo "Press Enter Key to continue..."
-}
-
+# Running functions
 FN_AUTO_CONFIGURATION(){  
     clear
     . ./tbis.cfg
@@ -1694,11 +1744,11 @@ FN_AUTO_CONFIGURATION(){
     esac
 }
 
-
 ############################################################
-# Function Lists
-# tbis main
+# tbis.main
+# main function
 ############################################################
+# main
 FN_MAIN_MENU(){        
     CURRENT_DIRECTORY=`pwd`
     CURRENT_DIRECTORY_CHK=`ls $CURRENT_DIRECTORY/tbis.cfg 2>/dev/null` 
@@ -1740,8 +1790,5 @@ FN_MAIN_MENU(){
     esac
 } 
 
-############################################################
-# Program start
-#
-############################################################
+# call main
 FN_MAIN_MENU

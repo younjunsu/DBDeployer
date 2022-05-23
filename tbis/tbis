@@ -1,12 +1,34 @@
 #!/bin/sh
+############################################################
+#
+# Program history
+############################################################
+# Created by. Daejeon Office
+# 2022.03.18 Version : Park Si Hyung, Yoon Jun Su
+# 2022.03.24 Version : Yoon Jun Su
+# 2022.03.28 Version : Yoon Jun Su
+# 2022.05.16 Version : Yoon Jun Su
+# 2022.05.23 Version : Yoon Jun Su
 
-SHELL_CHECK=`uname -a |grep -i Ubuntu`
+############################################################
+# tbis
+# Shell configuration
+############################################################
+# Shell check
+TBIS_SHELL_RUN(){
+    SHELL_CHECK=`uname -a |grep -i Ubuntu`
 
-if [ -n "$SHELL_CHECK" ]
-then
-    echo "1"
-    bash ./tbis.main
-else
-    echo "2"
-    sh ./tbis.main
-fi
+    if [ -n "$SHELL_CHECK" ]
+    then
+        export TBIS_SHELL="bash"
+        bash ./tbis.main
+        
+    else
+        export TBIS_SHELL="sh"
+        sh ./tbis.main
+    fi
+}
+
+# Shell  running
+TBIS_SHELL_RUN
+
