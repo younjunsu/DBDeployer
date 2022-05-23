@@ -25,7 +25,7 @@ TBIS_CWD_PATH=`pwd`
 ############################################################
 FN_AUTO_LOGFILE(){
     TBIS_AUTO_TIME=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
-    if [ -f $TBIS_AUTO_LOGFILE ]
+    if [ -f "$TBIS_AUTO_LOGFILE" ]
     then
         mv $TBIS_AUTO_LOGFILE "$TBIS_AUTO_LOGFILE"_"$TBIS_AUTO_TIME"
     fi
@@ -33,7 +33,7 @@ FN_AUTO_LOGFILE(){
 
 FN_AUTO_PROGRESS_CHECK(){
     echo
-    if [ "$INSTALL_MODE" == "ALL" ]
+    if [ "$INSTALL_MODE"=="ALL" ]
     then
         YESNO=YES
     else
@@ -56,7 +56,7 @@ FN_AUTO_PROGRESS_CHECK(){
 
 FN_AUTO_ENGINE(){
     STEP_FUNCTION="FN_AUTO_ENGINE"
-    if [ "$TIBERO_ENGINE" == "Y" ] || [ "$TIBERO_ENGINE" == "y" ]
+    if [ "$TIBERO_ENGINE"=="Y" ] || [ "$TIBERO_ENGINE"=="y" ]
     then
         echo
         echo "############################################################"
@@ -67,7 +67,7 @@ FN_AUTO_ENGINE(){
         echo "tar -xvf ../binary/tibero*.tar -C $USER_HOME"
         echo
         FN_AUTO_PROGRESS_CHECK
-        if [ "$YESNO"  == "YES" ]
+        if [ "$YESNO"=="YES" ]
         then
                 gunzip ../binary/tibero*.tar.gz
                 tar -xvf ../binary/tibero*.tar -C $USER_HOME
@@ -79,7 +79,7 @@ FN_AUTO_ENGINE(){
 
 FN_AUTO_TBINARY(){
     STEP_FUNCTION="FN_AUTO_TBINARY"
-    if [ "$TIBERO_TBINARY" == "Y" ] || [ "$TIBERO_TBINARY" == "y" ]
+    if [ "$TIBERO_TBINARY"=="Y" ] || [ "$TIBERO_TBINARY"=="y" ]
     then
         echo
         echo "############################################################"
@@ -89,7 +89,7 @@ FN_AUTO_TBINARY(){
         echo "tar -xvf ../binary/tbinary*.tar -C $USER_HOME"
         echo
         FN_AUTO_PROGRESS_CHECK
-        if [ "$YESNO"  == "YES" ]
+        if [ "$YESNO"=="YES" ]
         then
             TBINARY_FILE_CHECK=`ls ../binary/tbinary*.tar 2>/dev/null`
             if [ -z $TBINARY_FILE_CHECK ]
@@ -461,7 +461,7 @@ FN_AUTO_CM_BOOT(){
     echo 
     FN_AUTO_PROGRESS_CHECK
     echo
-    if [ "$YESNO"  == "YES" ]
+    if [ "$YESNO"=="YES" ]
     then
         if [ "$TIBERO_NODE" == "observer" ]
         then
@@ -507,7 +507,7 @@ FN_AUTO_CM_DOWN(){
     FN_AUTO_PROGRESS_CHECK
     echo
     CM_DOWN_OPTION=$1
-    if [ "$YESNO"  == "YES" ]
+    if [ "$YESNO"=="YES" ]
     then
         if [ "$INSTALL_USER_NAME" == "root" ]
         then
@@ -539,7 +539,7 @@ FN_AUTO_CHANGE_OWNER(){
     echo "chwon -R $USER_NAME:$GROUP_NAME $USER_HOME"
     echo
     FN_AUTO_PROGRESS_CHECK
-    if [ "$YESNO"  == "YES" ]
+    if [ "$YESNO"=="YES" ]
     then
         chown -R $USER_NAME:$GROUP_NAME $USER_HOME
         FN_SUCCESS_MSG
@@ -581,7 +581,7 @@ FN_AUTO_TB_BOOT(){
     echo
 
     FN_AUTO_PROGRESS_CHECK
-    if [ "$YESNO"  == "YES" ]
+    if [ "$YESNO"=="YES" ]
     then
         if [ "$INSTALL_USER_NAME" == "root" ]
         then
@@ -612,7 +612,7 @@ FN_AUTO_TB_DOWN(){
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
-    if [ "$YESNO"  == "YES" ]
+    if [ "$YESNO"=="YES" ]
     then
         FN_AUTO_PROCESS_CHECK EXIT
         if [ "$INSTALL_USER_NAME" == "root" ]
@@ -640,7 +640,7 @@ FN_AUTO_CREATEDB(){
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
-    if [ "$YESNO"  == "YES" ]
+    if [ "$YESNO"=="YES" ]
     then
         FN_AUTO_PROCESS_CHECK EXIT
         if [ "$INSTALL_USER_NAME" == "root" ]
@@ -674,7 +674,7 @@ FN_AUTO_SYSTEM_SHELL(){
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
-    if [ "$YESNO"  == "YES" ]
+    if [ "$YESNO"=="YES" ]
     then
         FN_AUTO_PROCESS_CHECK EXIT
         if [ "$INSTALL_USER_NAME" == "root" ]
@@ -739,7 +739,7 @@ FN_AUTO_TSC_COPY(){
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
-    if [ "$YESNO"  == "YES" ]
+    if [ "$YESNO"=="YES" ]
     then  
         scp -P $SCP_PORT -r $CONTROL_FILE_PATH1/tbctl1 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH1/tbctl1
         scp -P $SCP_PORT -r $CONTROL_FILE_PATH2/tbctl2 "$USER_NAME"@"$NODE2_INTER_IP":$CONTROL_FILE_PATH2/tbctl2
@@ -759,7 +759,7 @@ FN_AUTO_TSC_CFG(){
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
-    if [ "$YESNO"  == "YES" ]
+    if [ "$YESNO"=="YES" ]
     then   
         if [ "$INSTALL_USER_NAME" == "root" ]
         then
@@ -834,7 +834,7 @@ FN_AUTO_TAC_CFG(){
     echo
     FN_AUTO_PROGRESS_CHECK
     echo
-    if [ "$YESNO"  == "YES" ]
+    if [ "$YESNO"=="YES" ]
     then
         if [ "$INSTALL_USER_NAME" == "root" ]
         then
