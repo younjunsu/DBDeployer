@@ -9,6 +9,7 @@
 # 2022.03.28 Version : Yoon Jun Su
 # 2022.05.06 Version : Yoon Jun Su
 
+export SHELL=`/bin/bash`
 ############################################################
 #
 # Program variables
@@ -69,8 +70,11 @@ FN_AUTO_ENGINE(){
         FN_AUTO_PROGRESS_CHECK
         if [ "$YESNO" == "YES" ]
         then
+                TB_HOME_EDIT=`echo $TB_HOME |sed 's/\// /g' |awk '{print $NF}'`
+                TB_HOME=`echo $TB_HOME | sed 's/\/'$TB_HOME_EDIT'//g'`
+
                 gunzip ../binary/tibero*.tar.gz
-                tar -xvf ../binary/tibero*.tar -C $USER_HOME
+                tar -xvf ../binary/tibero*.tar -C $TB_HOME
                 FN_SUCCESS_MSG
         fi     
     fi
@@ -128,14 +132,14 @@ FN_AUTO_PROFILE(){
         then
             echo ""
             TIBERO_PROFILE_CHECK=$TIBERO_PROFILE
-            sh tbis.cfg USER_PROFILE >> $USER_HOME/.profile
+            . ./tbis.cfg USER_PROFILE >> $USER_HOME/.profile
             . $TIBERO_PROFILE_CHECK
             FN_SUCCESS_MSG
         elif [ -f "$TIBERO_BASHPROFILE" ]
         then
             TIBERO_PROFILE_CHECK=$TIBERO_BASHPROFILE
             sh tbis.cfg USER_PROFILE >> $USER_HOME/.bash_profile
-            . $TIBERO_PROFILE_CHECK
+            . ./$TIBERO_PROFILE_CHECK
             FN_SUCCESS_MSG
         else
             echo "tbis message> .bash_profile or .profile file check"
@@ -542,6 +546,7 @@ FN_AUTO_CHANGE_OWNER(){
     if [ "$YESNO" == "YES" ]
     then
         chown -R $USER_NAME:$GROUP_NAME $USER_HOME
+        chown -R $USER_NAME:$GROUP_NAME $TB_HOME
         FN_SUCCESS_MSG
     fi    
 }
@@ -1363,7 +1368,7 @@ FN_AUTO_CNF_CHECK(){
         exit
     elif [ "$TB_FAIL_CHK" == "N" ] && [ "$TB_FAIL_OS_PARAM" == "N" ]  && [ "$TB_FAIL_FILE_PARAM" == "N" ]
     then
-        continue
+        continue;
     fi
     #-------------------------
 }
