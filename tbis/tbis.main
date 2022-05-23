@@ -1566,7 +1566,10 @@ FN_AUTO_INSTALL_REPORT(){
         FN_AUTO_INSTALL_REPORT;;
     4)
         clear
-        cat $TIBERO_PROFILE_CHECK
+        if [ -f "$TIBERO_PROFILE_CHECK" ]
+        then
+            cat $TIBERO_PROFILE_CHECK
+        fi       
         echo
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY         
