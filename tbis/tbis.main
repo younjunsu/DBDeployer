@@ -330,7 +330,7 @@ FN_AUTO_PROCESS_CHECK(){
          fi
     elif [ "$PROCESS_CHECK_OPTION" == "TBCM" ]
     then
-        if [ -n $TIBERO_PROCESS_TBCM ]
+        if [ -n "$TIBERO_PROCESS_TBCM" ]
         then
             echo "tbis message> tibero Process check"
             echo "----------------------------------------------------"
@@ -343,7 +343,7 @@ FN_AUTO_PROCESS_CHECK(){
         fi
     elif [ "$PROCESS_CHECK_OPTION" == "OBS" ]
     then
-        if [ -n $TIBERO_PROCESS_OBS ]
+        if [ -n "$TIBERO_PROCESS_OBS" ]
         then
             echo "tbis message> tibero Process check"
             echo "----------------------------------------------------"
