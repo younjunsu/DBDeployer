@@ -311,10 +311,10 @@ FN_AUTO_PROCESS_CHECK(){
     TIBERO_PROCESS_TBCM=`ps -ef |grep -v "tbcmobs" |grep "tbcm" |grep -v grep`
     TIBERO_PROCESS_OBS=`ps -ef |grep "tbcmobs" |grep -v grep`
 
-    if [ -n "$TIBERO_PROCESS" ] || [ -n "$TIBERO_SHM" ] || [ -n $TIBERO_PROCESS_TBCM ] || [ -n $TIBERO_PROCESS_OBS ]
+    if [ "$PROCESS_CHECK_OPTION" == "TBSVR" ]
     then
-        if [ "$PROCESS_CHECK_OPTION" == "TBSVR" ]
-        then
+         if [ -n "$TIBERO_PROCESS" ] || [ -n "$TIBERO_SHM" ]
+         then
             echo "tbis message> tibero Process check"
             echo "----------------------------------------------------"
             echo "  error> tbsvr process check"
@@ -326,9 +326,11 @@ FN_AUTO_PROCESS_CHECK(){
             ipcs |grep $USER_NAME |head -n 3
             echo "...skip"
             echo "----------------------------------------------------"
-            FN_SUCCESS_MSG
             exit
-        elif [ "$PROCESS_CHECK_OPTION" == "TBCM" ]
+         fi
+    elif [ "$PROCESS_CHECK_OPTION" == "TBCM" ]
+    then
+        if [ -n $TIBERO_PROCESS_TBCM ]
         then
             echo "tbis message> tibero Process check"
             echo "----------------------------------------------------"
@@ -338,7 +340,10 @@ FN_AUTO_PROCESS_CHECK(){
             echo "----------------------------------------------------"
             FN_SUCCESS_MSG
             exit
-        elif [ "$PROCESS_CHECK_OPTION" == "OBS" ]
+        fi
+    elif [ "$PROCESS_CHECK_OPTION" == "OBS" ]
+    then
+        if [ -n $TIBERO_PROCESS_OBS ]
         then
             echo "tbis message> tibero Process check"
             echo "----------------------------------------------------"
@@ -348,7 +353,7 @@ FN_AUTO_PROCESS_CHECK(){
             echo "----------------------------------------------------"
             FN_SUCCESS_MSG
             exit
-        fi            
+        fi
     fi
 }
 
@@ -504,7 +509,7 @@ FN_AUTO_PROFILE(){
         then
             TIBERO_PROFILE_CHECK=$TIBERO_BASHPROFILE
             $TBIS_SHELL tbis.cfg USER_PROFILE >> $USER_HOME/.bash_profile
-            . ./$TIBERO_PROFILE_CHECK
+            . $TIBERO_PROFILE_CHECK
             FN_SUCCESS_MSG
         else
             echo "tbis message> .bash_profile or .profile file check"
@@ -1177,6 +1182,7 @@ FN_AUTO_SUCCESS(){
         echo
         echo
     fi
+    echo "# tbinstallation Success_$TBIS_AUTO_TIME" >> ../patch_info.txt
     exit
 }
 
@@ -1493,6 +1499,7 @@ FN_AUTO_INSTALL(){
         fi
     fi
     FN_AUTO_SUCCESS
+    
 }
 
 
@@ -1832,7 +1839,7 @@ FN_MAIN_MENU(){
         echo "tbis message> Current working directory checking (CWD : $CURRENT_DIRECTORY)."
         exit
     fi
-    
+    mkdir -p ./tbis_log 2>/dev/null
     clear
     echo "[*] TIBERO Installation Shell Script"
     echo "[*] This script is for TmaxTibero "Daejeon Office" only."
