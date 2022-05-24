@@ -1366,6 +1366,7 @@ FN_AUTO_INSTALL(){
     TBIS_START_TIME=$TBIS_AUTO_TIME
     echo "############################################################"
     echo "# tbis Start Log"
+    echo "# Current shell : $TBIS_SHELL"
     echo "############################################################"
     echo "# start time : $TBIS_START_TIME"
     echo
@@ -1855,7 +1856,7 @@ FN_MAIN_MENU(){
     mkdir -p ./tbis_log 2>/dev/null
     clear
     echo "[*] TIBERO Installation Shell Script"
-    echo "[*] This script is for TmaxTibero "Daejeon Office" only."
+    echo "[*] This script is for TmaxTibero Daejeon Office only."
     echo "[*] Supported Version : Tibero 6 FS07 ↑"
     echo "-----------------------------------------------------------------"
     echo "# 1. tbis Installation Tools"

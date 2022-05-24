@@ -30,5 +30,19 @@ TBIS_SHELL_RUN(){
 }
 
 # Shell  running
-TBIS_SHELL_RUN
-
+case $1 in
+    "")
+        TBIS_SHELL_RUN;;
+    "-bash"|"--bash"|"bash")
+        export TBIS_SHELL="bash"
+        bash ./tbis.main;;
+    *)
+        echo
+        echo "[*] TIBERO Installation Scripts"
+        echo "-----------------------------------------------------------------"
+        echo "Usage: ./tbis [OPTION]"
+        echo "-----------------------------------------------------------------"
+        echo "-bash --bash          default: sh"
+        echo "-----------------------------------------------------------------"
+        echo
+esac
