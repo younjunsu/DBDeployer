@@ -129,3 +129,34 @@ press other key to quit
 -----------------------------------------------------------------
 Choose the Number : 
 ```
+
+### directory structure
+```
+TIBERO user home direcotry
+------------------------------------------------------
+$HOME --------------------- OS User Home directory
+├── tbinary --------------- TIBERO Admin Scripts
+├── tbinstall ------------- TIBERO Install/Patch
+│   ├── backup ------------ Patch Engine Backup
+│   ├── binary ------------ Installation File
+│   ├── patch_info.txt ---- Installation and Patch Information Text file
+│   └── tbis -------------- Installaion Script
+└── tibero6 ($TB_HOME) ---- TIBERO Engine
+
+
+TIBERO archive directory
+------------------------------------------------------
+PATH ------------------------ Archive Partition
+├── tbarch ------------------ SINGLE and TSC
+├── tbarch0 ----------------- TAC node1(thread0)
+└── tbarch1 ----------------- TAC node2(thread1)
+
+
+TIBERO data directory
+------------------------------------------------------
+PATH ------------------------ DATA Partition
+├── tbctl1 ------------------ Controlfile
+├── tbctl2 ------------------ Controlfile
+└── tbdata ------------------
+    └── system -------------- CREATE DATABASE FILE
+```
