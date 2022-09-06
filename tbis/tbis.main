@@ -1543,6 +1543,8 @@ FN_AUTO_INSTALL_REPORT(){
     echo "-----------------------------------------------------------------"
     echo "# 10. tbiobench (-s 1G)"
     echo "-----------------------------------------------------------------"
+    echo "# all. all step"
+    echo "-----------------------------------------------------------------"
     echo "b - before"
     echo "press other key to quit"
     echo "-----------------------------------------------------------------"
@@ -1664,6 +1666,83 @@ FN_AUTO_INSTALL_REPORT(){
         FN_PRINT_PRESS
         read PRINT_PRESS_KEY         
         FN_AUTO_INSTALL_REPORT;;
+    all)
+
+        tbboot -l
+        echo        
+
+        $TBIS_SHELL ./tbis_report/ncpu/chk_cpu_for_license.sh TIBERO
+
+        echo "- Tibero Version : "`tbboot -version |grep -i "tibero" |head -n 1`
+        echo "- OS User : "$USER_NAME
+        echo "- Tibero 설치 위치 (엔진 홈) : "$TB_HOME
+        echo "- DB Name (SID) : "$TB_SID
+        echo "- Service Port (Listener Port) : "$LISTENER_PORT
+        echo "- Character Set : "`cat tbis.sql|grep CHARACTER |awk '{print $NF}'`
+        echo "- Total Shared Memory : "`cat $TB_HOME/config/$TB_SID.tip |grep TOTAL_SHM_SIZE |awk -F= '{print $NF}'`
+        echo "- Memory Target : "`cat $TB_HOME/config/$TB_SID.tip |grep MEMORY_TARGET |awk -F= '{print $NF}'`
+        echo "- Max Session : "`cat $TB_HOME/config/$TB_SID.tip |grep MAX_SESSION_COUNT |awk -F= '{print $NF}'`
+        echo "- Controlfile 위치 : "`cat $TB_HOME/config/$TB_SID.tip |grep CONTROL_FILES |awk -F= '{print $NF}'`
+        echo "- Datafile 위치 : "`cat $TB_HOME/config/$TB_SID.tip |grep DB_CREATE_FILE_DEST |awk -F= '{print $NF}'`
+        echo "- Archive 모드 및 위치 : "`cat $TB_HOME/config/$TB_SID.tip |grep LOG_ARCHIVE_DEST|awk -F= '{print $NF}'`
+        echo "- Instance log 위치 : "$TB_HOME"/instance"
+        echo
+
+        if [ -f "$TIBERO_PROFILE_CHECK" ]
+        then
+            cat $TIBERO_PROFILE_CHECK
+        fi       
+        echo
+
+        cat ./tbis.sql
+        echo
+
+        cat $TB_HOME/config/$TB_SID.tip
+
+        echo "========================"
+        echo " Controlfile Infomation "
+        echo "========================"
+        FN_RUN_SQL 5_control.sql
+        echo
+        echo "===================="
+        echo " Logfile Infomation "
+        echo "===================="
+        FN_RUN_SQL 5_logfile.sql
+        echo
+        echo "====================="
+        echo " Datafile Infomation "
+        echo "====================="
+        FN_RUN_SQL 5_datafile.sql
+        echo
+
+        echo "======================="
+        echo " Tablespace Infomation "
+        echo "======================="
+        FN_RUN_SQL 5_tbs.sql
+        echo
+        echo "============================"
+        echo " Temp Tablespace Infomation "
+        echo "============================"
+        FN_RUN_SQL 5_temp_tbs.sql
+        echo
+
+        echo "uname"
+        uname -a
+        echo
+        echo "ulimit"
+        ulimit -a
+        echo
+
+        cd $DB_CREATE_FILE_DEST
+        echo "Running PATH : $DB_CREATE_FILE_DEST"
+        tbiobench -i all -s 1G -F O_SYNC -F O_DIRECT -k
+        cd $OLDPWD
+        TBIO_GARBAGE_FILE=`ls $DB_CREATE_FILE_DEST/*.tmp 2>/dev/null`
+        for TBIO_GARBAGE_NAME in ${TBIO_GARBAGE_FILE[@]}
+        do
+            echo "Garbage file : "$TBIO_GARBAGE_NAME
+        done
+        echo;;
     b)
         FN_MAIN_MENU;;
     *)
