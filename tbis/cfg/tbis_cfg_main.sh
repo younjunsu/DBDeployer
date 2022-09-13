@@ -16,7 +16,7 @@ export tibero_tbinary=Y
 # OS user configuration
 ############################################################
 #-------------------------
-export user_name=
+export user_name=tibero
 export user_home=
 export group_name=
 #-------------------------
@@ -26,11 +26,11 @@ export group_name=
 ############################################################
 #-------------------------
 export DB_NAME=
-export TB_HOME=
-export CONTROL_FILE_PATH1=
-export CONTROL_FILE_PATH2=
-export DB_CREATE_FILE_DEST=
-export LOG_ARCHIVE_DEST=
+export TB_HOME=/Users/junsu/Documents/GitHub/tbinstall/tbis/data
+export CONTROL_FILE_PATH1=/Users/junsu/Documents/GitHub/tbinstall/tbis/data
+export CONTROL_FILE_PATH2=/Users/junsu/Documents/GitHub/tbinstall/tbis/data
+export DB_CREATE_FILE_DEST=/Users/junsu/Documents/GitHub/tbinstall/tbis/data
+export LOG_ARCHIVE_DEST=/Users/junsu/Documents/GitHub/tbinstall/tbis/data
 #-------------------------
 
 ############################################################
