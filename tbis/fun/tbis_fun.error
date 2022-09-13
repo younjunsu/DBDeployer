@@ -1,0 +1,18 @@
+. cfg/tbis_cfg.main
+
+
+if [ -z $tibero_engine ]
+then
+  echo "  error> cfg/tbis_cfg.main - check parameter: tibero_engine"  
+  param_error_file="Y"
+fi
+param_error_os="Y"
+param_error_tibero="Y"
+
+if [ "$param_error_file" == "Y" ]
+then
+    exit 1
+elif [ "$param_error_file" == "N" ]
+then
+    2>/dev/null
+fi

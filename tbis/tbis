@@ -1,1 +1,67 @@
 #!/bin/sh
+############################################################
+# history
+############################################################
+# Created by. Daejeon Office
+# 2022.03.18 Version : Park Si Hyung, Yoon Jun Su
+# 2022.03.24 Version : Yoon Jun Su
+# 2022.03.28 Version : Yoon Jun Su
+# 2022.05.16 Version : Yoon Jun Su
+# 2022.05.23 Version : Yoon Jun Su
+# 2022.09.31 Version : Yoon Jun Su
+
+############################################################
+# 
+############################################################
+#
+fun_env_shell(){
+	env_shell=`uname -a |grep -i "Ubuntu"`
+
+	if [ -n "$env_shell" ]
+	then
+		export tbis_shell="bash"
+		bash fun/tbis_fun.main
+	elif [ -z "$env_shell" ]
+	then
+		export tbis_shell="sh"
+		sh fun/tbis_fun.main
+	else
+		echo "tbis message> tbis
+		echo "  error> tbis - shell check
+		exit 1
+	fi
+}
+
+############################################################
+#
+############################################################
+#
+. fun/tbis_fun.error
+
+############################################################
+#
+############################################################
+# 
+case $1 in
+	"")
+		fun_env_shell;;
+	"-bash"|"--bash"|"bash")
+		export env_shell="bash"
+		bash fun/tbis_fun.main;;
+	"docker")
+		export tbis_mode="docker"
+		export env_shell="bash"
+		bash fun/tbis_fun.main docker;;
+	*)
+		echo ""
+		echo "[*] TIBERO Installation shell script"
+		echo "-----------------------------------------------------------------"
+		echo "usage: ./tbis [option]"
+		echo "-----------------------------------------------------------------"
+		echo "options:"
+		echo "  bash		default: sh"
+		echo "  docker	default: interactive mode"
+		echo "-----------------------------------------------------------------"
+		echo "";;
+esac
+
