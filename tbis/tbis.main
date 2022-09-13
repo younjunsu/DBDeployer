@@ -1344,7 +1344,16 @@ FN_AUTO_INSTALL_CHECK(){
     ### IN PROCESS
     echo
     printf "continue ? ( [Y]es / [N]o / [AA] All Auto] ) : "
-    read INPUT_YESNO
+    
+    if [ "$TBIS_MODE" == "docker" ]
+    then
+        INPUT_YESNO="AA"
+    fi
+
+    if [ -z "$INPUT_YESNO" ]
+    then
+        read INPUT_YESNO        
+    fi    
     case $INPUT_YESNO in
         "YES"|"Yes"|"yes"|"y"|"Y")
             INSTALL_MODE=YES;;
@@ -1945,7 +1954,17 @@ FN_MAIN_MENU(){
     echo "# press other key to quit"
     echo "-----------------------------------------------------------------"
     printf "Choose the Number : "
-    read INPUT_NUMBER
+
+    if [ "$TBIS_MODE" == "docker" ]
+    then
+        INPUT_NUMBER="1"
+    fi
+
+    if [ -z "$INPUT_NUMBER" ]
+    then
+        read INPUT_NUMBER
+    fi
+        
     case $INPUT_NUMBER in
     1)
         clear

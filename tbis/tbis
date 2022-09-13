@@ -36,6 +36,11 @@ case $1 in
     "-bash"|"--bash"|"bash")
         export TBIS_SHELL="bash"
         bash ./tbis.main;;
+    "docker")
+        export TBIS_MODE="docker"
+        export TBIS_SHELL="bash"
+        bash ./tbis.main
+        ;;
     *)
         echo
         echo "[*] TIBERO Installation Scripts"
