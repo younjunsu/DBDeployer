@@ -9,7 +9,7 @@ GROUP 2 ('system/redo021.redo','system/redo022.redo') SIZE 30M,
 GROUP 3 ('system/redo031.redo','system/redo032.redo') SIZE 30M,
 GROUP 4 ('system/redo041.redo','system/redo042.redo') SIZE 30M
 MAXLOGFILES 100
-MAXLOGMEMBERS 8 
+MAXLOGMEMBERS 8
 --MAXARCHIVELOG 500
 --MAXLOGHISTORY 500
 ARCHIVELOG
@@ -19,4 +19,3 @@ ARCHIVELOG
     DEFAULT TABLESPACE USR DATAFILE 'system/usr001.dtf' SIZE 1G
     -- TPR 추가(system 디렉토리 구분 시 TPR 필수로 들어가야함)
 ;
-

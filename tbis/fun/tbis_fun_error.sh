@@ -284,10 +284,6 @@ then
     echo
 fi
 
-
-
-
-
 # go working directory
 cd $tbis_path
 
@@ -308,7 +304,7 @@ param_error_tibero="N"
 # check param
 if [ -z "$tibero_engine" ]
 then
-  echo "  error> tbis_cfg.main: tibero_engine" 
+  echo "  error> tbis_cfg_main.sh: tibero_engine" 
   param_error_tibero="Y"
 fi
 
@@ -316,14 +312,14 @@ fi
 ############################################################
 # error progress
 ############################################################
-# Y: exit
-# N: continue
-
+# output error only "1. Installation"
 if [ "$input_number" == "2" ] || [ "$input_number" == "3" ]
 then
     param_error_file="N"
 fi
 
+# Y: exit
+# N: continue
 if [ "$param_error_file" == "Y" ] || [ "$param_error_os" == "Y" ] || [ "$param_error_tibero" == "Y" ]
 then
     exit 1
