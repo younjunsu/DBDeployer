@@ -7,7 +7,7 @@
 # TIBERO installation files
 # ex) Y or N
 ######################################################
-export tibero_engine=
+export tibero_engine=Y
 export tibero_tbinary=Y
 
 ######################################################

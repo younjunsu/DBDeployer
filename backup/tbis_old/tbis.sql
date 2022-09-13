@@ -1,13 +1,6 @@
 CREATE DATABASE 
 USER sys IDENTIFIED BY 'tibero' 
 MAXDATAFILES 256
-/*
-    * ORACLE to TIBERO
-        - UTF8      -> UTF8
-        - KSC5601   -> EUCKR or MSWIN949
-        - ASCII     -> ASCII
-        - MSWIN949  -> MSWIN949
-*/
 CHARACTER SET UTF8
 LOGFILE 
 GROUP 0 ('system/redo001.redo','system/redo002.redo') SIZE 30M,

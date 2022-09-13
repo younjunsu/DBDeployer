@@ -39,14 +39,17 @@ then
     read input_number
 fi
 
+export input_number=$input_number
+
+ fun/tbis_fun.error
+
 case $input_number in
     1)
-        fun_auto
-        clear;;
+        echo;;
     2)
-        clear;;
+        echo;;
     3)
-        clear;;
+        echo;;
     *)
         clear
         echo "tbis message> program exit"
