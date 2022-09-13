@@ -17,6 +17,7 @@ mkdir -p log 2>/dev/null
 # main
 ############################################################
 #
+clear
 echo "[*] TIBERO Installation Shell Script"
 echo "[*] This script is for TmaxTibero Daejeon Office only."
 echo "[*] Supported Version : Tibero 6 FS07 ↑"
@@ -39,19 +40,14 @@ then
     read input_number
 fi
 
-export input_number=$input_number
-
- fun/tbis_fun.error
-
 case $input_number in
     1)
-        echo;;
+        . fun/tbis_fun_error.sh;;
     2)
-        . fun/tbis_fun.report;;
+        . fun/tbis_fun_report.sh;;
     3)
         echo;;
     *)
-        clear
         echo "tbis message> program exit"
         exit 1;;
 esac

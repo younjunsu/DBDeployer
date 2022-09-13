@@ -20,11 +20,11 @@ fun_env_shell(){
 	if [ -n "$env_shell" ]
 	then
 		export tbis_shell="bash"
-		bash fun/tbis_fun.main
+		bash fun/tbis_fun_main.sh
 	elif [ -z "$env_shell" ]
 	then
 		export tbis_shell="sh"
-		sh fun/tbis_fun.main
+		sh fun/tbis_fun_main.sh
 	else
 		echo "tbis message> tbis
 		echo "  error> tbis - shell check
@@ -47,11 +47,11 @@ case $1 in
 		fun_env_shell;;
 	"-bash"|"--bash"|"bash")
 		export env_shell="bash"
-		bash fun/tbis_fun.main;;
+		bash fun/tbis_fun_main.sh;;
 	"docker")
 		export tbis_mode="docker"
 		export env_shell="bash"
-		bash fun/tbis_fun.main docker;;
+		bash fun/tbis_fun_main.sh docker;;
 	*)
 		echo ""
 		echo "[*] TIBERO Installation shell script"
