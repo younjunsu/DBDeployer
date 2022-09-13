@@ -5,7 +5,7 @@
 ############################################################
 # env
 ############################################################
-. cfg/tbis_cfg.main
+. cfg/tbis_cfg_main.sh
 
 ############################################################
 # file configuration check
@@ -14,6 +14,7 @@
 param_error_file="N"
 
 # check param
+chk_engine_file=test
 if [ -z "$chk_engine_file" ]
 then
   echo "  error> tibero engine file check"

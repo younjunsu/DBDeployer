@@ -42,8 +42,23 @@ fi
 
 case $input_number in
     1)
-        . fun/tbis_fun_error.sh;;
+        file_time=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
+        . cfg/tbis_cfg_main.sh
+        . fun/tbis_fun_error.sh
+        if [ "$tibero_type" == "SINGLE" ]
+        then
+            . fun/tbis_fun_single.sh |tee log/tbis_install_"$file_time".log
+        elif [ "$tibero_type" == "TSC" ]
+        then
+            . fun/tbis_fun_tsc.sh |tee log/tbis_install_"$file_time".log
+        elif [ "$tibero_type" == "TAC" ]
+        then
+            . fun/tbis_fun_tac.sh |tee log/tbis_install_"$file_time".log
+        fi
+        
+        ;;
     2)
+        clear
         . fun/tbis_fun_report.sh;;
     3)
         echo;;

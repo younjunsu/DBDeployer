@@ -54,25 +54,15 @@ fun_all_info(){
 echo "[*] tbis Installation Report" 
 echo "-----------------------------------------------------------------"
 echo "# 1. license.xml (tbboot -l)"
-echo "-----------------------------------------------------------------"
 echo "# 2. ncpu (chk_cpu_for_license.sh tibero)"
-echo "-----------------------------------------------------------------"
 echo "# 3. installation infomation"
-echo "-----------------------------------------------------------------"
 echo "# 4. os user procfile"
-echo "-----------------------------------------------------------------"
 echo "# 5. create database SQL Syntax"
-echo "-----------------------------------------------------------------"
 echo "# 6. \$TB_HOME/config/\$TB_SID.tip"
-echo "-----------------------------------------------------------------"
 echo "# 7. datafile infomation (tm 51)"
-echo "-----------------------------------------------------------------"
 echo "# 8. tablespace infomation (tm 52)"
-echo "-----------------------------------------------------------------"
 echo "# 9. uname / ulimit"
-echo "-----------------------------------------------------------------"
 echo "# 10. tbiobench (-s 1G)"
-echo "-----------------------------------------------------------------"
 echo "# all. all step"
 echo "-----------------------------------------------------------------"
 echo "b - before"
@@ -132,7 +122,10 @@ case $input_number in
         read wait_key
         . fun/tbis_fun_report.sh;;
     "all")
-        fun_all_info;;
+        file_time=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
+        fun_all_info |tee log/tbis_report_"$file_time".txt
+        printf "Log file: "
+        ls log/tbis_report_"$file_time".txt;;
     "b")
         $env_shell fun/tbis_fun_main.sh;;
     *)
