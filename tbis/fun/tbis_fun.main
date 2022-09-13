@@ -47,7 +47,7 @@ case $input_number in
     1)
         echo;;
     2)
-        echo;;
+        . fun/tbis_fun.report;;
     3)
         echo;;
     *)
