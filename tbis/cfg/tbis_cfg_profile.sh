@@ -96,10 +96,8 @@ then
     2>/dev/null
 elif [ "$profile_mode" == "apply" ]
 then
-    fun_profile_output >> 
+    fun_profile_output >> $profile_path
 elif [ "$profile_mode" == "output"]
 then
     fun_profile_output
 fi
-
-
