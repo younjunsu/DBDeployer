@@ -13,51 +13,47 @@ fun_profile_output(){
     echo "#### JAVA"
     echo "#export JAVA_HOME="
     echo ""
-    if [ "$TIBERO_TYPE" == "SINGLE" ]
+    if [ "$tibero_type" == "SINGLE" ]
     then
         echo "#### SINGLE"
         echo "export TB_SID=`echo $DB_NAME`"
         echo "export TB_HOME=$TB_HOME"
-    elif [ "$TIBERO_TYPE" == "TSC" ]
+    elif [ "$tibero_type" == "TSC" ]
     then
         echo "#### TSC (Tibero Standby Cluster)"
-        if [ "$TIBERO_NODE" == "primary" ]
+        if [ "$tibero_node" == "primary" ]
         then
             echo "export TB_SID=`echo $DB_NAME`_p"
             echo "export TB_HOME=$TB_HOME"
             echo "export CM_SID=primary"
             echo "export CM_HOME=\$TB_HOME"
-        elif [ "$TIBERO_NODE" == "standby" ]
+        elif [ "$tibero_node" == "standby" ]
         then
             echo "export TB_SID=`echo $DB_NAME`_s"
             echo "export TB_HOME=$TB_HOME"
             echo "export CM_SID=standby"
-            echo "export  =\$TB_HOME"
-        elif [ "$TIBERO_NODE" == "observer" ]
+            echo "export CM_HOME=\$TB_HOME"
+        elif [ "$tibero_node" == "observer" ]
         then
             echo "export TB_HOME=$TB_HOME"
             echo "export CM_SID=observer"
             echo "export CM_HOME=\$TB_HOME"
-        else
-            2>/dev/null
         fi
-    elif [ "$TIBERO_TYPE" == "TAC" ]
+    elif [ "$tibero_type" == "TAC" ]
     then
         echo "#### TAC (Tibero Active Cluster)"
-        if [ "$TIBERO_NODE" == "cm0" ]
+        if [ "$tibero_node" == "cm0" ]
         then
             echo "export TB_SID=`echo $DB_NAME`0"
             echo "export TB_HOME=$TB_HOME"
             echo "export CM_SID=cm0"
             echo "export CM_HOME=\$TB_HOME"
-        elif [ "$TIBERO_NODE" == "cm1" ]
+        elif [ "$tibero_node" == "cm1" ]
         then
             echo "export TB_SID=`echo $DB_NAME`1"
             echo "export TB_HOME=$TB_HOME"
             echo "export CM_SID=cm1"
             echo "export CM_HOME=\$TB_HOME"
-        else
-            2>dev/null
         fi
     fi
     echo ""
