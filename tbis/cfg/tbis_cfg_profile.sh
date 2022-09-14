@@ -75,3 +75,31 @@ fun_profile_output(){
     echo "alias tm='\$HOME/tbinary/monitor/monitor'"
     echo "alias tbi='cd \$HOME/tbinary'"
 }
+
+profile_bashprofile_chk=$USER_HOME/.bash_profile
+profile_profile_chk=$USER_HOME/.profile
+
+if [ -f "$profile_profile_chk" ]
+then
+    profile_path=$profile_profile_chk
+elif [ -f "$profile_bashprofile_chk" ]
+then
+    profile_path=$profile_bashprofile_chk
+fi
+
+# apply: create profile file
+# output: display output
+profile_mode=$1
+
+if [ -z $"profile_mode" ]
+then
+    2>/dev/null
+elif [ "$profile_mode" == "apply" ]
+then
+    fun_profile_output >> 
+elif [ "$profile_mode" == "output"]
+then
+    fun_profile_output
+fi
+
+
