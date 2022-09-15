@@ -60,10 +60,15 @@ case $input_number in
     2)
         clear
         . cfg/tbis_cfg_main.sh
-        . fun/tbis_fun_report.sh;;
+        . fun/tbis_fun_report.sh
+        ;;
     3)
-        echo;;
+        clear
+        . cfg/tbis_cfg_main.sh
+        . fun/tbis_fun_report.sh
+        ;;
     *)
         echo "tbis message> program exit"
-        exit 1;;
+        exit 1
+        ;;
 esac
