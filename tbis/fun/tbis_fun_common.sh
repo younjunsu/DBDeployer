@@ -1,17 +1,12 @@
 #!/bin/sh
 
-
-fun_change_owner(){
-    #
-    #
-    #
- 	echo   
-}
-
-
-
+############################################################
+# 
+############################################################
+# display output mode
 input_type=$1
 
+# display output message
 case $input_type in
     "press")
         echo "Press Enter Key to continue...";;
@@ -22,4 +17,3 @@ case $input_type in
     *)
         exit 1;;
 esac
-
