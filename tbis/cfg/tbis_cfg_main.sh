@@ -19,6 +19,7 @@ export tibero_tbinary=Y
 export user_name=tibero
 export user_home=/tibero
 export group_name=dba
+export root_cm_profile=Y
 #-------------------------
 
 ############################################################
