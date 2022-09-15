@@ -2,16 +2,13 @@
 ############################################################
 # Program variables
 ############################################################
-# 
-tbis_current_path=`pwd`
-
+#
 
 ############################################################
 #
 ############################################################
 # 
 mkdir -p log 2>/dev/null
-
 
 ############################################################
 # main
@@ -43,29 +40,28 @@ fi
 case $input_number in
     1)
         file_time=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
-        . cfg/tbis_cfg_main.sh
-        . fun/tbis_fun_error.sh
+        . $tbis_current_path/tbis.cfg
+        . $tbis_current_path/fun/tbis_fun_error.sh
         if [ "$tibero_type" == "SINGLE" ]
         then
-            . fun/tbis_fun_install_single.sh |tee log/tbis_install_"$file_time".log
+            . $tbis_current_path/fun/tbis_fun_install_single.sh |tee log/tbis_install_"$file_time".log
         elif [ "$tibero_type" == "TSC" ]
         then
-            . fun/tbis_fun_install_tsc.sh |tee log/tbis_install_"$file_time".log
+            . $tbis_current_path/fun/tbis_fun_install_tsc.sh |tee log/tbis_install_"$file_time".log
         elif [ "$tibero_type" == "TAC" ]
         then
-            . fun/tbis_fun_install_tac.sh |tee log/tbis_install_"$file_time".log
+            . $tbis_current_path/fun/tbis_fun_install_tac.sh |tee log/tbis_install_"$file_time".log
         fi
-        
         ;;
     2)
         clear
-        . cfg/tbis_cfg_main.sh
-        . fun/tbis_fun_report.sh
+        . $tbis_current_path/tbis.cfg
+        . $tbis_current_path/fun/tbis_fun_report.sh
         ;;
     3)
         clear
-        . cfg/tbis_cfg_main.sh
-        . fun/tbis_fun_report.sh
+        . $tbis_current_path/tbis.cfg
+        . $tbis_current_path/fun/tbis_fun_cfgtext.sh
         ;;
     *)
         echo "tbis message> program exit"

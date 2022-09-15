@@ -5,7 +5,7 @@ fun_change_owner(){
     #
     #
     #
-    
+ 	echo   
 }
 
 

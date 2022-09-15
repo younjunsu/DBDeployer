@@ -1,3 +1,6 @@
+# init
+clear
+
 fun_num01_license_info(){
     echo "num01"
 }
@@ -70,62 +73,66 @@ echo "press other key to quit"
 echo "-----------------------------------------------------------------"
 printf "Choose the Number : "
 read input_number
+
+# display clear
+clear
+
 case $input_number in
     1)
         fun_num01_license_info
-        . fun/tbis_fun_common.sh press
+        . $tbis_current_path/fun/tbis_fun_common.sh press
         read wait_key
-        . fun/tbis_fun_report.sh;;
+        . $tbis_current_path/fun/tbis_fun_report.sh;;
     2)
         fun_num02_ncpu_info
-        . fun/tbis_fun_common.sh press
+        . $tbis_current_path/fun/tbis_fun_common.sh press
         read wait_key
-        . fun/tbis_fun_report.sh;;
+        . $tbis_current_path/fun/tbis_fun_report.sh;;
     3)
         fun_num03_install_info
-        . fun/tbis_fun_common.sh press
+        . $tbis_current_path/fun/tbis_fun_common.sh press
         read wait_key
-        . fun/tbis_fun_report.sh;;
+        . $tbis_current_path/fun/tbis_fun_report.sh;;
     4)
         fun_num04_profile_info
-        . fun/tbis_fun_common.sh press
+        . $tbis_current_path/fun/tbis_fun_common.sh press
         read wait_key
-        . fun/tbis_fun_report.sh;;
+        . $tbis_current_path/fun/tbis_fun_report.sh;;
     5)
         fun_num05_cresql_info
-        . fun/tbis_fun_common.sh press
+        . $tbis_current_path/fun/tbis_fun_common.sh press
         read wait_key
-        . fun/tbis_fun_report.sh;;
+        . $tbis_current_path/fun/tbis_fun_report.sh;;
     6)
         fun_num06_tip_info
-        . fun/tbis_fun_common.sh press
+        . $tbis_current_path/fun/tbis_fun_common.sh press
         read wait_key
-        . fun/tbis_fun_report.sh;;
+        . $tbis_current_path/fun/tbis_fun_report.sh;;
     7)
         fun_num07_datafile_info
-        . fun/tbis_fun_common.sh press
+        . $tbis_current_path/fun/tbis_fun_common.sh press
         read wait_key
-        . fun/tbis_fun_report.sh;;
+        . $tbis_current_path/fun/tbis_fun_report.sh;;
     8)
         fun_num09_os_info
-        . fun/tbis_fun_common.sh press
+        . $tbis_current_path/fun/tbis_fun_common.sh press
         read wait_key
-        . fun/tbis_fun_report.sh;;
+        . $tbis_current_path/fun/tbis_fun_report.sh;;
     9)
         fun_num09_os_info
-        . fun/tbis_fun_common.sh press
+        . $tbis_current_path/fun/tbis_fun_common.sh press
         read wait_key
-        . fun/tbis_fun_report.sh;;
+        . $tbis_current_path/fun/tbis_fun_report.sh;;
     10)
         fun_num10_tbiobench_info
-        . fun/tbis_fun_common.sh press
+        . $tbis_current_path/fun/tbis_fun_common.sh press
         read wait_key
-        . fun/tbis_fun_report.sh;;
+        . $tbis_current_path/fun/tbis_fun_report.sh;;
     "all")
         file_time=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
-        fun_all_info |tee log/tbis_report_"$file_time".txt
+        fun_all_info |tee $tbis_current_path/log/tbis_report_"$file_time".txt
         printf "Log file: "
-        ls log/tbis_report_"$file_time".txt;;
+        ls $tbis_current_path/log/tbis_report_"$file_time".txt;;
     "b")
         $env_shell fun/tbis_fun_main.sh;;
     *)
