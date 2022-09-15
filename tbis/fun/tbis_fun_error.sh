@@ -5,8 +5,7 @@
 ############################################################
 # env
 ############################################################
-. cfg/tbis_cfg_main.sh
-tbis_path=`pwd`
+. $tbis_current_path/tbis.cfg
 
 ############################################################
 # file configuration check
@@ -15,12 +14,22 @@ tbis_path=`pwd`
 param_error_file="N"
 
 # check param
-chk_engine_file=test
+
+chk_engine_file=`ls ../binary/tibero*.tar* 2>/dev/null`
 if [ -z "$chk_engine_file" ]
 then
-  echo "  error> tibero engine file check"
+  echo "  error> tibero engine file unknown"
   param_error_file="Y"
 fi
+
+chk_license_file=`ls ../binary/license.xml 2>/dev/null`
+if [ -z "$chk_license_file" ]
+then
+  echo "  error> tibero license file unknown"
+  param_error_file="Y"
+
+fi
+
 
 # TIBERO configuration directory check
 if [ "$tbis_run_user" == "root" ] && [ "$user_name" == "root" ] || [ "$tbis_run_user" != "root" ]
@@ -28,7 +37,7 @@ then
   # TB_HOME permission check
   if [ -z "$TB_HOME" ]
   then
-    echo "  error> tbis_cfg.main: TB_HOME"
+    echo "  error> tbis_cfg.main : TB_HOME"
     param_error_file="Y"
   else
     chk_move_path=`cd $TB_HOME 2>&1`
@@ -44,19 +53,19 @@ then
       
       if [ -z "$chk_db_read_dir" ]
       then
-        echo "  error> TB_HOME: $TB_HOME read permission denied"
+        echo "  error> TB_HOME : $TB_HOME read permission denied"
         param_error_file="Y"
       fi
 
       if [ -z "$chk_db_write_dir" ]
       then
-        echo "  error> TB_HOME: $TB_HOME write permission denied"
+        echo "  error> TB_HOME : $TB_HOME write permission denied"
         param_error_file="Y"
       fi
 
     elif [ -n "$chk_move_path" ]
     then
-      echo "  error> TB_HOME: $TB_HOME execute permission denied"
+      echo "  error> TB_HOME : $TB_HOME execute permission denied"
       param_error_file="Y"  
     fi
   fi
@@ -64,7 +73,7 @@ then
   # CONTROL_FILE_PATH1 permission check
   if [ -z "$CONTROL_FILE_PATH1" ]
   then
-    echo "  error> tbis_cfg.main: CONTROL_FILE_PATH1"
+    echo "  error>  tbis.cfg : CONTROL_FILE_PATH1"
     param_error_file="Y"
   else
     chk_move_path=`cd $CONTROL_FILE_PATH1 2>&1`
@@ -80,19 +89,19 @@ then
       
       if [ -z "$chk_db_read_dir" ]
       then
-        echo "  error> CONTROL_FILE_PATH1: $CONTROL_FILE_PATH1 read permission denied"
+        echo "  error> CONTROL_FILE_PATH1 : $CONTROL_FILE_PATH1 read permission denied"
         param_error_file="Y"
       fi
 
       if [ -z "$chk_db_write_dir" ]
       then
-        echo "  error> CONTROL_FILE_PATH1: $CONTROL_FILE_PATH1 write permission denied"
+        echo "  error> CONTROL_FILE_PATH1 : $CONTROL_FILE_PATH1 write permission denied"
         param_error_file="Y"
       fi
 
     elif [ -n "$chk_move_path" ]
     then
-      echo "  error> CONTROL_FILE_PATH1: $CONTROL_FILE_PATH1 execute permission denied"
+      echo "  error> CONTROL_FILE_PATH1 : $CONTROL_FILE_PATH1 execute permission denied"
       param_error_file="Y"  
     fi
   fi
@@ -100,7 +109,7 @@ then
   # CONTROL_FILE_PATH2 permission check
   if [ -z "$CONTROL_FILE_PATH2" ]
   then
-    echo "  error> tbis_cfg.main: CONTROL_FILE_PATH2"
+    echo "  error> tbis.cfg : CONTROL_FILE_PATH2"
     param_error_file="Y"
   else
     chk_move_path=`cd $CONTROL_FILE_PATH2 2>&1`
@@ -116,19 +125,19 @@ then
       
       if [ -z "$chk_db_read_dir" ]
       then
-        echo "  error> CONTROL_FILE_PATH2: $CONTROL_FILE_PATH2 read permission denied"
+        echo "  error> CONTROL_FILE_PATH2 : $CONTROL_FILE_PATH2 read permission denied"
         param_error_file="Y"
       fi
 
       if [ -z "$chk_db_write_dir" ]
       then
-        echo "  error> CONTROL_FILE_PATH2: $CONTROL_FILE_PATH2 write permission denied"
+        echo "  error> CONTROL_FILE_PATH2 : $CONTROL_FILE_PATH2 write permission denied"
         param_error_file="Y"
       fi
 
     elif [ -n "$chk_move_path" ]
     then
-      echo "  error> CONTROL_FILE_PATH2: $CONTROL_FILE_PATH2 execute permission denied"
+      echo "  error> CONTROL_FILE_PATH2 : $CONTROL_FILE_PATH2 execute permission denied"
       param_error_file="Y"  
     fi
   fi
@@ -136,7 +145,7 @@ then
   # DB_CREATE_FILE_DEST permission check
   if [ -z "$DB_CREATE_FILE_DEST" ]
   then
-    echo "  error> tbis_cfg.main: DB_CREATE_FILE_DEST"
+    echo "  error> tbis.cfg : DB_CREATE_FILE_DEST"
     param_error_file="Y"
   else
     chk_move_path=`cd $DB_CREATE_FILE_DEST 2>&1`
@@ -152,19 +161,19 @@ then
       
       if [ -z "$chk_db_read_dir" ]
       then
-        echo "  error> DB_CREATE_FILE_DEST: $DB_CREATE_FILE_DEST read permission denied"
+        echo "  error> DB_CREATE_FILE_DEST : $DB_CREATE_FILE_DEST read permission denied"
         param_error_file="Y"
       fi
 
       if [ -z "$chk_db_write_dir" ]
       then
-        echo "  error> DB_CREATE_FILE_DEST: $DB_CREATE_FILE_DEST write permission denied"
+        echo "  error> DB_CREATE_FILE_DEST : $DB_CREATE_FILE_DEST write permission denied"
         param_error_file="Y"
       fi
 
     elif [ -n "$chk_move_path" ]
     then
-      echo "  error> DB_CREATE_FILE_DEST: $DB_CREATE_FILE_DEST execute permission denied"
+      echo "  error> DB_CREATE_FILE_DEST : $DB_CREATE_FILE_DEST execute permission denied"
       param_error_file="Y"  
     fi
   fi
@@ -172,7 +181,7 @@ then
   # LOG_ARCHIVE_DEST permission check
   if [ -z "$LOG_ARCHIVE_DEST" ]
   then
-    echo "  error> tbis_cfg.main: LOG_ARCHIVE_DEST"
+    echo "  error> tbis.cfg : LOG_ARCHIVE_DEST"
     param_error_file="Y"
   else
     chk_move_path=`cd $LOG_ARCHIVE_DEST 2>&1`
@@ -188,19 +197,19 @@ then
       
       if [ -z "$chk_db_read_dir" ]
       then
-        echo "  error> LOG_ARCHIVE_DEST: $LOG_ARCHIVE_DEST read permission denied"
+        echo "  error> LOG_ARCHIVE_DEST : $LOG_ARCHIVE_DEST read permission denied"
         param_error_file="Y"
       fi
 
       if [ -z "$chk_db_write_dir" ]
       then
-        echo "  error> LOG_ARCHIVE_DEST: $LOG_ARCHIVE_DEST write permission denied"
+        echo "  error> LOG_ARCHIVE_DEST : $LOG_ARCHIVE_DEST write permission denied"
         param_error_file="Y"
       fi
 
     elif [ -n "$chk_move_path" ]
     then
-      echo "  error> LOG_ARCHIVE_DEST: $LOG_ARCHIVE_DEST execute permission denied"
+      echo "  error> LOG_ARCHIVE_DEST : $LOG_ARCHIVE_DEST execute permission denied"
       param_error_file="Y"  
     fi
   fi
@@ -210,7 +219,7 @@ then
   then
     if [ -z "$cfile_path" ]
     then
-      echo "  error> tbis_cfg.main: cfile_path"
+      echo "  error> tbis.cfg : cfile_path"
       param_error_file="Y"
     else
       chk_move_path=`cd $cfile_path 2>&1`
@@ -226,19 +235,19 @@ then
         
         if [ -z "$chk_db_read_dir" ]
         then
-          echo "  error> cfile_path: $cfile_path read permission denied"
+          echo "  error> cfile_path : $cfile_path read permission denied"
           param_error_file="Y"
         fi
 
         if [ -z "$chk_db_write_dir" ]
         then
-          echo "  error> cfile_path: $cfile_path write permission denied"
+          echo "  error> cfile_path : $cfile_path write permission denied"
           param_error_file="Y"
         fi
 
       elif [ -n "$chk_move_path" ]
       then
-        echo "  error> cfile_path: $cfile_path execute permission denied"
+        echo "  error> cfile_path : $cfile_path execute permission denied"
         param_error_file="Y"  
       fi
     fi
@@ -247,7 +256,7 @@ then
   # user_home permission check
   if [ -z "$user_home" ]
   then
-    echo "  error> tbis_cfg.main: user_home"
+    echo "  error> tbis.cfg : user_home"
     param_error_file="Y"
   else
     chk_move_path=`cd $user_home 2>&1`
@@ -263,19 +272,19 @@ then
       
       if [ -z "$chk_db_read_dir" ]
       then
-        echo "  error> user_home: $user_home read permission denied"
+        echo "  error> user_home : $user_home read permission denied"
         param_error_file="Y"
       fi
 
       if [ -z "$chk_db_write_dir" ]
       then
-        echo "  error> user_home: $user_home write permission denied"
+        echo "  error> user_home : $user_home write permission denied"
         param_error_file="Y"
       fi
 
     elif [ -n "$chk_move_path" ]
     then
-      echo "  error> user_home: $user_home execute permission denied"
+      echo "  error> user_home : $user_home execute permission denied"
       param_error_file="Y"  
     fi
   fi
@@ -285,7 +294,7 @@ then
 fi
 
 # go working directory
-cd $tbis_path
+cd $tbis_current_path
 
 ############################################################
 # OS configuration check
@@ -304,10 +313,9 @@ param_error_tibero="N"
 # check param
 if [ -z "$tibero_engine" ]
 then
-  echo "  error> tbis_cfg_main.sh: tibero_engine" 
+  echo "  error> tbis.cfg : tibero_engine" 
   param_error_tibero="Y"
 fi
-
 
 ############################################################
 # error progress

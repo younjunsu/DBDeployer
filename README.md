@@ -1,5 +1,4 @@
 # tbinstall
-test
 
 ## RUN
 ```
