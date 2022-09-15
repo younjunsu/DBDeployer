@@ -17,20 +17,21 @@ export tibero_tbinary=Y
 ############################################################
 #-------------------------
 export user_name=tibero
-export user_home=
-export group_name=
+export user_home=/tibero
+export group_name=dba
+export root_cm_profile=Y
 #-------------------------
 
 ############################################################
 # TIBERO tip variables
 ############################################################
 #-------------------------
-export DB_NAME=
-export TB_HOME=/Users/junsu/Documents/GitHub/tbinstall/tbis/data
-export CONTROL_FILE_PATH1=/Users/junsu/Documents/GitHub/tbinstall/tbis/data
-export CONTROL_FILE_PATH2=/Users/junsu/Documents/GitHub/tbinstall/tbis/data
-export DB_CREATE_FILE_DEST=/Users/junsu/Documents/GitHub/tbinstall/tbis/data
-export LOG_ARCHIVE_DEST=/Users/junsu/Documents/GitHub/tbinstall/tbis/data
+export DB_NAME=testdb
+export TB_HOME=/tibero/tibero6/database
+export CONTROL_FILE_PATH1=/tibero/tibero6/database
+export CONTROL_FILE_PATH2=/tibero/tibero6/database
+export DB_CREATE_FILE_DEST=/tibero/tibero6/database
+export LOG_ARCHIVE_DEST=/tibero/tibero6/database
 #-------------------------
 
 ############################################################

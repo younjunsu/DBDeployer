@@ -1,5 +1,15 @@
 #!/bin/sh
 
+
+fun_change_owner(){
+    #
+    #
+    #
+    
+}
+
+
+
 input_type=$1
 
 case $input_type in

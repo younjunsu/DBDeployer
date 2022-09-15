@@ -59,6 +59,7 @@ case $input_number in
         ;;
     2)
         clear
+        . cfg/tbis_cfg_main.sh
         . fun/tbis_fun_report.sh;;
     3)
         echo;;

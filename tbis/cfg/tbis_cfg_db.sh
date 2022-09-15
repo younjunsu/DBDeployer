@@ -1,7 +1,7 @@
 # Do not change
 
 # tbdsn.tbr configuration
-FN_TB_DSN(){
+fun_tbdns(){
     echo "$TB_SID=("
     echo "  (INSTANCE=(HOST=localhost)"
     echo "  (PORT=$LISTENER_PORT)"
@@ -10,16 +10,8 @@ FN_TB_DSN(){
     echo ")"
 }
 
-# Instance tip configuration
-FN_TB_SID_TIP(){
-    
-    if [ "$TIBERO_NODE" == "observer" ]
-    then
-        echo
-        echo "  message> tbis.cfg - TIBERO_TYPE : " $TIBERO_TYPE
-        echo     
-    elif [ "$INPUT_INI_TYPE" == "TB_SID_TIP" ]
-    then
+# instance tip configuration
+fun_db_tip(){
         echo "############ TIBERO genernal"
         echo "#### Must"
         echo "DB_NAME=$DB_NAME"
@@ -27,22 +19,23 @@ FN_TB_SID_TIP(){
         echo "CONTROL_FILES=$CONTROL_FILE_PATH1/tbctl1/c1.ctl,$CONTROL_FILE_PATH2/tbctl2/c2.ctl"
         echo "DB_CREATE_FILE_DEST=$DB_CREATE_FILE_DEST/tbdata"
 
-        if [ "$TIBERO_TYPE" == "SINGLE" ]
+        if [ "$tibero_type" == "SINGLE" ]
         then
             echo "LOG_ARCHIVE_DEST=$LOG_ARCHIVE_DEST/tbarch"
-        elif [ "$TIBERO_TYPE" == "TSC" ]
+        elif [ "$tibero_type" == "TSC" ]
         then
             echo "LOG_ARCHIVE_DEST=$LOG_ARCHIVE_DEST/tbarch"
-        elif [ "$TIBERO_TYPE" == "TAC" ]
+        elif [ "$tibero_type" == "TAC" ]
         then
-            if [ "$TIBERO_NODE" == "cm0" ]
+            if [ "$tibero_node" == "cm0" ]
             then
                 echo "LOG_ARCHIVE_DEST=$LOG_ARCHIVE_DEST/tbarch0"
-            elif [ "$TIBERO_NODE" == "cm1" ]
+            elif [ "$tibero_node" == "cm1" ]
             then
                 echo "LOG_ARCHIVE_DEST=$LOG_ARCHIVE_DEST/tbarch1"
             fi
         fi
+
         echo "MAX_SESSION_COUNT=100"
         echo "TOTAL_SHM_SIZE=2G"
         echo "MEMORY_TARGET=4G"
@@ -64,75 +57,86 @@ FN_TB_SID_TIP(){
         echo "#### Recommand"
         echo "#BOOT_WITH_AUTO_DOWN_CLEAN=Y"
         echo "#USE_RECYCLEBIN=Y"
-        echo "#LOG_DEFAULT_DEST="
         echo "#ACT_LOG_DEST="
+        echo "#LOG_DEFAULT_DEST="        
         echo "#CALLSTACK_DUMP_DEST="
         echo ""
         echo ""
-        if [ "$TIBERO_TYPE" == "SINGLE" ]
-        then
-            2>/dev/null
-        elif [ "$TIBERO_TYPE" == "TSC" ]
+        if [ "$tibero_type" == "TSC" ]
         then
             echo "############ TSC (Tibero Standby Cluster)"
             echo "#### Must"
             echo "CM_PORT=$CM_PORT"
-            if [ "$TIBERO_OBSERVER_ENABLE" == "Y" ]
+            if [ "$tibero_observer_enable" == "Y" ]
             then
                 echo "STANDBY_USE_OBSERVER=Y"
-            elif [ "$TIBERO_OBSERVER_ENABLE" == "N" ]
+            elif [ "$tibero_observer_enable" == "N" ]
             then
                 echo "STANDBY_USE_OBSERVER=N"
             fi
             echo "LOG_REPLICATION_MODE=PERFORMANCE"
             echo "LOCAL_CLUSTER_PORT=$LOCAL_CLUSTER_PORT"
             echo ""
-            if [ "$TIBERO_NODE" == "primary" ]
+            if [ "$tibero_node" == "primary" ]
             then
                 echo "## Primary"
-                echo "LOG_REPLICATION_DEST_1=\"$NODE2_INTER_IP:8633 LGWR ASYNC\""
-                echo "LOCAL_CLUSTER_ADDR=$NODE1_INTER_IP"
+                echo "LOG_REPLICATION_DEST_1=\"$node2_interconnect_ip:8633 LGWR ASYNC\""
+                echo "LOCAL_CLUSTER_ADDR=$node1_interconnect_ip"
                 echo ""
                 echo "#### Recommand"
-            elif [ "$TIBERO_NODE" == "standby" ]
+            elif [ "$tibero_node" == "standby" ]
             then
                 echo "## standby"
-                echo "LOG_REPLICATION_DEST_1=\"$NODE1_INTER_IP:8633 LGWR ASYNC\""
-                echo "LOCAL_CLUSTER_ADDR=$NODE2_INTER_IP"
+                echo "LOG_REPLICATION_DEST_1=\"$node1_interconnect_ip:8633 LGWR ASYNC\""
+                echo "LOCAL_CLUSTER_ADDR=$node2_interconnect_ip"
                 echo ""
                 echo "#### Recommand"
-            elif [ "$TIBERO_NODE" == "observer" ]
-            then
-                2>/dev/null
             fi
-        elif [ "$TIBERO_TYPE" == "TAC" ]
+        elif [ "$tibero_type" == "TAC" ]
         then
             echo "############ TAC (Tibero Active Cluster)"
             echo "#### Must"
             echo "CLUSTER_DATABASE=Y"
             echo "_USE_O_DIRECT=Y"
             echo ""
-            if [ "$TIBERO_NODE" == "cm0" ]
+            if [ "$tibero_node" == "cm0" ]
             then
                 echo "## cm0"
                 echo "THREAD=0"
                 echo "UNDO_TABLESPACE=UNDO0"
                 echo "#CM_NAME=cm0"
                 echo "CM_PORT=$CM_PORT"
-                echo "LOCAL_CLUSTER_ADDR=$NODE1_INTER_IP"
+                echo "LOCAL_CLUSTER_ADDR=$node1_interconnect_ip"
                 echo "LOCAL_CLUSTER_PORT=$LOCAL_CLUSTER_PORT"
-            elif [ "$TIBERO_NODE" == "cm1" ]
+            elif [ "$tibero_node" == "cm1" ]
             then
                 echo "## cm1"
                 echo "THREAD=1"
                 echo "UNDO_TABLESPACE=UNDO1"
                 echo "#CM_NAME=cm1"
                 echo "CM_PORT=$CM_PORT"
-                echo "LOCAL_CLUSTER_ADDR=$NODE2_INTER_IP"
+                echo "LOCAL_CLUSTER_ADDR=$node2_interconnect_ip"
                 echo "LOCAL_CLUSTER_PORT=$LOCAL_CLUSTER_PORT"
             fi
             echo ""
             echo ""
-        fi       
-    fi
+        fi
 }
+
+# profile mode check
+# apply: create profile file
+# output: display output
+cfg_db_mode=$1
+
+if [ -z $"cfg_db_mode" ]
+then
+    2>/dev/null
+elif [ "$cfg_db_mode" == "apply" ]
+then
+    fun_db_tip >> "$TB_HOME"/config/"$TB_SID".tip
+    fun_tbdns
+elif [ "$cfg_db_mode" == "output" ]
+then
+    fun_db_tip
+    fun_tbdns
+fi
