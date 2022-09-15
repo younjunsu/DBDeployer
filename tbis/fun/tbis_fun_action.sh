@@ -2,7 +2,8 @@
 # shell action
 ############################################################
 fun_change_owner(){
- 	echo
+	chown -R $USER_NAME:$GROUP_NAME $USER_HOME
+        chown -R $USER_NAME:$GROUP_NAME $TB_HOME
 }
 
 ############################################################
@@ -10,7 +11,17 @@ fun_change_owner(){
 ############################################################
 fun_tbboot(){
 	input_action=$1
-	
+
+	# display output message
+    	echo "############################################################"
+    	echo "#  tbis Progress> tbboot"
+    	echo "############################################################"
+	echo "----------------------------------------------------"
+	echo "tbboot " $input_action
+	echo "----------------------------------------------------"
+	echo
+
+	# action
 	case $input_action in
 		"mount")
 			tbobot mount
@@ -29,6 +40,16 @@ fun_tbboot(){
 fun_tbdown(){
 	input_action=$1
 
+	# display output message
+	echo "############################################################"
+        echo "#  tbis Progress> tbdown"
+        echo "############################################################"
+        echo "----------------------------------------------------"
+        echo "tbdown " $input_action
+        echo "----------------------------------------------------"
+        echo
+
+	# action
 	case $input_action in
 		"normal")
 			tbdown normal
@@ -43,7 +64,12 @@ fun_tbdown(){
 
 fun_cm_bootdown(){
 	input_action=$1
-	
+	echo
+    	echo "############################################################"
+    	echo "# tbis Progress> tbcm boot "    
+    	echo "############################################################"
+	echo
+
 	case $intput_action in
 		"boot")
 			tbcm -b
