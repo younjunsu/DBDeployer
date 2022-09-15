@@ -82,8 +82,10 @@ fun_cm_bootdown(){
 }
 
 
-#
+# function type
 input_type=$1
+
+# action  type
 input_tibero_action=$2
 
 #
