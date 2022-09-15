@@ -9,9 +9,9 @@ fun_change_owner(){
 # tibero action
 ############################################################
 fun_tbboot(){
-	input_bootmode=$1
+	input_action=$1
 	
-	case $input_bootmode in
+	case $input_action in
 		"mount")
 			tbobot mount
 			;;
@@ -27,9 +27,9 @@ fun_tbboot(){
 }
 
 fun_tbdown(){
-	input_downmode=$1
+	input_action=$1
 
-	case $input_downmode in
+	case $input_action in
 		"normal")
 			tbdown normal
 			;;
@@ -42,9 +42,9 @@ fun_tbdown(){
 }
 
 fun_cm_bootdown(){
-	input_bootdown=$1
+	input_action=$1
 	
-	case $intput_bootmode in
+	case $intput_action in
 		"boot")
 			tbcm -b
 		"donw")
@@ -55,3 +55,28 @@ fun_cm_bootdown(){
 	esac
 }
 
+
+#
+input_type=$1
+input_tibero_action=$2
+
+#
+case $input_type in
+	"chang_owner")
+		fun_change_owner
+		;;
+	"cmboot")
+		fun_cm_bootdown $input_tibero_action
+		;;
+	"cmdown")
+		fun_cm_bootdown $input_tibero_action
+		;;
+	"tbboot")
+		fun_tbboot $input_tibero_action
+		;;
+	"tbdown")
+		fun_tbdown $input_tibero_action
+		;;
+	*)
+		;;
+esac
