@@ -19,7 +19,7 @@ fun_profile(){
     then
         echo "#### SINGLE"
         echo "export TB_SID=`echo $DB_NAME`"
-        export TB_SID=`echo $DB_NAME`
+        export TB_SID=`echo "$DB_NAME"`
         echo "export TB_HOME=$TB_HOME"
     elif [ "$tibero_type" == "TSC" ]
     then
@@ -27,13 +27,14 @@ fun_profile(){
         if [ "$tibero_node" == "primary" ]
         then
             echo "export TB_SID=`echo $DB_NAME`_p"
+            export TB_SID=`echo "$DB_NAME"_p`
             echo "export TB_HOME=$TB_HOME"
             echo "export CM_SID=primary"
             echo "export CM_HOME=\$TB_HOME"
         elif [ "$tibero_node" == "standby" ]
         then
             echo "export TB_SID=`echo $DB_NAME`_s"
-            export TB_SID=`echo $DB_NAME`_s"
+            export TB_SID=`echo "$DB_NAME"_s`
             echo "export TB_HOME=$TB_HOME"
             echo "export CM_SID=standby"
             echo "export CM_HOME=\$TB_HOME"
