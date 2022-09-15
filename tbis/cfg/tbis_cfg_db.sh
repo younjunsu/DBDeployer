@@ -1,15 +1,5 @@
 # Do not change
 
-# tbdsn.tbr configuration
-fun_tbdns(){
-    echo "$TB_SID=("
-    echo "  (INSTANCE=(HOST=localhost)"
-    echo "  (PORT=$LISTENER_PORT)"
-    echo "  (DB_NAME=$DB_NAME)"
-    echo "  )"
-    echo ")"
-}
-
 # instance tip configuration
 fun_db_tip(){
         echo "############ TIBERO genernal"
@@ -134,9 +124,7 @@ then
 elif [ "$cfg_db_mode" == "apply" ]
 then
     fun_db_tip >> "$TB_HOME"/config/"$TB_SID".tip
-    fun_tbdns
 elif [ "$cfg_db_mode" == "output" ]
 then
     fun_db_tip
-    fun_tbdns
 fi
