@@ -56,27 +56,26 @@ fun_all_info(){
 
 echo "[*] tbis Installation Report" 
 echo "-----------------------------------------------------------------"
-echo "# 1. license.xml (tbboot -l)"
-echo "# 2. ncpu (chk_cpu_for_license.sh tibero)"
-echo "# 3. installation infomation"
-echo "# 4. os user procfile"
-echo "# 5. create database SQL Syntax"
-echo "# 6. \$TB_HOME/config/\$TB_SID.tip"
-echo "# 7. datafile infomation (tm 51)"
-echo "# 8. tablespace infomation (tm 52)"
-echo "# 9. uname / ulimit"
-echo "# 10. tbiobench (-s 1G)"
-echo "# all. all step"
+echo " 1. license.xml (tbboot -l)"
+echo " 2. ncpu (chk_cpu_for_license.sh tibero)"
+echo " 3. installation infomation"
+echo " 4. os user procfile"
+echo " 5. create database SQL Syntax"
+echo " 6. \$TB_HOME/config/\$TB_SID.tip"
+echo " 7. datafile infomation (tm 51)"
+echo " 8. tablespace infomation (tm 52)"
+echo " 9. uname / ulimit"
+echo " 10. tbiobench (-s 1G)"
+echo " all. all step"
 echo "-----------------------------------------------------------------"
-echo "b - before"
-echo "press other key to quit"
+echo " b - before"
+echo " press other key to quit"
 echo "-----------------------------------------------------------------"
 printf "Choose the Number : "
 read input_number
 
 # display clear
 clear
-
 case $input_number in
     1)
         fun_num01_license_info
