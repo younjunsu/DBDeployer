@@ -1,7 +1,9 @@
 # Do not change
 
-# PROFILE
-fun_profile_output(){
+############################################################
+# user_home profile apply and output 
+############################################################
+fun_profile(){
     echo "#############################"
     echo "# TIBERO environment variable"
     echo "#############################"
@@ -76,8 +78,8 @@ fun_profile_output(){
     echo "alias tbi='cd \$HOME/tbinary'"
 }
 
-profile_bashprofile_chk=$USER_HOME/.bash_profile
-profile_profile_chk=$USER_HOME/.profile
+profile_bashprofile_chk=$user_home/.bash_profile
+profile_profile_chk=$user_home/.profile
 
 if [ -f "$profile_profile_chk" ]
 then
@@ -96,8 +98,16 @@ then
     2>/dev/null
 elif [ "$profile_mode" == "apply" ]
 then
-    fun_profile_output >> $profile_path
-elif [ "$profile_mode" == "output"]
+    fun_profile >> $profile_path
+elif [ "$profile_mode" == "output" ]
 then
-    fun_profile_output
+    fun_profile
 fi
+
+############################################################
+# root cm profile apply and output 
+############################################################
+fun_root_cm_profile(){
+
+
+}

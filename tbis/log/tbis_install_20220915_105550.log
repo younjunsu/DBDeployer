@@ -1,0 +1,33 @@
+single
+#############################
+# TIBERO environment variable
+#############################
+#### SHELL
+stty erase ^H
+export PS1=[\\u"@"\\h" "\\W]\$" "
+export EDITOR=vim
+
+#### JAVA
+#export JAVA_HOME=
+
+#### SINGLE
+export TB_SID=testdb
+export TB_HOME=/tibero/tibero6/database
+
+### General
+export TB_PROF_DIR=$TB_HOME/bin/prof
+export LD_LIBRARY_PATH=$TB_HOME/lib:$TB_HOME/client/lib
+export LIBPATH=$LD_LIBRARY_PATH
+export SHLIB_PATH=$LD_LIBRARY_PATH
+export PATH=$PATH:$TB_HOME/bin:$TB_HOME/client/bin:$JAVA_HOME/bin
+
+#### TIBERO Alias
+alias tbhome='cd $TB_HOME'
+alias tbbin='cd $TB_HOME/bin'
+alias tblog='cd $TB_HOME/instance/$TB_SID/log'
+alias tbcfg='cd $TB_HOME/config'
+alias tbcfgv='vi $TB_HOME/config/$TB_SID.tip'
+alias tbcli='cd $TB_HOME/client/config'
+alias tbcliv='vi $TB_HOME/client/config/tbdsn.tbr'
+alias tm='$HOME/tbinary/monitor/monitor'
+alias tbi='cd $HOME/tbinary'

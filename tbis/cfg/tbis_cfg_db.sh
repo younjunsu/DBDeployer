@@ -1,7 +1,7 @@
 # Do not change
 
 # tbdsn.tbr configuration
-FN_TB_DSN(){
+fun_tbdns(){
     echo "$TB_SID=("
     echo "  (INSTANCE=(HOST=localhost)"
     echo "  (PORT=$LISTENER_PORT)"
@@ -11,7 +11,7 @@ FN_TB_DSN(){
 }
 
 # Instance tip configuration
-FN_TB_SID_TIP(){
+fun_db_tip(){
     
     if [ "$TIBERO_NODE" == "observer" ]
     then
