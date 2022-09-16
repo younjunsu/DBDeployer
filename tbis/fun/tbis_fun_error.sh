@@ -363,7 +363,7 @@ fun_tblib_error(){
 ############################################################
 input_error_type=$1
 
-if [ -z "$input_error_type" ]
+if [ "$input_error_type" == "lib" ]
 then
   fun_tblib_error
 else
