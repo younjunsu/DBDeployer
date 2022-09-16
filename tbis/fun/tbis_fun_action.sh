@@ -1,9 +1,20 @@
 ############################################################
+# run user mode
+############################################################
+if [ "$tbis_run_user" == "root" ] && [ "$user_name" == "root" ] || [ "$tbis_run_user" != "root" ]
+then
+	export tbis_run_user_mode="no_switch"
+elif [ "$tbis_run_user" != "$user_name" ] && [ "$tbis_run_user" == "root" ]
+then
+	export tbis_run_user_mode="switch"
+fi
+
+############################################################
 # shell action
 ############################################################
 fun_change_owner(){
 	chown -R $USER_NAME:$GROUP_NAME $USER_HOME
-        chown -R $USER_NAME:$GROUP_NAME $TB_HOME
+    chown -R $USER_NAME:$GROUP_NAME $TB_HOME
 }
 
 ############################################################
@@ -13,9 +24,11 @@ fun_tbboot(){
 	input_action=$1
 
 	# display output message
-    	echo "############################################################"
-    	echo "#  tbis Progress> tbboot"
-    	echo "############################################################"
+	echo "############################################################"
+	echo "#  tbis Progress> tbboot"
+	echo "############################################################"
+	echo "# install user : $tbis_run_user"
+	echo "# tibero  user : $user_name"
 	echo "----------------------------------------------------"
 	echo "tbboot " $input_action
 	echo "----------------------------------------------------"
@@ -42,12 +55,14 @@ fun_tbdown(){
 
 	# display output message
 	echo "############################################################"
-        echo "#  tbis Progress> tbdown"
-        echo "############################################################"
-        echo "----------------------------------------------------"
-        echo "tbdown " $input_action
-        echo "----------------------------------------------------"
-        echo
+	echo "#  tbis Progress> tbdown"
+	echo "############################################################"
+	echo "# install user : $tbis_run_user"
+	echo "# tibero  user : $user_name"
+	echo "----------------------------------------------------"
+	echo "tbdown " $input_action
+	echo "----------------------------------------------------"
+	echo
 
 	# action
 	case $input_action in
@@ -65,9 +80,11 @@ fun_tbdown(){
 fun_cm_bootdown(){
 	input_action=$1
 	echo
-    	echo "############################################################"
-    	echo "# tbis Progress> tbcm boot "    
-    	echo "############################################################"
+	echo "############################################################"
+	echo "# tbis Progress> tbcm boot or down "    
+	echo "############################################################"
+	echo "# install user : $tbis_run_user"
+	echo "# tibero  user : $user_name"
 	echo
 
 	case $intput_action in
