@@ -1,7 +1,7 @@
 # display clear
 clear
 
-#
+# program select list
 echo "[*] Installation configuration"
 echo "-----------------------------------------------------------------"    
 echo "Installation mode"
@@ -60,6 +60,7 @@ cat $tbis_current_path/sql/credb.sql
 echo "-----------------------------------------------------------------"
 printf "continue ? ( [Y]es / [N]o / [AA] All Auto] ) : "
 
+# docker mode check
 if [ "$tbis_mode" == "docker" ]
 then
 	input_str="AA"
@@ -67,6 +68,7 @@ else
 	read intput_str
 fi
 
+#
 case $intput_str in
 	"Y"|"y")
 		echo Y

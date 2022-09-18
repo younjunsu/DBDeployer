@@ -7,10 +7,10 @@
 ############################################################
 # 
 ############################################################
-# 
+# current path init
 export tbis_current_path=`pwd`
 
-#
+# environment function list
 fun_env_shell(){
 	env_shell=`uname -a |grep -i "Ubuntu"`
 
