@@ -80,16 +80,43 @@ fi
 #
 case $intput_str in
 	"Y"|"y")
-		echo Y
+		# all auto mode check
+		export all_auto_enable="Y"
+
+		# tibero type check
+		if [ "$tibero_type" == "SINGLE" ]
+		then
+			. $tbis_current_path/fun/tbis_fun_install_single.sh
+		elif [ "$tibero_type" == "TSC" ]
+		then
+			. $tbis_current_path/fun/tbis_fun_install_tsc.sh
+		elif [ "$tibero_type" == "TAC" ]
+		then
+			. $tbis_current_path/fun/tbis_fun_install_tac.sh
+		fi
 		;;
 	"N"|"n")
-		echo N
+		exit
 		;;
 	"AA"|"aa")
-		echo AA
+		# all auto mode check
+		export all_auto_enable=Y
+
+		# tibero type check
+		if [ "$tibero_type" == "SINGLE" ]
+		then
+			. $tbis_current_path/fun/tbis_fun_install_single.sh
+		elif [ "$tibero_type" == "TSC" ]
+		then
+			. $tbis_current_path/fun/tbis_fun_install_tsc.sh
+		elif [ "$tibero_type" == "TAC" ]
+		then
+			. $tbis_current_path/fun/tbis_fun_install_tac.sh
+		fi		
 		;;
 	*)
 	        echo "tbis message> program exit"
         	exit 1
 		;;
 esac
+

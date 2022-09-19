@@ -152,11 +152,17 @@ fun_cm_bootdown(){
 }
 
 fun_system_shell(){
-	$tbis_shell $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y
+	if [ "$tbis_run_user_mode" == "no_swtich" ]
+	then
+		$tbis_shell $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y
+	elif [ "$tbis_run_user_mode" == "switch" ]
+	then
+		su - $user_name -c "$tbis_shell $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
+	fi	
 }
 
 fun_credb(){
-
+	echo
 }
 
 # function type

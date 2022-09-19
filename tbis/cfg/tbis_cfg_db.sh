@@ -123,7 +123,18 @@ then
     2>/dev/null
 elif [ "$cfg_db_mode" == "apply" ]
 then
-    fun_db_tip >> "$TB_HOME"/config/"$TB_SID".tip
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> TB_SID TIP File"
+    echo "############################################################"
+    echo " - $TB_SID"
+    echo " -  $TB_HOME/config/$TB_SID.tip apply configuration"
+    tbis_current_path/fun/tbis_fun_common.sh progress_chk
+    
+    if [ "$progress_yesno" == "YES" ]
+    then
+        fun_db_tip >> "$TB_HOME"/config/"$TB_SID".tip
+    fi
 elif [ "$cfg_db_mode" == "output" ]
 then
     fun_db_tip

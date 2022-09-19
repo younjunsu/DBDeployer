@@ -44,17 +44,7 @@ case $input_number in
         file_time=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
         . $tbis_current_path/tbis.cfg
         . $tbis_current_path/fun/tbis_fun_error.sh
-        . $tbis_current_path/fun/tbis_fun_install.sh
-        if [ "$tibero_type" == "SINGLE" ]
-        then
-            . $tbis_current_path/fun/tbis_fun_install_single.sh |tee $tbis_current_path/log/tbis_install_"$file_time".log
-        elif [ "$tibero_type" == "TSC" ]
-        then
-            . $tbis_current_path/fun/tbis_fun_install_tsc.sh |tee $tbis_current_path/log/tbis_install_"$file_time".log
-        elif [ "$tibero_type" == "TAC" ]
-        then
-            . $tbis_current_path/fun/tbis_fun_install_tac.sh |tee $tbis_current_path/log/tbis_install_"$file_time".log
-        fi
+        . $tbis_current_path/fun/tbis_fun_install.sh |tee $tbis_current_path/log/tbis_install_"$file_time".log
         ;;
     2)
         clear
