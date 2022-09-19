@@ -1,20 +1,28 @@
 ############################################################
 # run user mode
 ############################################################
-if [ "$tbis_run_user" == "root" ] && [ "$user_name" == "root" ] || [ "$tbis_run_user" != "root" ]
-then
-	export tbis_run_user_mode="no_switch"
-elif [ "$tbis_run_user" != "$user_name" ] && [ "$tbis_run_user" == "root" ]
-then
-	export tbis_run_user_mode="switch"
-fi
+#if [ "$tbis_run_user" == "root" ] && [ "$user_name" == "root" ] || [ "$tbis_run_user" != "root" ]
+#then
+#	export tbis_run_user_mode="no_switch"
+#elif [ "$tbis_run_user" != "$user_name" ] && [ "$tbis_run_user" == "root" ]
+#then
+#	export tbis_run_user_mode="switch"
+#fi
 
 ############################################################
 # shell action
 ############################################################
 fun_change_owner(){
-	chown -R $USER_NAME:$GROUP_NAME $USER_HOME
-    chown -R $USER_NAME:$GROUP_NAME $TB_HOME
+	if [ "$tbis_run_user_mode" == "no_swtich" ]
+	then
+		#chown -R $user_home:$group_name $user_home
+		#chown -R $user_home:$group_name $tb_home
+		2>/dev/null
+	elif [ "$tbis_run_user_mode" == "switch" ]
+	then
+		su - $user_name -c "chown -R $user_home:$group_name $user_home"
+		su - $user_name -c "chown -R $user_home:$group_name $tb_home"
+	fi
 }
 
 ############################################################
@@ -37,15 +45,34 @@ fun_tbboot(){
 	# action
 	case $input_action in
 		"mount")
-			tbobot mount
+			if [ "$tbis_run_user_mode" == "no_swtich" ]
+			then
+				tbobot mount
+			elif [ "$tbis_run_user_mode" == "switch" ]
+			then
+				su - $user_name -c "tbobot mount"
+			fi
 			;;
 		"normal")
-			tbboot normal
+			if [ "$tbis_run_user_mode" == "no_swtich" ]
+			then
+				tbboot normal
+			elif [ "$tbis_run_user_mode" == "switch" ]
+			then
+				su - $user_name -c "tbboot normal"
+			fi
 			;;
 		"recovery")
-			tbboot recovery
+			if [ "$tbis_run_user_mode" == "no_swtich" ]
+			then
+				tbboot recovery
+			elif [ "$tbis_run_user_mode" == "switch" ]
+			then
+				su - $user_name -c "tbboot recovery"
+			fi
 			;;
 		*)
+			2>/dev/null
 			;;
 	esac
 }
@@ -67,12 +94,25 @@ fun_tbdown(){
 	# action
 	case $input_action in
 		"normal")
-			tbdown normal
+			if [ "$tbis_run_user_mode" == "no_swtich" ]
+			then
+				tbdown normal
+			elif [ "$tbis_run_user_mode" == "switch" ]
+			then
+				su - $user_name -c "tbdown normal"
+			fi
 			;;
 		"immediate")
-			tbdown immediate
+			if [ "$tbis_run_user_mode" == "no_swtich" ]
+			then
+				tbdown immediate
+			elif [ "$tbis_run_user_mode" == "switch" ]
+			then
+				su - $user_name -c "tbdown immediate"
+			fi
 			;;
 		*)
+			2>/dev/null
 			;;
 	esac
 }
@@ -89,11 +129,24 @@ fun_cm_bootdown(){
 
 	case $intput_action in
 		"boot")
-			tbcm -b
+			if [ "$tbis_run_user_mode" == "no_swtich" ]
+			then
+				tbcm -b
+			elif [ "$tbis_run_user_mode" == "switch" ]
+			then
+				su - $user_name -c "tbcm -b"
+			fi		
 		"donw")
-			tbcm -d
+			if [ "$tbis_run_user_mode" == "no_swtich" ]
+			then
+				tbcm -d
+			elif [ "$tbis_run_user_mode" == "switch" ]
+			then
+				su - $user_name -c "tbcm -d"
+			fi
 			;;
 		*)
+			2>/dev/null
 			;;
 	esac
 }
@@ -105,7 +158,11 @@ input_type=$1
 # action  type
 input_tibero_action=$2
 
-#
+#switch type
+# no_switch
+# switch
+tbis_run_user_mode=$3
+
 case $input_type in
 	"chang_owner")
 		fun_change_owner
@@ -122,6 +179,12 @@ case $input_type in
 	"tbdown")
 		fun_tbdown $input_tibero_action
 		;;
+	"credb")
+
+		;;
+	"system.sh")
+			$tbis_shell $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y
+		;;	
 	*)
 		;;
 esac

@@ -35,14 +35,19 @@ fun_env_shell(){
 # 
 case $1 in
 	"")
-		fun_env_shell;;
+		fun_env_shell
+		;;
 	"-bash"|"--bash"|"bash")
-		export env_shell="bash"
-		bash $tbis_current_path/fun/tbis_fun_main.sh;;
+		#export env_shell="bash"
+		export tbis_shell="bash"
+		bash $tbis_current_path/fun/tbis_fun_main.sh
+		;;
 	"docker")
 		export tbis_mode="docker"
-		export env_shell="bash"
-		bash $tbis_current_path/fun/tbis_fun_main.sh docker;;
+		#export env_shell="bash"
+		export tbis_shell="bash"
+		bash $tbis_current_path/fun/tbis_fun_main.sh docker
+		;;
 	*)
 		echo ""
 		echo "[*] TIBERO Installation shell script"
@@ -53,5 +58,6 @@ case $1 in
 		echo "  bash		default: sh"
 		echo "  docker	default: interactive mode"
 		echo "-----------------------------------------------------------------"
-		echo "";;
+		echo ""
+		;;
 esac

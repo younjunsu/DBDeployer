@@ -46,13 +46,13 @@ case $input_number in
         . $tbis_current_path/fun/tbis_fun_error.sh
         if [ "$tibero_type" == "SINGLE" ]
         then
-            . $tbis_current_path/fun/tbis_fun_install_single.sh |tee log/tbis_install_"$file_time".log
+            . $tbis_current_path/fun/tbis_fun_install_single.sh |tee $tbis_current_path/log/tbis_install_"$file_time".log
         elif [ "$tibero_type" == "TSC" ]
         then
-            . $tbis_current_path/fun/tbis_fun_install_tsc.sh |tee log/tbis_install_"$file_time".log
+            . $tbis_current_path/fun/tbis_fun_install_tsc.sh |tee $tbis_current_path/log/tbis_install_"$file_time".log
         elif [ "$tibero_type" == "TAC" ]
         then
-            . $tbis_current_path/fun/tbis_fun_install_tac.sh |tee log/tbis_install_"$file_time".log
+            . $tbis_current_path/fun/tbis_fun_install_tac.sh |tee $tbis_current_path/log/tbis_install_"$file_time".log
         fi
         ;;
     2)

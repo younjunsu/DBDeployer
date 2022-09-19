@@ -2,29 +2,29 @@
 
 
 # cm tip configuration
-FN_CM_SID_TIP(){
-    if [ "$TIBERO_TYPE" == "TSC" ]
+fun_cm_tip(){
+    if [ "$tibero_type" == "TSC" ]
     then
         echo "############ TSC (Tibero Standby Cluster)"
         echo "#### Must"
         echo "CM_HEARTBEAT_EXPIRE=300"
         echo "CM_WATCHDOG_EXPIRE=290"
         echo ""
-        if [ "$TIBERO_NODE" == "primary" ]
+        if [ "$tibero_node" == "primary" ]
         then
             echo "## Primary"
             echo "CM_NAME=primary"
             echo "CM_UI_PORT=$CM_UI_PORT"
             echo "CM_RESOURCE_FILE=$TB_HOME/config/primary_res_file"
             echo ""
-        elif [ "$TIBERO_NODE" == "standby" ]
+        elif [ "$tibero_node" == "standby" ]
         then
             echo "## Standby"
             echo "CM_NAME=standby"
             echo "CM_UI_PORT=$CM_UI_PORT"
             echo "CM_RESOURCE_FILE=$TB_HOME/config/standby_res_file"
             echo ""
-        elif [ "$TIBERO_NODE" == "observer" ]
+        elif [ "$tibero_node" == "observer" ]
         then
             echo "## Observer"
             echo "CM_NAME=observer"
@@ -35,19 +35,19 @@ FN_CM_SID_TIP(){
         echo "#### Recommand"
         echo "#CM_ENABLE_FAST_NET_ERROR_DETECTION=Y"
         echo ""
-    elif [ "$TIBERO_TYPE" == "TAC" ]
+    elif [ "$tibero_type" == "TAC" ]
     then
         echo "############ TAC (Tibero Active Cluster)"
         echo "#### Must"
         echo ""
-        if [ "$TIBERO_NODE" == "cm0" ]
+        if [ "$tibero_node" == "cm0" ]
         then
             echo "## Node1"
             echo "CM_NAME=cm0"
             echo "CM_UI_PORT=28629"
             echo "CM_RESOURCE_FILE=$TB_HOME/config/cm0_res_file"
             echo ""
-        elif [ "$TIBERO_NODE" == "cm1" ]
+        elif [ "$tibero_node" == "cm1" ]
         then
             echo "## Node2"
             echo "CM_NAME=cm1"
@@ -60,136 +60,154 @@ FN_CM_SID_TIP(){
         echo "CM_WATCHDOG_EXPIRE=290"
         echo "CM_ENABLE_FAST_NET_ERROR_DETECTION=Y"
         echo ""
-    elif [ "$TIBERO_TYPE" == "SINGLE" ]
+    elif [ "$tibero_type" == "SINGLE" ]
     then
         echo
-        echo "  message> tbis.cfg - TIBERO_TYPE : " $TIBERO_TYPE
+        echo "  message> tbis.cfg - tibero_type : " $tibero_type
         echo
     fi
 }
 
 # CM resource configuration
-FN_CM_RESOURCE(){
-    TIBERO_BASHPROFILE=$USER_HOME/.bash_profile
-    TIBERO_PROFILE=$USER_HOME/.profile
-
-    if [ -f "$TIBERO_PROFILE" ]
+fun_cm_resource(){
+    if [ "$tibero_type" == "TSC" ]
     then
-        TIBERO_PROFILE_CHECK=$TIBERO_PROFILE
-    elif [ -f "$TIBERO_BASHPROFILE" ]
-    then
-        TIBERO_PROFILE_CHECK=$TIBERO_BASHPROFILE
-    fi
-
-    if [ "$TIBERO_TYPE" == "TSC" ]
-    then
-        if [ "$TIBERO_NODE" == "primary" ]
+        if [ "$tibero_node" == "primary" ]
         then
             echo "cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT"
-            if [ -z "$NODE1_VIP_ETH" ]
+            if [ -z "$node1_vip_eth" ]
             then
-                    echo "cmrctl add cluster --name cls0 --incnet net0 --cfile $CFILE_PATH/CMFILE_cls0"
+                    echo "cmrctl add cluster --name cls0 --incnet net0 --cfile $cfile_path/CMFILE_cls0"
                     echo "cmrctl start cluster --name cls0"            
-                    if [ "$TIBERO_OBSERVER_ENABLE" == "Y" ] 
+                    if [ "$tibero_observer_enable" == "Y" ] 
                     then
-                        echo "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE_OBSERVER_IP --obsport $CM_OBSERVER_PORT"
-                    elif [ "$TIBERO_OBSERVER_ENABLE" == "N" ] || [ -z "$TIBERO_OBSERVER_ENABLE" ]
+                        echo "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $observer_ip --obsport $CM_OBSERVER_PORT"
+                    elif [ "$tibero_observer_enable" == "N" ] || [ -z "$tibero_observer_enable" ]
                     then
                         echo "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11"
                     fi                    
-                    echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK"
+                    echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $profile_path"
                 else
-                    echo "cmrctl add network --name pub0 --nettype public --ifname $NODE1_VIP_ETH"
-                    echo "cmrctl add cluster --name cls0 --incnet net0 --pubnet pub0 --cfile $CFILE_PATH/CMFILE_cls0"
+                    echo "cmrctl add network --name pub0 --nettype public --ifname $node1_vip_eth"
+                    echo "cmrctl add cluster --name cls0 --incnet net0 --pubnet pub0 --cfile $cfile_path/CMFILE_cls0"
                     echo "cmrctl start cluster --name cls0"
-                    if [ "$TIBERO_OBSERVER_ENABLE" == "Y" ] 
+                    if [ "$tibero_observer_enable" == "Y" ] 
                     then
-                        echo "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $NODE_OBSERVER_IP --obsport $CM_OBSERVER_PORT"
-                    elif [ "$TIBERO_OBSERVER_ENABLE" == "N" ] || [ -z "$TIBERO_OBSERVER_ENABLE" ]
+                        echo "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11 --obsip $observer_ip --obsport $CM_OBSERVER_PORT"
+                    elif [ "$tibero_observer_enable" == "N" ] || [ -z "$tibero_observer_enable" ]
                     then
                         echo "cmrctl add service --name $DB_NAME --cname cls0 --tscid 11"
                     fi                    
-                    echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK"
-                    echo "cmrctl add vip --name vip0 --svcname $DB_NAME --ipaddr $NODE1_VIP_IP"
+                    echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $profile_path"
+                    echo "cmrctl add vip --name vip0 --svcname $DB_NAME --ipaddr $node1_vip_ip"
             fi
-        elif [ "$TIBERO_NODE" == "standby" ]
+        elif [ "$tibero_node" == "standby" ]
         then
            echo "cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT"
-                if [ -z "$NODE2_VIP_ETH" ]
+                if [ -z "$node2_vip_eth" ]
                 then
-                    echo "cmrctl add cluster --name cls1 --incnet net1 --cfile $CFILE_PATH/CMFILE_cls1"
+                    echo "cmrctl add cluster --name cls1 --incnet net1 --cfile $cfile_path/CMFILE_cls1"
                     echo "cmrctl start cluster --name cls1"
-                    if [ "$TIBERO_OBSERVER_ENABLE" == "Y" ] 
+                    if [ "$tibero_observer_enable" == "Y" ] 
                     then
-                        echo "cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE_OBSERVER_IP --obsport $CM_OBSERVER_PORT"
-                    elif [ "$TIBERO_OBSERVER_ENABLE" == "N" ] || [ -z "$TIBERO_OBSERVER_ENABLE" ]
+                        echo "cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $observer_ip --obsport $CM_OBSERVER_PORT"
+                    elif [ "$tibero_observer_enable" == "N" ] || [ -z "$tibero_observer_enable" ]
                     then
                         echo "cmrctl add service --name $DB_NAME --cname cls1 --tscid 11"
                     fi
-                    echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK"
+                    echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $profile_path"
                 else
-                    echo "cmrctl add network --name pub1 --nettype public --ifname $NODE2_VIP_ETH"
-                    echo "cmrctl add cluster --name cls1 --incnet net1 --pubnet pub1 --cfile $CFILE_PATH/CMFILE_cls1"
+                    echo "cmrctl add network --name pub1 --nettype public --ifname $node2_vip_eth"
+                    echo "cmrctl add cluster --name cls1 --incnet net1 --pubnet pub1 --cfile $cfile_path/CMFILE_cls1"
                     echo "cmrctl start cluster --name cls1"
-                    if [ "$TIBERO_OBSERVER_ENABLE" == "Y" ] 
+                    if [ "$tibero_observer_enable" == "Y" ] 
                     then
-                        echo "cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $NODE_OBSERVER_IP --obsport $CM_OBSERVER_PORT"
-                    elif [ "$TIBERO_OBSERVER_ENABLE" == "N" ] || [ -z "$TIBERO_OBSERVER_ENABLE" ]
+                        echo "cmrctl add service --name $DB_NAME --cname cls1 --tscid 11 --obsip $observer_ip --obsport $CM_OBSERVER_PORT"
+                    elif [ "$tibero_observer_enable" == "N" ] || [ -z "$tibero_observer_enable" ]
                     then
                         echo "cmrctl add service --name $DB_NAME --cname cls1 --tscid 11"
                     fi
-                    echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $TIBERO_PROFILE_CHECK"
-                    echo "cmrctl add vip --name vip1 --svcname $DB_NAME --ipaddr $NODE2_VIP_IP"
+                    echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME --envfile $profile_path"
+                    echo "cmrctl add vip --name vip1 --svcname $DB_NAME --ipaddr $node2_vip_ip"
                 fi
-        elif [ "$TIBERO_NODE" == "observer" ]
+        elif [ "$tibero_node" == "observer" ]
         then
             2>/dev/null
         fi
-    elif [ "$TIBERO_TYPE" == "TAC" ]
+    elif [ "$tibero_type" == "TAC" ]
     then
        2>/dev/null
-        if [ "$TIBERO_NODE" == "cm0" ]
+        if [ "$tibero_node" == "cm0" ]
         then
             echo "cmrctl add network --name net0 --ipaddr $NODE1_INTER_IP --portno $TBCM_NET_PORT"
-            if [ -z "$NODE1_VIP_ETH" ]
+            if [ -z "$node1_vip_eth" ]
             then
-                echo "cmrctl add cluster --name cls0 --incnet net0 --cfile $CFILE_PATH/CMFILE"
+                echo "cmrctl add cluster --name cls0 --incnet net0 --cfile $cfile_path/CMFILE"
                 echo "cmrctl start cluster --name cls0"
                 echo "cmrctl add service --name $DB_NAME --cname cls0 --type db"
                 echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
             else
-                echo "cmrctl add network --name pub0 --nettype public --ifname $NODE1_VIP_ETH"
-                echo "cmrctl add cluster --name cls0 --incnet net0 --pubnet pub0 --cfile $CFILE_PATH/CMFILE"
+                echo "cmrctl add network --name pub0 --nettype public --ifname $node1_vip_eth"
+                echo "cmrctl add cluster --name cls0 --incnet net0 --pubnet pub0 --cfile $cfile_path/CMFILE"
                 echo "cmrctl start cluster --name cls0"
                 echo "cmrctl add service --name $DB_NAME --cname cls0 --type db"
                 echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
-                echo "cmrctl add vip --name vip0 --svcname $DB_NAME --ipaddr $NODE1_VIP_IP"
+                echo "cmrctl add vip --name vip0 --svcname $DB_NAME --ipaddr $node1_vip_ip"
             fi
-        elif [ "$TIBERO_NODE" == "cm1" ]
+        elif [ "$tibero_node" == "cm1" ]
         then
             echo "cmrctl add network --name net1 --ipaddr $NODE2_INTER_IP --portno $TBCM_NET_PORT"
-            if [ -z "$NODE2_VIP_ETH" ]
+            if [ -z "$node2_vip_eth" ]
             then
-                echo "cmrctl add cluster --name cls0 --incnet net1  --cfile $CFILE_PATH/CMFILE"
+                echo "cmrctl add cluster --name cls0 --incnet net1  --cfile $cfile_path/CMFILE"
                 echo "cmrctl start cluster --name cls0"
                 echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
             else
-                echo "cmrctl add network --name pub1 --nettype public --ifname $NODE2_VIP_ETH"
-                echo "cmrctl add cluster --name cls0 --incnet net1 --pubnet pub1 --cfile $CFILE_PATH/CMFILE"
+                echo "cmrctl add network --name pub1 --nettype public --ifname $node2_vip_eth"
+                echo "cmrctl add cluster --name cls0 --incnet net1 --pubnet pub1 --cfile $cfile_path/CMFILE"
                 echo "cmrctl start cluster --name cls0"
                 echo "cmrctl add db --name $TB_SID --svcname $DB_NAME --dbhome $TB_HOME"
-                echo "cmrctl add vip --name vip1 --svcname $DB_NAME --ipaddr $NODE2_VIP_IP"
+                echo "cmrctl add vip --name vip1 --svcname $DB_NAME --ipaddr $node2_vip_ip"
             fi
         fi
-    elif [ "$TIBERO_TYPE" == "SINGLE" ]
+    elif [ "$tibero_type" == "SINGLE" ]
     then
         echo
-        echo "  message> tbis.cfg - TIBERO_TYPE : " $TIBERO_TYPE
+        echo "  message> tbis.cfg - tibero_type : " $tibero_type
         echo
-    elif [ "$TIBERO_TYPE" == "observer" ]
+    elif [ "$tibero_type" == "observer" ]
     then
         echo
-        echo "  message> tbis.cfg - TIBERO_TYPE : " $TIBERO_TYPE
+        echo "  message> tbis.cfg - tibero_type : " $tibero_type
         echo
     fi    
 }
+
+
+# profile mode check
+# apply: create profile file
+# output: display output
+cfg_cm_mode=$1
+cfg_cm_type=$2
+if [ -z $"cfg_cm_mode" ]
+then
+    2>/dev/null
+elif [ "$cfg_cm_mode" == "apply" ]
+then
+    if [ "$cfg_cm_type" == "cm_tip" ]
+    then
+        fun_cm_tip >> "$TB_HOME"/config/"$CM_SID".tip
+    elif [ "$fun_cm_tip" == "cm_resource" ]
+    then
+        fun_cm_resource >> "$TB_HOME"/config/"$CM_SID".tip
+    fi
+elif [ "$cfg_cm_mode" == "output" ]
+then
+    if [ "$cfg_cm_type" == "cm_tip" ]
+    then
+        fun_cm_tip
+    elif [ "$fun_cm_tip" == "cm_resource" ]
+    then
+        fun_cm_resource
+    fi
+fi
