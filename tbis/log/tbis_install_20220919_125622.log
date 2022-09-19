@@ -1,0 +1,88 @@
+[3;J[H[2J[*] Installation configuration
+-----------------------------------------------------------------
+ * Installation mode
+-----------------------------------------------------------------
+ - tibero type : SINGLE
+ - tibero node : SINGLE
+-----------------------------------------------------------------
+ * OS Configuration
+-----------------------------------------------------------------
+ - install user: root
+ - user name : tibero
+ - user home : /tibero
+ - user group : dba
+-----------------------------------------------------------------
+ * Database Configuration
+-----------------------------------------------------------------
+ - TB_SID : testdb
+ - TB_HOME : /tibero/tibero6/database
+ - DB_NAME : testdb
+ - LISTENER_PORT : 8629
+ - CHARACTER SET : UTF8
+ - ARCHIVE MODE : ARCHIVELOG
+-----------------------------------------------------------------
+ * FILE PATH Configuration
+-----------------------------------------------------------------
+ - USER_HOME PATH : /tibero
+ - TBINARY PATH : /tibero/tbinary
+ - TB_HOME PATH : /tibero/tibero6/database
+ - CONTROL1_FILE : /tibero/tibero6/database/tbctl1/c1.ctl
+ - CONTROL2_FILE : /tibero/tibero6/database/tbctl2/c2.ctl
+ - DB_CREATE_FILE : /tibero/tibero6/database/tbdata
+ - LOG_ARCHIVE_DEST : /tibero/tibero6/database/tbarch
+-----------------------------------------------------------------
+ * CREATE DATABASE sql
+-----------------------------------------------------------------
+CREATE DATABASE 
+USER sys IDENTIFIED BY 'tibero' 
+MAXDATAFILES 256
+CHARACTER SET UTF8
+LOGFILE 
+GROUP 0 ('system/redo001.redo','system/redo002.redo') SIZE 30M,
+GROUP 1 ('system/redo011.redo','system/redo012.redo') SIZE 30M,
+GROUP 2 ('system/redo021.redo','system/redo022.redo') SIZE 30M,
+GROUP 3 ('system/redo031.redo','system/redo032.redo') SIZE 30M,
+GROUP 4 ('system/redo041.redo','system/redo042.redo') SIZE 30M
+MAXLOGFILES 100
+MAXLOGMEMBERS 8
+--MAXARCHIVELOG 500
+--MAXLOGHISTORY 500
+ARCHIVELOG
+    DATAFILE 'system/system001.dtf' SIZE 1G
+    UNDO TABLESPACE UNDO0 DATAFILE 'system/undo001.dtf' SIZE 1G
+    DEFAULT TEMPORARY TABLESPACE TEMP TEMPFILE 'system/temp001.dtf' SIZE 1G
+    DEFAULT TABLESPACE USR DATAFILE 'system/usr001.dtf' SIZE 1G;
+-----------------------------------------------------------------
+
+continue ? ( [Y]es / [N]o / [AA] All Auto] ) : 
+############################################################
+# tbis Progress> Profile 
+############################################################
+
+ /tibero/.bash_profile apply configuration
+
+  continue ? ( [Y]es / [N]o / [S]kip ) : 
+
+############################################################
+# tbis Progress> TB_SID TIP File
+############################################################
+
+ - testdb.tip /tibero/tibero6/database/config/testdb.tip apply configuration
+
+  continue ? ( [Y]es / [N]o / [S]kip ) : 
+
+############################################################
+# tbis Progress> TBDSN
+############################################################
+
+- tbdsn.tbr: /tibero/tibero6/database/client/config/tbdsn.tbr
+
+  continue ? ( [Y]es / [N]o / [S]kip ) : 
+############################################################
+#  tbis Progress> Change Owner
+############################################################
+
+chown -R /tibero:dba /tibero
+
+  continue ? ( [Y]es / [N]o / [S]kip ) : 
+single

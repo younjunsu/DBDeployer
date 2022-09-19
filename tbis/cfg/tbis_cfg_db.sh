@@ -127,9 +127,10 @@ then
     echo "############################################################"
     echo "# tbis Progress> TB_SID TIP File"
     echo "############################################################"
-    echo " - $TB_SID"
-    echo " -  $TB_HOME/config/$TB_SID.tip apply configuration"
-    tbis_current_path/fun/tbis_fun_common.sh progress_chk
+    echo
+    echo " - $TB_SID.tip $TB_HOME/config/$TB_SID.tip apply configuration"
+    echo
+    $tbis_current_path/fun/tbis_fun_common.sh progress_chk
     
     if [ "$progress_yesno" == "YES" ]
     then

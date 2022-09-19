@@ -12,17 +12,22 @@ fun_change_owner(){
     echo "############################################################"
 	echo
 	echo "chown -R $user_home:$group_name $user_home"
-	echo	
-	if [ "$tbis_run_user_mode" == "no_swtich" ]
-	then
-		#chown -R $user_home:$group_name $user_home
-		#chown -R $user_home:$group_name $tb_home
-		2>/dev/null
-	elif [ "$tbis_run_user_mode" == "switch" ]
-	then
-		su - $user_name -c "chown -R $user_home:$group_name $user_home"
-		su - $user_name -c "chown -R $user_home:$group_name $tb_home"
-	fi
+	echo
+	$tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	if [ "$progress_yesno" == "YES" ]
+    then
+		if [ "$tbis_run_user_mode" == "no_swtich" ]
+		then
+			#chown -R $user_home:$group_name $user_home
+			#chown -R $user_home:$group_name $tb_home
+			2>/dev/null
+		elif [ "$tbis_run_user_mode" == "switch" ]
+		then
+			su - $user_name -c "chown -R $user_home:$group_name $user_home"
+			su - $user_name -c "chown -R $user_home:$group_name $tb_home"
+		fi       
+    fi
+	
 }
 
 ############################################################
@@ -41,40 +46,44 @@ fun_tbboot(){
 	echo "tbboot " $input_action
 	echo "----------------------------------------------------"
 	echo
+	$tbis_current_path/fun/tbis_fun_common.sh progress_chk
 
-	# action
-	case $input_action in
-		"mount")
-			if [ "$tbis_run_user_mode" == "no_swtich" ]
-			then
-				tbobot mount
-			elif [ "$tbis_run_user_mode" == "switch" ]
-			then
-				su - $user_name -c "tbobot mount"
-			fi
-			;;
-		"normal")
-			if [ "$tbis_run_user_mode" == "no_swtich" ]
-			then
-				tbboot normal
-			elif [ "$tbis_run_user_mode" == "switch" ]
-			then
-				su - $user_name -c "tbboot normal"
-			fi
-			;;
-		"recovery")
-			if [ "$tbis_run_user_mode" == "no_swtich" ]
-			then
-				tbboot recovery
-			elif [ "$tbis_run_user_mode" == "switch" ]
-			then
-				su - $user_name -c "tbboot recovery"
-			fi
-			;;
-		*)
-			2>/dev/null
-			;;
-	esac
+	if [ "$progress_yesno" == "YES" ]
+	then	
+		# action
+		case $input_action in
+			"mount")
+				if [ "$tbis_run_user_mode" == "no_swtich" ]
+				then
+					tbobot mount
+				elif [ "$tbis_run_user_mode" == "switch" ]
+				then
+					su - $user_name -c "tbobot mount"
+				fi
+				;;
+			"normal")
+				if [ "$tbis_run_user_mode" == "no_swtich" ]
+				then
+					tbboot normal
+				elif [ "$tbis_run_user_mode" == "switch" ]
+				then
+					su - $user_name -c "tbboot normal"
+				fi
+				;;
+			"recovery")
+				if [ "$tbis_run_user_mode" == "no_swtich" ]
+				then
+					tbboot recovery
+				elif [ "$tbis_run_user_mode" == "switch" ]
+				then
+					su - $user_name -c "tbboot recovery"
+				fi
+				;;
+			*)
+				2>/dev/null
+				;;
+		esac
+	fi	
 }
 
 fun_tbdown(){
@@ -90,31 +99,34 @@ fun_tbdown(){
 	echo "tbdown " $input_action
 	echo "----------------------------------------------------"
 	echo
-
-	# action
-	case $input_action in
-		"normal")
-			if [ "$tbis_run_user_mode" == "no_swtich" ]
-			then
-				tbdown normal
-			elif [ "$tbis_run_user_mode" == "switch" ]
-			then
-				su - $user_name -c "tbdown normal"
-			fi
-			;;
-		"immediate")
-			if [ "$tbis_run_user_mode" == "no_swtich" ]
-			then
-				tbdown immediate
-			elif [ "$tbis_run_user_mode" == "switch" ]
-			then
-				su - $user_name -c "tbdown immediate"
-			fi
-			;;
-		*)
-			2>/dev/null
-			;;
-	esac
+	$tbis_current_path/fun/tbis_fun_common.sh progress_chk
+    if [ "$progress_yesno" == "YES" ]
+    then	
+		# action
+		case $input_action in
+			"normal")
+				if [ "$tbis_run_user_mode" == "no_swtich" ]
+				then
+					tbdown normal
+				elif [ "$tbis_run_user_mode" == "switch" ]
+				then
+					su - $user_name -c "tbdown normal"
+				fi
+				;;
+			"immediate")
+				if [ "$tbis_run_user_mode" == "no_swtich" ]
+				then
+					tbdown immediate
+				elif [ "$tbis_run_user_mode" == "switch" ]
+				then
+					su - $user_name -c "tbdown immediate"
+				fi
+				;;
+			*)
+				2>/dev/null
+				;;
+		esac
+	fi
 }
 
 fun_cm_bootdown(){
@@ -126,29 +138,33 @@ fun_cm_bootdown(){
 	echo "# install user : $tbis_run_user"
 	echo "# tibero  user : $user_name"
 	echo
-
-	case $intput_action in
-		"boot")
-			if [ "$tbis_run_user_mode" == "no_swtich" ]
-			then
-				tbcm -b
-			elif [ "$tbis_run_user_mode" == "switch" ]
-			then
-				su - $user_name -c "tbcm -b"
-			fi		
-		"donw")
-			if [ "$tbis_run_user_mode" == "no_swtich" ]
-			then
-				tbcm -d
-			elif [ "$tbis_run_user_mode" == "switch" ]
-			then
-				su - $user_name -c "tbcm -d"
-			fi
-			;;
-		*)
-			2>/dev/null
-			;;
-	esac
+    $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+    if [ "$progress_yesno" == "YES" ]
+    then
+		case $intput_action in
+			"boot")
+				if [ "$tbis_run_user_mode" == "no_swtich" ]
+				then
+					tbcm -b
+				elif [ "$tbis_run_user_mode" == "switch" ]
+				then
+					su - $user_name -c "tbcm -b"
+				fi
+				;;
+			"donw")
+				if [ "$tbis_run_user_mode" == "no_swtich" ]
+				then
+					tbcm -d
+				elif [ "$tbis_run_user_mode" == "switch" ]
+				then
+					su - $user_name -c "tbcm -d"
+				fi
+				;;
+			*)
+				2>/dev/null
+				;;
+		esac
+	fi
 }
 
 fun_system_shell(){
@@ -162,7 +178,26 @@ fun_system_shell(){
 }
 
 fun_credb(){
+    echo "############################################################"
+    echo "#  tbis Progress> CREATE DATABASE"
+    echo "############################################################"
 	echo
+	cat $tbis_current_path/sql/credb.sql
+	echo
+	$tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	
+    if [ "$progress_yesno" == "YES" ]
+    then
+		if [ "$tbis_run_user_mode" == "no_swtich" ]
+		then
+			tbsql -s sys/tibero < $tbis_current_path/sql/credb.sql
+			echo
+		elif [ "$tbis_run_user_mode" == "switch" ]
+		then
+			su - $user_name -c "tbsql -s sys/tibero < $tbis_current_path/sql/credb.sql "
+			echo
+		fi	
+	fi	
 }
 
 # function type

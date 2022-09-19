@@ -9,7 +9,7 @@ input_type=$1
 # display output message
 case $input_type in
     "press")
-        echo "Press Enter Key to continue...";;
+        echo "  Press Enter Key to continue...";;
     "success")
         echo ""
         echo "  Success> Step : "$tbis_step
@@ -19,7 +19,7 @@ case $input_type in
         then
             export progress_yesno="YES"
         else    
-            printf "continue ? ( [Y]es / [N]o / [S]kip ) : "
+            printf "  continue ? ( [Y]es / [N]o / [S]kip ) : "
             read input_yesno
             case $input_yesno in
                 "Y"|"y")

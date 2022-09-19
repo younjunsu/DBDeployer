@@ -130,7 +130,7 @@ fi
 ############################################################
 # root cm profile function
 fun_root_cm_profile(){
-if [ "$tibero_type" != "SINGLE"]
+if [ "$tibero_type" != "SINGLE" ]
 then
     echo "#############################"
     echo "# TIBERO CM environment variable"

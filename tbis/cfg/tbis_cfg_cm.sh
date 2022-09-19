@@ -1,6 +1,5 @@
 # Do not change
 
-
 # cm tip configuration
 fun_cm_tip(){
     if [ "$tibero_type" == "TSC" ]
