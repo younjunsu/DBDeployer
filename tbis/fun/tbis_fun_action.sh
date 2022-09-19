@@ -1,18 +1,18 @@
 ############################################################
 # run user mode
 ############################################################
-#if [ "$tbis_run_user" == "root" ] && [ "$user_name" == "root" ] || [ "$tbis_run_user" != "root" ]
-#then
-#	export tbis_run_user_mode="no_switch"
-#elif [ "$tbis_run_user" != "$user_name" ] && [ "$tbis_run_user" == "root" ]
-#then
-#	export tbis_run_user_mode="switch"
-#fi
+
 
 ############################################################
 # shell action
 ############################################################
 fun_change_owner(){
+    echo "############################################################"
+    echo "#  tbis Progress> Change Owner"
+    echo "############################################################"
+	echo
+	echo "chown -R $user_home:$group_name $user_home"
+	echo	
 	if [ "$tbis_run_user_mode" == "no_swtich" ]
 	then
 		#chown -R $user_home:$group_name $user_home
@@ -151,21 +151,74 @@ fun_cm_bootdown(){
 	esac
 }
 
+fun_system_shell(){
+	$tbis_shell $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y
+}
+
+fun_credb(){
+
+}
 
 # function type
 input_type=$1
 
-# action  type
-input_tibero_action=$2
-
 #switch type
 # no_switch
 # switch
-tbis_run_user_mode=$3
+if [ "$tbis_run_user" == "root" ] && [ "$user_name" == "root" ] || [ "$tbis_run_user" != "root" ]
+then
+	export tbis_run_user_mode="no_switch"
+elif [ "$tbis_run_user" != "$user_name" ] && [ "$tbis_run_user" == "root" ]
+then
+	export tbis_run_user_mode="switch"
+fi
+
+
+fun_install(){
+	echo
+	echo "############################################################"
+	echo "# tbis Progress> Engine"
+	echo "############################################################"
+	echo
+	echo "gunzip ../binary/tibero*.tar.gz"
+	echo "tar -xvf ../binary/tibero*.tar -C $USER_HOME"
+	echo
+
+}
+
+fun_license(){
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> license "    
+    echo "############################################################"
+    echo
+    echo "cp ../binary/license.xml $TB_HOME/license/license.xml"
+    echo	
+}
+
+fun_tbinary(){
+	echo
+	echo "############################################################"
+	echo "# tbis Progress> tbinary"
+	echo "############################################################"
+	echo
+	echo "tar -xvf ../binary/tbinary*.tar -C $USER_HOME"
+	echo
+}
+
+# action  type
+input_tibero_action=$2
+
 
 case $input_type in
-	"chang_owner")
-		fun_change_owner
+	"install")
+		
+		;;
+	"license")
+
+		;;
+	"tbinary")
+
 		;;
 	"cmboot")
 		fun_cm_bootdown $input_tibero_action
@@ -178,13 +231,16 @@ case $input_type in
 		;;
 	"tbdown")
 		fun_tbdown $input_tibero_action
-		;;
+		;;	
 	"credb")
-
+		fun_credb
 		;;
 	"system.sh")
-			$tbis_shell $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y
-		;;	
+		fun_system_shell
+		;;
+	"chang_owner")
+		fun_change_owner
+		;;			
 	*)
 		;;
 esac

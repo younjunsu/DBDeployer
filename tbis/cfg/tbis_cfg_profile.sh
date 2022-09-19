@@ -64,7 +64,7 @@ fun_profile(){
         fi
     fi
     echo ""
-    echo "### TIBERO General"
+    echo "### TIBERO"
     echo "export TB_PROF_DIR=\$TB_HOME/bin/prof"
     echo "export LD_LIBRARY_PATH=\$TB_HOME/lib:\$TB_HOME/client/lib"
     echo "export LIBPATH=\$LD_LIBRARY_PATH"
