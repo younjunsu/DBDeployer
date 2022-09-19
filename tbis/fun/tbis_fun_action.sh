@@ -1,19 +1,98 @@
+. $tbis_current_path/tbis.cfg
 ############################################################
 # run user mode
 ############################################################
 
+fun_process_chk(){
+	echo
+	echo "############################################################"
+	echo "# tbis Progress> tbis installation check"
+	echo "############################################################"
+	echo
+	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	
+	if [ "$progress_yesno" == "YES" ]
+    then
+		ps -ef |grep "$user_name" | grep tbsvr
+		echo
+		ls -rlt $TB_HOME
+		ls -rlt $DB_CREATE_FILE_DEST_CFG
+		ls -rlt $CONTROL_FILE_PATH1_CFG
+		ls -rlt $CONTROL_FILE_PATH2_CFG
+		ls -lrt $LOG_ARCHIVE_DEST_CFG
+		echo
+	fi
 
+
+}
 ############################################################
-# shell action
+# function action
 ############################################################
+fun_engine(){
+	echo
+	echo "############################################################"
+	echo "# tbis Progress> Engine"
+	echo "############################################################"
+	echo
+	echo " - gunzip ../binary/tibero*.tar.gz"
+	echo " - tar -xvf ../binary/tibero*.tar -C $TB_HOME"
+	echo
+    
+	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+
+    if [ "$progress_yesno" == "YES" ]
+    then
+		#gunzip ../binary/tibero*.tar.gz 2>/dev/null
+		#tar -xvf ../binary/tibero*.tar -C $TB_HOME 2>/dev/null
+		echo "engine install"
+    fi
+}
+
+fun_license(){
+    echo
+    echo "############################################################"
+    echo "# tbis Progress> license "    
+    echo "############################################################"
+    echo
+    echo " - cp ../binary/license.xml $TB_HOME/license/license.xml"
+    echo
+	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+
+    if [ "$progress_yesno" == "YES" ]
+    then
+        cp ../binary/license.xml $TB_HOME/license/license.xml
+    fi		
+}
+
+fun_tbinary(){
+	if [ "$tibero_tbinary" == "Y" ] || [ "$tibero_tbinary" == "y" ]
+	then
+		echo
+		echo "############################################################"
+		echo "# tbis Progress> tbinary"
+		echo "############################################################"
+		echo
+		echo " - tar -xvf ../binary/tbinary*.tar -C $user_home"
+		echo
+		. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+
+		if [ "$progress_yesno" == "YES" ]
+		then
+			echo "tbinary"
+		 	#tar -xvf ../binary/tbinary*.tar -C $user_home	
+		fi
+	fi
+}
+
 fun_change_owner(){
+	echo
     echo "############################################################"
     echo "#  tbis Progress> Change Owner"
     echo "############################################################"
 	echo
-	echo "chown -R $user_home:$group_name $user_home"
+	echo " - chown -R $user_home:$group_name $user_home"
 	echo
-	$tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
 	if [ "$progress_yesno" == "YES" ]
     then
 		if [ "$tbis_run_user_mode" == "no_swtich" ]
@@ -37,16 +116,23 @@ fun_tbboot(){
 	input_action=$1
 
 	# display output message
+	echo
 	echo "############################################################"
 	echo "#  tbis Progress> tbboot"
 	echo "############################################################"
 	echo "# install user : $tbis_run_user"
 	echo "# tibero  user : $user_name"
 	echo "----------------------------------------------------"
-	echo "tbboot " $input_action
+	if [ "$tbis_run_user_mode" == "no_switch" ]
+	then
+		echo " - tbboot $input_action"
+	elif [ "$tbis_run_user_mode" == "switch" ]
+	then
+		echo " - su - $user_name -c \"tbboot $input_action\""
+	fi	
 	echo "----------------------------------------------------"
 	echo
-	$tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
 
 	if [ "$progress_yesno" == "YES" ]
 	then	
@@ -90,16 +176,23 @@ fun_tbdown(){
 	input_action=$1
 
 	# display output message
+	echo
 	echo "############################################################"
 	echo "#  tbis Progress> tbdown"
 	echo "############################################################"
 	echo "# install user : $tbis_run_user"
 	echo "# tibero  user : $user_name"
 	echo "----------------------------------------------------"
-	echo "tbdown " $input_action
+	if [ "$tbis_run_user_mode" == "no_switch" ]
+	then
+		echo " - tbdown $input_action"
+	elif [ "$tbis_run_user_mode" == "switch" ]
+	then
+		echo " - su - $user_name -c \"tbdown $input_action\""
+	fi
 	echo "----------------------------------------------------"
 	echo
-	$tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
     if [ "$progress_yesno" == "YES" ]
     then	
 		# action
@@ -129,52 +222,71 @@ fun_tbdown(){
 	fi
 }
 
-fun_cm_bootdown(){
-	input_action=$1
+fun_cm_boot(){
 	echo
 	echo "############################################################"
-	echo "# tbis Progress> tbcm boot or down "    
+	echo "# tbis Progress> tbcm boot"
 	echo "############################################################"
 	echo "# install user : $tbis_run_user"
 	echo "# tibero  user : $user_name"
-	echo
-    $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	echo " - tbcm -b"
+    . $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+
     if [ "$progress_yesno" == "YES" ]
     then
-		case $intput_action in
-			"boot")
-				if [ "$tbis_run_user_mode" == "no_swtich" ]
-				then
-					tbcm -b
-				elif [ "$tbis_run_user_mode" == "switch" ]
-				then
-					su - $user_name -c "tbcm -b"
-				fi
-				;;
-			"donw")
-				if [ "$tbis_run_user_mode" == "no_swtich" ]
-				then
-					tbcm -d
-				elif [ "$tbis_run_user_mode" == "switch" ]
-				then
-					su - $user_name -c "tbcm -d"
-				fi
-				;;
-			*)
-				2>/dev/null
-				;;
-		esac
+		if [ "$tbis_run_user_mode" == "no_swtich" ]
+		then
+			tbcm -b
+		elif [ "$tbis_run_user_mode" == "switch" ]
+		then
+			su - $user_name -c "tbcm -b"
+		fi
 	fi
 }
 
+fun_cm_down(){
+	echo
+	echo "############################################################"
+	echo "# tbis Progress> tbcm down"
+	echo "############################################################"
+	echo "# install user : $tbis_run_user"
+	echo "# tibero  user : $user_name"
+	echo " - tbcm -d"
+    . $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+
+    if [ "$progress_yesno" == "YES" ]
+    then
+		if [ "$tbis_run_user_mode" == "no_swtich" ]
+		then
+			tbcm -d
+		elif [ "$tbis_run_user_mode" == "switch" ]
+		then
+			su - $user_name -c "tbcm -d"
+		fi
+	fi
+}
 fun_system_shell(){
-	if [ "$tbis_run_user_mode" == "no_swtich" ]
-	then
-		$tbis_shell $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y
-	elif [ "$tbis_run_user_mode" == "switch" ]
-	then
-		su - $user_name -c "$tbis_shell $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
-	fi	
+	echo
+    echo "############################################################"
+    echo "#  tbis Progress> system.sh"
+    echo "############################################################"
+    echo
+    echo "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
+    echo	
+	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	progress_yesno=YES
+	echo "AA : $all_auto_enable"
+	echo "A: $progress_yesno"
+    if [ "$progress_yesno" == "YES" ]
+    then
+		if [ "$tbis_run_user_mode" == "no_swtich" ]
+		then
+			sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y
+		elif [ "$tbis_run_user_mode" == "switch" ]
+		then
+			su - $user_name -c "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
+		fi	
+	fi
 }
 
 fun_credb(){
@@ -184,7 +296,7 @@ fun_credb(){
 	echo
 	cat $tbis_current_path/sql/credb.sql
 	echo
-	$tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
 	
     if [ "$progress_yesno" == "YES" ]
     then
@@ -215,73 +327,44 @@ then
 fi
 
 
-fun_install(){
-	echo
-	echo "############################################################"
-	echo "# tbis Progress> Engine"
-	echo "############################################################"
-	echo
-	echo "gunzip ../binary/tibero*.tar.gz"
-	echo "tar -xvf ../binary/tibero*.tar -C $USER_HOME"
-	echo
-
-}
-
-fun_license(){
-    echo
-    echo "############################################################"
-    echo "# tbis Progress> license "    
-    echo "############################################################"
-    echo
-    echo "cp ../binary/license.xml $TB_HOME/license/license.xml"
-    echo	
-}
-
-fun_tbinary(){
-	echo
-	echo "############################################################"
-	echo "# tbis Progress> tbinary"
-	echo "############################################################"
-	echo
-	echo "tar -xvf ../binary/tbinary*.tar -C $USER_HOME"
-	echo
-}
-
 # action  type
 input_tibero_action=$2
 
 
 case $input_type in
-	"install")
-		
+	"fun_engine")
+		fun_engine
 		;;
-	"license")
-
+	"fun_license")
+		fun_license
 		;;
-	"tbinary")
-
+	"fun_tbinary")
+		fun_tbinary
 		;;
-	"cmboot")
+	"fun_cm_boot")
 		fun_cm_bootdown $input_tibero_action
 		;;
-	"cmdown")
+	"fun_cm_down")
 		fun_cm_bootdown $input_tibero_action
 		;;
-	"tbboot")
+	"fun_tbboot")
 		fun_tbboot $input_tibero_action
 		;;
-	"tbdown")
+	"fun_tbdown")
 		fun_tbdown $input_tibero_action
 		;;	
-	"credb")
+	"fun_credb")
 		fun_credb
 		;;
-	"system.sh")
+	"fun_system_shell")
 		fun_system_shell
 		;;
-	"chang_owner")
+	"fun_change_owner")
 		fun_change_owner
-		;;			
+		;;
+	"fun_process_chk")
+		fun_process_chk
+		;;		
 	*)
 		;;
 esac

@@ -15,10 +15,10 @@ case $input_type in
         echo "  Success> Step : "$tbis_step
         echo "";;
     "progress_chk")
-        if [ "all_auto_enable" == "Y" ]
+        if [ "$all_auto_enable" == "Y" ]
         then
             export progress_yesno="YES"
-        else    
+        else
             printf "  continue ? ( [Y]es / [N]o / [S]kip ) : "
             read input_yesno
             case $input_yesno in

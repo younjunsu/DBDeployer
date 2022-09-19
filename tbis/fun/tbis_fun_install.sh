@@ -81,7 +81,7 @@ fi
 case $intput_str in
 	"Y"|"y")
 		# all auto mode check
-		export all_auto_enable="Y"
+		export all_auto_enable="N"
 
 		# tibero type check
 		if [ "$tibero_type" == "SINGLE" ]

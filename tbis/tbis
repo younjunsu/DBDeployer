@@ -38,13 +38,11 @@ case $1 in
 		fun_env_shell
 		;;
 	"-bash"|"--bash"|"bash")
-		#export env_shell="bash"
 		export tbis_shell="bash"
 		bash $tbis_current_path/fun/tbis_fun_main.sh
 		;;
 	"docker")
 		export tbis_mode="docker"
-		#export env_shell="bash"
 		export tbis_shell="bash"
 		bash $tbis_current_path/fun/tbis_fun_main.sh docker
 		;;
