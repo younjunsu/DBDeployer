@@ -114,15 +114,23 @@ then
     echo
     echo " - $profile_path apply configuration"
     echo
-    $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+    . $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	if [ "$all_auto_enable" == "Y" ]
+	then
+		progress_yesno="YES"
+	fi
+
     if [ "$progress_yesno" == "YES" ]
     then
         fun_profile >> $profile_path
     fi
 elif [ "$cfg_profile_mode" == "output" ]
 then
-    fun_profile
+        fun_profile
 fi
+
+#
+export profile_path=$profile_path
 
 
 ############################################################

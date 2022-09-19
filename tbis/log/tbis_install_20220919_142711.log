@@ -15,7 +15,7 @@
  * Database Configuration
 -----------------------------------------------------------------
  - TB_SID : testdb
- - TB_HOME : /tibero/tibero6/database
+ - TB_HOME : /tibero/tibero6
  - DB_NAME : testdb
  - LISTENER_PORT : 8629
  - CHARACTER SET : UTF8
@@ -25,7 +25,7 @@
 -----------------------------------------------------------------
  - USER_HOME PATH : /tibero
  - TBINARY PATH : /tibero/tbinary
- - TB_HOME PATH : /tibero/tibero6/database
+ - TB_HOME PATH : /tibero/tibero6
  - CONTROL1_FILE : /tibero/tibero6/database/tbctl1/c1.ctl
  - CONTROL2_FILE : /tibero/tibero6/database/tbctl2/c2.ctl
  - DB_CREATE_FILE : /tibero/tibero6/database/tbdata
@@ -60,7 +60,7 @@ continue ? ( [Y]es / [N]o / [AA] All Auto] ) :
 ############################################################
 
  - gunzip ../binary/tibero*.tar.gz
- - tar -xvf ../binary/tibero*.tar -C /tibero/tibero6/database
+ - tar -xvf ../binary/tibero*.tar -C /tibero/tibero6
 
   continue ? ( [Y]es / [N]o / [S]kip ) : 
 
@@ -76,7 +76,7 @@ continue ? ( [Y]es / [N]o / [AA] All Auto] ) :
 # tbis Progress> license 
 ############################################################
 
- - cp ../binary/license.xml /tibero/tibero6/database/license/license.xml
+ - cp ../binary/license.xml /tibero/tibero6/license/license.xml
 
   continue ? ( [Y]es / [N]o / [S]kip ) : 
 
@@ -92,7 +92,7 @@ continue ? ( [Y]es / [N]o / [AA] All Auto] ) :
 # tbis Progress> TB_SID TIP File
 ############################################################
 
- - testdb.tip /tibero/tibero6/database/config/testdb.tip apply configuration
+ - testdb.tip /tibero/tibero6/config/testdb.tip apply configuration
 
   continue ? ( [Y]es / [N]o / [S]kip ) : 
 
@@ -100,16 +100,18 @@ continue ? ( [Y]es / [N]o / [AA] All Auto] ) :
 # tbis Progress> TBDSN
 ############################################################
 
-- tbdsn.tbr: /tibero/tibero6/database/client/config/tbdsn.tbr
+- tbdsn.tbr: /tibero/tibero6/client/config/tbdsn.tbr
 
   continue ? ( [Y]es / [N]o / [S]kip ) : 
+
 ############################################################
 #  tbis Progress> Change Owner
 ############################################################
 
- - chown -R /tibero:dba /tibero
+ - chown -R tibero:dba /tibero
 
   continue ? ( [Y]es / [N]o / [S]kip ) : 
+
 ############################################################
 #  tbis Progress> tbboot
 ############################################################
@@ -120,6 +122,31 @@ continue ? ( [Y]es / [N]o / [AA] All Auto] ) :
 ----------------------------------------------------
 
   continue ? ( [Y]es / [N]o / [S]kip ) : 
+Change core dump dir to /tibero/tibero6/bin/prof.
+
+********************************************************
+*   Warning: Control file open failed 
+*    /tibero/tibero6/database/tbctl1/c1.ctl 
+********************************************************
+
+
+********************************************************
+*   Warning: Control file open failed 
+*    /tibero/tibero6/database/tbctl2/c2.ctl 
+********************************************************
+
+
+********************************************************
+* Critical Warning : Raise svmode failed. The reason is 
+*   TBR-24003 :  Unable to read control file.
+*   Current server mode is NOMOUNT.
+********************************************************
+
+
+Tibero 6  
+
+TmaxData Corporation Copyright (c) 2008-. All rights reserved.
+Tibero instance started suspended at NOMOUNT mode.
 ############################################################
 #  tbis Progress> CREATE DATABASE
 ############################################################
@@ -145,6 +172,12 @@ ARCHIVELOG
     DEFAULT TABLESPACE USR DATAFILE 'system/usr001.dtf' SIZE 1G;
 
   continue ? ( [Y]es / [N]o / [S]kip ) : 
+
+Database created.
+
+Listener port = 8629
+
+
 ############################################################
 #  tbis Progress> tbboot
 ############################################################
@@ -153,11 +186,5 @@ ARCHIVELOG
 ----------------------------------------------------
  - su - tibero -c "tbboot normal"
 ----------------------------------------------------
-
-  continue ? ( [Y]es / [N]o / [S]kip ) : 
-
-############################################################
-# tbis Progress> tbis installation check
-############################################################
 
   continue ? ( [Y]es / [N]o / [S]kip ) : 

@@ -10,6 +10,9 @@
 # tibero profile configuration apply
 . $tbis_current_path/cfg/tbis_cfg_profile.sh apply
 
+# tibero env apply
+. $profile_path
+
 # tibero db tip configuration apply
 . $tbis_current_path/cfg/tbis_cfg_db.sh apply
 
@@ -39,3 +42,6 @@
 
 # tibero down immedate
 . $tbis_current_path/fun/tbis_fun_action.sh fun_tbdown immediate
+
+# change owner
+. $tbis_current_path/fun/tbis_fun_action.sh fun_change_owner

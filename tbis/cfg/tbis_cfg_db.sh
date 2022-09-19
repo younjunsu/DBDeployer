@@ -130,7 +130,7 @@ then
     echo
     echo " - $TB_SID.tip $TB_HOME/config/$TB_SID.tip apply configuration"
     echo
-    $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+    . $tbis_current_path/fun/tbis_fun_common.sh progress_chk
     
     if [ "$progress_yesno" == "YES" ]
     then

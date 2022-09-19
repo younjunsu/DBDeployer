@@ -15,7 +15,7 @@
  * Database Configuration
 -----------------------------------------------------------------
  - TB_SID : testdb
- - TB_HOME : /tibero/tibero6/database
+ - TB_HOME : /tibero/tibero6
  - DB_NAME : testdb
  - LISTENER_PORT : 8629
  - CHARACTER SET : UTF8
@@ -25,7 +25,7 @@
 -----------------------------------------------------------------
  - USER_HOME PATH : /tibero
  - TBINARY PATH : /tibero/tbinary
- - TB_HOME PATH : /tibero/tibero6/database
+ - TB_HOME PATH : /tibero/tibero6
  - CONTROL1_FILE : /tibero/tibero6/database/tbctl1/c1.ctl
  - CONTROL2_FILE : /tibero/tibero6/database/tbctl2/c2.ctl
  - DB_CREATE_FILE : /tibero/tibero6/database/tbdata
@@ -56,23 +56,10 @@ ARCHIVELOG
 
 continue ? ( [Y]es / [N]o / [AA] All Auto] ) : 
 ############################################################
-# tbis Progress> Profile 
+# tbis Progress> Engine
 ############################################################
 
- /tibero/.bash_profile apply configuration
+ - gunzip ../binary/tibero*.tar.gz
+ - tar -xvf ../binary/tibero*.tar -C /tibero/tibero6
 
-continue ? ( [Y]es / [N]o / [S]kip ) : 
-
-############################################################
-# tbis Progress> TB_SID TIP File
-############################################################
- - testdb
- -  /tibero/tibero6/database/config/testdb.tip apply configuration
-
-############################################################
-# tbis Progress> TBDSN
-############################################################
-
-- tbdsn.tbr: /tibero/tibero6/database/client/config/tbdsn.tbr
-
-continue ? ( [Y]es / [N]o / [S]kip ) : 
+  continue ? ( [Y]es / [N]o / [S]kip ) : 
