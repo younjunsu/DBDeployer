@@ -159,6 +159,15 @@ fun_tbboot(){
 	then	
 		# action
 		case $input_action in
+			"nomount")
+				if [ "$tbis_run_user_mode" == "no_swtich" ]
+				then
+					tbboot nomount
+				elif [ "$tbis_run_user_mode" == "switch" ]
+				then
+					su - $user_name -c "tbboot nomount"
+				fi				
+				;;
 			"mount")
 				if [ "$tbis_run_user_mode" == "no_swtich" ]
 				then
