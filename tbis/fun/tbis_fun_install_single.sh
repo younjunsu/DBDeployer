@@ -26,7 +26,7 @@
 . $tbis_current_path/fun/tbis_fun_action.sh
 
 # tibero boot mount
-. $tbis_current_path/fun/tbis_fun_action.sh fun_tbboot mount
+. $tbis_current_path/fun/tbis_fun_action.sh fun_tbboot nomount
 
 # tibero create database sql
 . $tbis_current_path/fun/tbis_fun_action.sh fun_credb
