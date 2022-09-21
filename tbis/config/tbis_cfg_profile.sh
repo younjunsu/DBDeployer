@@ -114,7 +114,7 @@ then
     echo
     echo " - $profile_path apply configuration"
     echo
-    . $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+    . $tbis_current_path/function/tbis_fun_common.sh progress_chk
 	if [ "$all_auto_enable" == "Y" ]
 	then
 		progress_yesno="YES"

@@ -25,7 +25,7 @@ then
     echo
     echo "- tbdsn.tbr: $TB_HOME/client/config/tbdsn.tbr"
     echo
-    . $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+    . $tbis_current_path/function/tbis_fun_common.sh progress_chk
     
     if [ "$progress_yesno" == "YES" ]
     then

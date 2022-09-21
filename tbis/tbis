@@ -17,11 +17,11 @@ fun_env_shell(){
 	if [ -n "$env_shell" ]
 	then
 		export tbis_shell="bash"
-		bash $tbis_current_path/fun/tbis_fun_main.sh
+		bash $tbis_current_path/function/tbis_fun_main.sh
 	elif [ -z "$env_shell" ]
 	then
 		export tbis_shell="sh"
-		sh $tbis_current_path/fun/tbis_fun_main.sh
+		sh $tbis_current_path/function/tbis_fun_main.sh
 	else
 		echo "tbis message> tbis
 		echo "  error> tbis - shell check
@@ -39,12 +39,12 @@ case $1 in
 		;;
 	"-bash"|"--bash"|"bash")
 		export tbis_shell="bash"
-		bash $tbis_current_path/fun/tbis_fun_main.sh
+		bash $tbis_current_path/function/tbis_fun_main.sh
 		;;
 	"docker")
 		export tbis_mode="docker"
 		export tbis_shell="bash"
-		bash $tbis_current_path/fun/tbis_fun_main.sh docker
+		bash $tbis_current_path/function/tbis_fun_main.sh docker
 		;;
 	*)
 		echo ""

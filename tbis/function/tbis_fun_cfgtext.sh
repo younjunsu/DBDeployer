@@ -34,7 +34,7 @@ clear
 
 case $input_number in
 	"dir1")
-		. $tbis_current_path/cfg/tbis_cfg_directory_structure.sh
+		. $tbis_current_path/config/tbis_cfg_directory_structure.sh
 		. $tbis_current_path/fun/tbis_fun_common.sh press
 		read wait_key
 		. $tbis_current_path/fun/tbis_fun_cfgtext.sh
