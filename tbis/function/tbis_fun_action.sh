@@ -8,7 +8,7 @@ fun_process_chk(){
 	echo "# tbis Progress> tbis installation check"
 	echo "############################################################"
 	echo
-	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	. $tbis_current_path/function/tbis_fun_common.sh progress_chk
 	if [ "$all_auto_enable" == "Y" ]
 	then
 		progress_yesno="YES"
@@ -40,7 +40,7 @@ fun_engine(){
 	echo " - gunzip ../binary/tibero*.tar.gz"
 	echo " - tar -xvf ../binary/tibero*.tar -C $TB_HOME"
 	echo
-	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	. $tbis_current_path/function/tbis_fun_common.sh progress_chk
 	if [ "$all_auto_enable" == "Y" ]
 	then
 		progress_yesno="YES"
@@ -61,7 +61,7 @@ fun_license(){
     echo
     echo " - cp ../binary/license.xml $TB_HOME/license/license.xml"
     echo
-	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	. $tbis_current_path/function/tbis_fun_common.sh progress_chk
 	if [ "$all_auto_enable" == "Y" ]
 	then
 		progress_yesno="YES"
@@ -83,7 +83,7 @@ fun_tbinary(){
 		echo
 		echo " - tar -xvf ../binary/tbinary*.tar -C $user_home"
 		echo
-		. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+		. $tbis_current_path/function/tbis_fun_common.sh progress_chk
 		if [ "$all_auto_enable" == "Y" ]
 		then
 			progress_yesno="YES"
@@ -104,7 +104,7 @@ fun_change_owner(){
 	echo
 	echo " - chown -R $user_name:$group_name $user_home"
 	echo
-	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	. $tbis_current_path/function/tbis_fun_common.sh progress_chk
 	if [ "$all_auto_enable" == "Y" ]
 	then
 		progress_yesno="YES"
@@ -149,7 +149,7 @@ fun_tbboot(){
 	fi	
 	echo "----------------------------------------------------"
 	echo
-	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	. $tbis_current_path/function/tbis_fun_common.sh progress_chk
 	if [ "$all_auto_enable" == "Y" ]
 	then
 		progress_yesno="YES"
@@ -222,7 +222,7 @@ fun_tbdown(){
 	fi
 	echo "----------------------------------------------------"
 	echo
-	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	. $tbis_current_path/function/tbis_fun_common.sh progress_chk
 	if [ "$all_auto_enable" == "Y" ]
 	then
 		progress_yesno="YES"
@@ -265,7 +265,7 @@ fun_cm_boot(){
 	echo "# install user : $tbis_run_user"
 	echo "# tibero  user : $user_name"
 	echo " - tbcm -b"
-    . $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+    . $tbis_current_path/function/tbis_fun_common.sh progress_chk
 	if [ "$all_auto_enable" == "Y" ]
 	then
 		progress_yesno="YES"
@@ -291,7 +291,7 @@ fun_cm_down(){
 	echo "# install user : $tbis_run_user"
 	echo "# tibero  user : $user_name"
 	echo " - tbcm -d"
-    . $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+    . $tbis_current_path/function/tbis_fun_common.sh progress_chk
 	if [ "$all_auto_enable" == "Y" ]
 	then
 		progress_yesno="YES"
@@ -316,7 +316,7 @@ fun_system_shell(){
     echo
     echo "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
     echo	
-	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	. $tbis_current_path/function/tbis_fun_common.sh progress_chk
 	if [ "$all_auto_enable" == "Y" ]
 	then
 		progress_yesno="YES"
@@ -341,7 +341,7 @@ fun_credb(){
 	echo
 	cat $tbis_current_path/sql/credb.sql
 	echo
-	. $tbis_current_path/fun/tbis_fun_common.sh progress_chk
+	. $tbis_current_path/function/tbis_fun_common.sh progress_chk
 	if [ "$all_auto_enable" == "Y" ]
 	then
 		progress_yesno="YES"

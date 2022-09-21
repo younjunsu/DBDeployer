@@ -43,18 +43,18 @@ case $input_number in
     1)
         file_time=`date +%F_%T |sed 's/://g' |sed 's/-//g'`
         . $tbis_current_path/tbis.cfg
-        . $tbis_current_path/fun/tbis_fun_error.sh
-        . $tbis_current_path/fun/tbis_fun_install.sh |tee $tbis_current_path/log/tbis_install_"$file_time".log
+        . $tbis_current_path/function/tbis_fun_error.sh
+        . $tbis_current_path/function/tbis_fun_install.sh |tee $tbis_current_path/log/tbis_install_"$file_time".log
         ;;
     2)
         clear
         . $tbis_current_path/tbis.cfg
-        . $tbis_current_path/fun/tbis_fun_report.sh
+        . $tbis_current_path/function/tbis_fun_report.sh
         ;;
     3)
         clear
         . $tbis_current_path/tbis.cfg
-        . $tbis_current_path/fun/tbis_fun_cfgtext.sh
+        . $tbis_current_path/function/tbis_fun_cfgtext.sh
         ;;
     *)
         echo "tbis message> program exit"

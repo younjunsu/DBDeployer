@@ -86,13 +86,13 @@ case $intput_str in
 		# tibero type check
 		if [ "$tibero_type" == "SINGLE" ]
 		then
-			. $tbis_current_path/fun/tbis_fun_install_single.sh
+			. $tbis_current_path/function/tbis_fun_install_single.sh
 		elif [ "$tibero_type" == "TSC" ]
 		then
-			. $tbis_current_path/fun/tbis_fun_install_tsc.sh
+			. $tbis_current_path/function/tbis_fun_install_tsc.sh
 		elif [ "$tibero_type" == "TAC" ]
 		then
-			. $tbis_current_path/fun/tbis_fun_install_tac.sh
+			. $tbis_current_path/function/tbis_fun_install_tac.sh
 		fi
 		;;
 	"N"|"n")
@@ -105,13 +105,13 @@ case $intput_str in
 		# tibero type check
 		if [ "$tibero_type" == "SINGLE" ]
 		then
-			. $tbis_current_path/fun/tbis_fun_install_single.sh
+			. $tbis_current_path/function/tbis_fun_install_single.sh
 		elif [ "$tibero_type" == "TSC" ]
 		then
-			. $tbis_current_path/fun/tbis_fun_install_tsc.sh
+			. $tbis_current_path/function/tbis_fun_install_tsc.sh
 		elif [ "$tibero_type" == "TAC" ]
 		then
-			. $tbis_current_path/fun/tbis_fun_install_tac.sh
+			. $tbis_current_path/function/tbis_fun_install_tac.sh
 		fi		
 		;;
 	*)
