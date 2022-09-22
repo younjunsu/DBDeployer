@@ -2,7 +2,7 @@
 clear
 
 # program select list
-echo "[*] Installation configuration"
+echo "[*] tbis Installation configuration"
 echo "-----------------------------------------------------------------"    
 echo " * Installation mode"
 echo "-----------------------------------------------------------------"    

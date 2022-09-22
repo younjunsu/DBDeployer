@@ -1,3 +1,7 @@
+############################################################
+# TIBERO single
+############################################################
+
 # tibero engine install
 . $tbis_current_path/function/tbis_fun_action.sh fun_engine
 
@@ -21,9 +25,6 @@
 
 # change owner
 . $tbis_current_path/function/tbis_fun_action.sh fun_change_owner
-
-# tibero boot
-. $tbis_current_path/function/tbis_fun_action.sh
 
 # tibero boot mount
 . $tbis_current_path/function/tbis_fun_action.sh fun_tbboot nomount
