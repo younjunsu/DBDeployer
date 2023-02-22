@@ -7,13 +7,17 @@
 
 function fn_help_message(){
 	echo ""
-	echo "[*] TIBERO Installation shell script"
+	echo "[*] DB Deployer auto installation shell"
 	echo "-----------------------------------------------------------------"
-	echo "usage: ./tbis [option]"
+	echo "usage: ./DBDeployer [option1] [option2]"
 	echo "-----------------------------------------------------------------"
-	echo "options:"
-	echo "  run     : interactive mode"
-	echo "  docker  : "
+	echo "options1"
+	echo "  tibero		: "
+	echo "  cubrid		: "
+	echo "-----------------------------------------------------------------"
+	echo "options2"
+	echo "	run			: "
+	echo "	docker		: "
 	echo "-----------------------------------------------------------------"
 	echo ""
 }
