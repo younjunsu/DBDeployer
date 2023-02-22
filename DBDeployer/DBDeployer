@@ -5,82 +5,78 @@
 #--------------------------------------------------------------------------------
  
 
-function fn_help_message(){
-	echo ""
-	echo "[*] DB Deployer auto installation shell"
-	echo "-----------------------------------------------------------------"
-	echo "usage: ./DBDeployer [option1] [option2]"
-	echo "-----------------------------------------------------------------"
-	echo "options1"
-	echo "  tibero		: "
-	echo "  cubrid		: "
-	echo "-----------------------------------------------------------------"
-	echo "options2"
-	echo "	run			: "
-	echo "	docker		: "
-	echo "-----------------------------------------------------------------"
-	echo ""
-}
-
-
-
-
-
-
-# 
+#
 #--------------------------------------------------------------------------------
-export tbis_current_path=`pwd`
-#--------------------------------------------------------------------------------
-
-# 
-#--------------------------------------------------------------------------------
-fun_env_shell(){
-	env_shell=`uname -a |grep -i "Ubuntu"`
-
-	if [ -n "$env_shell" ]
+function fn_error_check(){
+	if [ -z "$option1" ] || [ -z "$option2" ]
 	then
-		export tbis_shell="bash"
-		bash $tbis_current_path/function/tbis_fun_main.sh
-	elif [ -z "$env_shell" ]
+		fn_help_message
+	fi
+
+	current_path=`pwd`
+	if [ -f $current_path/DBDeployer ]
 	then
-		export tbis_shell="sh"
-		sh $tbis_current_path/function/tbis_fun_main.sh
-	else
-		echo "tbis message> tbis
-		echo "  error> tbis - shell check
-		exit 1
+		echo "  error> working path check"
+		exit
 	fi
 }
 #--------------------------------------------------------------------------------
 
 
-# DB Deployer
+#
 #--------------------------------------------------------------------------------
-option=$1
-case $option in
-	"")
-		fun_env_shell
+function fn_help_message(){
+	echo ""
+	echo "[*] DB Deployer shell script"
+	echo "-----------------------------------------------------------------"
+	echo " usage: ./DBDeployer [option1] [option2]"
+	echo "-----------------------------------------------------------------"
+	echo " option1"
+	echo "	tibero		: tibero installation"
+	echo "	cubrid		: cubrid installation"
+	echo "-----------------------------------------------------------------"
+	echo " option2"
+	echo "	run 		: start installation"
+	echo "	auto		: automatic installation (with docker)"
+	echo "-----------------------------------------------------------------"
+	echo ""
+}
+#--------------------------------------------------------------------------------
+
+
+#
+#--------------------------------------------------------------------------------
+export option1=$1
+export option2=$2
+fn_error_check
+
+case $option1
+	"tibero"|"TIBERO")
+		option1_value="tibero"
+			if [ "$option2" == "run" ]
+			then
+				$current_path/tibero/install/main.sh
+			elif [ "$options2" == "auto" ]
+			then
+				$current_path/tibero/install/main.sh
+			else
+				fn_help_message
+			fi
 		;;
-	"-bash"|"--bash"|"bash")
-		export tbis_shell="bash"
-		bash $tbis_current_path/function/tbis_fun_main.sh
-		;;
-	"docker")
-		export tbis_mode="docker"
-		export tbis_shell="bash"
-		bash $tbis_current_path/function/tbis_fun_main.sh docker
+	"cubrid"|"CUBRID")
+		option1_value="cubrid"
+			if [ "$option2" == "run" ]
+			then
+				bash $current_path/cubrid/install/main.sh
+			elif [ "$options2" == "auto" ]
+			then
+				bash $current_path/cubrid/install/main.sh
+			else
+				fn_help_message
+			fi
 		;;
 	*)
-		echo ""
-		echo "[*] TIBERO Installation shell script"
-		echo "-----------------------------------------------------------------"
-		echo "usage: ./tbis [option]"
-		echo "-----------------------------------------------------------------"
-		echo "options:"
-		echo "  bash		default: sh"
-		echo "  docker	default: interactive mode"
-		echo "-----------------------------------------------------------------"
-		echo ""
-		;;
+		fn_help_message
+		;;	
 esac
 #--------------------------------------------------------------------------------
