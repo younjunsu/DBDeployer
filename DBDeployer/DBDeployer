@@ -1,0 +1,82 @@
+#!/bin/bash
+
+#--------------------------------------------------------------------------------
+# Version : 230217
+#--------------------------------------------------------------------------------
+ 
+
+function fn_help_message(){
+	echo ""
+	echo "[*] TIBERO Installation shell script"
+	echo "-----------------------------------------------------------------"
+	echo "usage: ./tbis [option]"
+	echo "-----------------------------------------------------------------"
+	echo "options:"
+	echo "  run     : interactive mode"
+	echo "  docker  : "
+	echo "-----------------------------------------------------------------"
+	echo ""
+}
+
+
+
+
+
+
+# 
+#--------------------------------------------------------------------------------
+export tbis_current_path=`pwd`
+#--------------------------------------------------------------------------------
+
+# 
+#--------------------------------------------------------------------------------
+fun_env_shell(){
+	env_shell=`uname -a |grep -i "Ubuntu"`
+
+	if [ -n "$env_shell" ]
+	then
+		export tbis_shell="bash"
+		bash $tbis_current_path/function/tbis_fun_main.sh
+	elif [ -z "$env_shell" ]
+	then
+		export tbis_shell="sh"
+		sh $tbis_current_path/function/tbis_fun_main.sh
+	else
+		echo "tbis message> tbis
+		echo "  error> tbis - shell check
+		exit 1
+	fi
+}
+#--------------------------------------------------------------------------------
+
+
+# DB Deployer
+#--------------------------------------------------------------------------------
+option=$1
+case $option in
+	"")
+		fun_env_shell
+		;;
+	"-bash"|"--bash"|"bash")
+		export tbis_shell="bash"
+		bash $tbis_current_path/function/tbis_fun_main.sh
+		;;
+	"docker")
+		export tbis_mode="docker"
+		export tbis_shell="bash"
+		bash $tbis_current_path/function/tbis_fun_main.sh docker
+		;;
+	*)
+		echo ""
+		echo "[*] TIBERO Installation shell script"
+		echo "-----------------------------------------------------------------"
+		echo "usage: ./tbis [option]"
+		echo "-----------------------------------------------------------------"
+		echo "options:"
+		echo "  bash		default: sh"
+		echo "  docker	default: interactive mode"
+		echo "-----------------------------------------------------------------"
+		echo ""
+		;;
+esac
+#--------------------------------------------------------------------------------
