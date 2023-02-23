@@ -1,0 +1,8 @@
+cd
+rm  -rf DBDeployer 
+rm  -f DBDeployer.zip 
+cp /shared_data/tibero/test_dev/DBDeployer.zip .
+unzip DBDeployer.zip -d DBDeployer
+cp tbinary_v1.4.25.tar DBDeployer/binary
+cp tibero6-bin-FS07_CS_2005-linux64_3.10-257173-20230105090535.tar.gz DBDeployer/binary
+cp license.xml DBDeployer/binary
