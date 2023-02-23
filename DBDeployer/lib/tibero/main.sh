@@ -35,7 +35,7 @@ case $press_key in
     1)
         # install module
         . $current_path/config/tibero.cfg
-        . $current_path/lib/ReferenceModule/error.sh
+        . $current_path/lib/CommonModule/error.sh
         . $current_path/lib/InstallModule/install_type.sh
         ;;
     2)

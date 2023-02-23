@@ -229,7 +229,26 @@ function fn_tibero_down(){
 #
 #--------------------------------------------------------------------------------
 function fn_tibero_cm_boot(){
-    bootmode=$1
+	echo ""
+	echo "-----------------------------------------------------------------"
+	echo " Progress> tbcm boot"
+	echo "-----------------------------------------------------------------"
+	echo "  - install user : $tbis_run_user"
+	echo "  - tibero  user : $user_name"
+	echo "  - tbcm -b"
+	echo ""
+    
+	
+    if [ "$step_key" == "YES" ] || [ "$all_auto_enable" == "Y" ]
+    then
+		if [ "$run_user_check" == "noswtich" ]
+		then
+			tbcm -b
+		elif [ "$run_user_check" == "switch" ]
+		then
+			su - $user_name -c "tbcm -b"
+		fi
+	fi
 
 }
 #--------------------------------------------------------------------------------
@@ -238,7 +257,25 @@ function fn_tibero_cm_boot(){
 #
 #--------------------------------------------------------------------------------
 function fn_tibero_cm_down(){
-    downmode=$1
+	echo
+	echo "-----------------------------------------------------------------"
+	echo " tbis Progress> tbcm down"
+	echo "-----------------------------------------------------------------"
+	echo "  - install user : $tbis_run_user"
+	echo "  - tibero  user : $user_name"
+	echo "  - tbcm -d"
+	echo ""
+
+    if [ "$step_key" == "YES" ] || [ "$all_auto_enable" == "Y" ]
+    then
+		if [ "$run_user_check" == "noswtich" ]
+		then
+			tbcm -d
+		elif [ "$run_user_check" == "switch" ]
+		then
+			su - $user_name -c "tbcm -d"
+		fi
+	fi
 }
 #--------------------------------------------------------------------------------
 
@@ -298,25 +335,33 @@ function fn_tibero_create_database(){
 
 case $input_key in 
     "fn_engine")
+		fn_engine
         ;;
     "fn_license")
+		fn_license
         ;;
     "fn_tbinary")
+		fn_tbinary
         ;;
     "fn_owner_change")
+		fn_owner_change
         ;;
     "fn_tibero_boot")
+		fn_tibero_boot
         ;;
     "fn_tibero_down")
+		fn_tibero_down
         ;;
     "fn_tibero_cm_boot")
+		fn_tibero_cm_boot
         ;;
     "fn_tibero_cm_down")
+		fn_tibero_cm_down
         ;;
     "fn_tibero_system_shell")
+		fn_tibero_system_shell
         ;;
     "fn_tibero_create_database")
-        ;;
-    *)
+		fn_tibero_create_database
         ;;
 esac
