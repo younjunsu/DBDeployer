@@ -12,7 +12,6 @@ fn_file_error(){
   param_error_file="N"
 
   # check param
-
   chk_engine_file=`ls ../binary/tibero*.tar* 2>/dev/null`
   if [ -z "$chk_engine_file" ]
   then
@@ -330,8 +329,12 @@ fn_exception_os
 #--------------------------------------------------------------------------------
 error_option1=$1
 case $error_option1 in
-
-
+    "fn_file_error")
+        ;;
+    "fn_file_error")
+        ;;
+    "fn_file_error")
+        ;;
 esac
 
 # error progress
@@ -351,3 +354,4 @@ then
     2>/dev/null
 fi
 #--------------------------------------------------------------------------------
+
