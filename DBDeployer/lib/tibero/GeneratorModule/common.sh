@@ -10,13 +10,14 @@ function fn_step_yesno(){
 
         case $step_yesno in
             "Y"|"y")
-                export step_yesno="YES"
+                export step_yesno="Y"
                 ;;
             "N"|"n")
-                export step_yesno="NO"
+                export step_yesno="N"
+                exit
                 ;;
             "S"|"s")
-                export step_yesno="SKIP"
+                export step_yesno="S"
                 ;;
             *)
                 exit

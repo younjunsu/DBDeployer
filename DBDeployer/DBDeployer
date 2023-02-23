@@ -15,6 +15,8 @@ function fn_error_check(){
 
 	if [ -f $current_path/DBDeployer ]
 	then
+		2>/dev/null
+	else
 		echo "  error> working path check"
 		exit
 	fi
@@ -45,19 +47,19 @@ function fn_help_message(){
 
 #
 #--------------------------------------------------------------------------------
-option1=$1
-option2=$2
+main_option1=$1
+main_option2=$2
 export current_path=`pwd`
 fn_error_check
 
-case $option1
+case $main_option1 in
 	"tibero"|"TIBERO")
-		option1_value="tibero"
-			if [ "$option2" == "run" ]
+		main_option1_value="tibero"
+			if [ "$main_option2" == "run" ]
 			then
 				export mode="run"
 				. $current_path/lib/tibero/InstallModule/install_type.sh
-			elif [ "$options2" == "auto" ]
+			elif [ "$main_options2" == "auto" ]
 			then
 				export mode="auto"
 				. $current_path/lib/tibero/InstallModule/install_type.sh
@@ -66,11 +68,11 @@ case $option1
 			fi
 		;;
 	"cubrid"|"CUBRID")
-		option1_value="cubrid"
-			if [ "$option2" == "run" ]
+		main_option1_value="cubrid"
+			if [ "$main_option2" == "run" ]
 			then
 				export mode="run"
-			elif [ "$options2" == "auto" ]
+			elif [ "$main_options2" == "auto" ]
 			then
 				export mode="auto"
 			else

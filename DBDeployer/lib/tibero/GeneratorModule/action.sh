@@ -25,7 +25,9 @@ function fn_engine(){
 	echo " - tar -xvf ../binary/tibero*.tar -C $TB_HOME"
 	echo ""
 	
-    if [ "$step_key" == "YES" ] || [ "$all_auto_enable" == "Y" ]
+	. $current_path/lib/tibero/GeneratorModule/common.sh fn_step_yesno
+
+    if [ "$step_yesno" == "Y" ]
     then
 		gunzip $current_path/binary/tibero*.tar.gz
 		tar -xvf $current_path/binary/tibero*.tar -C $user_home
@@ -45,7 +47,9 @@ function fn_license(){
     echo " - cp ../binary/license.xml $TB_HOME/license/license.xml"
     echo ""
 
-    if [ "$step_key" == "YES" ] || [ "$all_auto_enable" == "Y" ]
+	. $current_path/lib/tibero/GeneratorModule/common.sh fn_step_yesno
+
+    if [ "$step_yesno" == "Y" ]
     then
         cp $current_path/binary/license.xml $TB_HOME/license/license.xml
     fi
@@ -65,8 +69,10 @@ function fn_tbinary(){
 		echo ""
 		echo " - tar -xvf ../binary/tbinary*.tar -C $user_home"
 		echo ""
+
+		. $current_path/lib/tibero/GeneratorModule/common.sh fn_step_yesno
 	
-		if [ "$step_key" == "YES" ] || [ "$all_auto_enable" == "Y" ]
+		if [ "$step_yesno" == "Y" ]
 		then
 		 	tar -xvf $current_path/binary/tbinary*.tar -C $user_home	
 		fi
@@ -85,8 +91,10 @@ function fn_owner_change(){
 	echo ""
 	echo " - chown -R $user_name:$group_name $user_home"
 	echo ""
+
+	. $current_path/lib/tibero/GeneratorModule/common.sh fn_step_yesno
 	
-	if [ "$step_key" == "YES" ] || [ "$all_auto_enable" == "Y" ]
+	if [ "$step_yesno" == "Y" ]
     then
 		if [ "$run_user_check" == "switch" ]
 		then
@@ -101,9 +109,6 @@ function fn_owner_change(){
 #
 #--------------------------------------------------------------------------------
 function fn_tibero_boot(){
-    # 
-    bootmode=$1
-	
 	echo ""
 	echo "-----------------------------------------------------------------"
 	echo " tbis Progress> tbboot"
@@ -114,18 +119,19 @@ function fn_tibero_boot(){
     
 	if [ "$run_user_check" == "noswitch" ]
 	then
-		echo "  - tbboot $input_action"
+		echo "  - tbboot $action_option2"
 	elif [ "$run_user_check" == "switch" ]
 	then
-		echo "  - su - $user_name -c \"tbboot $bootmode\""
+		echo "  - su - $user_name -c \"tbboot $action_option2\""
 	fi	
 	echo "-----------------------------------------------------------------"
 	echo ""
-    
 
-	if [ "$step_key" == "YES" ] || [ "$all_auto_enable" == "Y" ]
+	. $current_path/lib/tibero/GeneratorModule/common.sh fn_step_yesno    
+
+	if [ "$step_yesno" == "Y" ]
 	then	
-		case $bootmode in
+		case $action_option2 in
 			"nomount")
 				if [ "$run_user_check" == "noswtich" ]
 				then
@@ -174,29 +180,29 @@ function fn_tibero_boot(){
 #
 #--------------------------------------------------------------------------------
 function fn_tibero_down(){
-    downmode=$1
-
+    
 	echo
 	echo "-----------------------------------------------------------------"
 	echo " Progress> tbdown"
 	echo "-----------------------------------------------------------------"
-	echo "  - install user : $tbis_run_user"
+	echo "  - install user : $run_user"
 	echo "  - tibero  user : $user_name"
 	echo "-----------------------------------------------------------------"
 	if [ "$run_user_check" == "noswitch" ]
 	then
-		echo "  - tbdown $downmode"
+		echo "  - tbdown $action_option2"
 	elif [ "$run_user_check" == "switch" ]
 	then
-		echo "  - su - $user_name -c \"tbdown $downmode\""
+		echo "  - su - $user_name -c \"tbdown $action_option2\""
 	fi
 	echo "-----------------------------------------------------------------"
 	echo ""
 
+	. $current_path/lib/tibero/GeneratorModule/common.sh fn_step_yesno
 
-    if [ "$step_key" == "YES" ] || [ "$all_auto_enable" == "Y" ]
+    if [ "$step_yesno" == "Y" ]
     then	
-		case $downmode in
+		case $action_option2 in
 			"normal")
 				if [ "$run_user_check" == "noswtich" ]
 				then
@@ -238,8 +244,9 @@ function fn_tibero_cm_boot(){
 	echo "  - tbcm -b"
 	echo ""
     
+	. $current_path/lib/tibero/GeneratorModule/common.sh fn_step_yesno
 	
-    if [ "$step_key" == "YES" ] || [ "$all_auto_enable" == "Y" ]
+    if [ "$step_yesno" == "Y" ]
     then
 		if [ "$run_user_check" == "noswtich" ]
 		then
@@ -266,7 +273,9 @@ function fn_tibero_cm_down(){
 	echo "  - tbcm -d"
 	echo ""
 
-    if [ "$step_key" == "YES" ] || [ "$all_auto_enable" == "Y" ]
+	. $current_path/lib/tibero/GeneratorModule/common.sh fn_step_yesno
+
+    if [ "$step_yesno" == "Y" ]
     then
 		if [ "$run_user_check" == "noswtich" ]
 		then
@@ -291,7 +300,9 @@ function fn_tibero_system_shell(){
     echo "sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y"
     echo ""
 
-    if [ "$step_key" == "YES" ] || [ "$all_auto_enable" == "Y" ]
+	. $current_path/lib/tibero/GeneratorModule/common.sh fn_step_yesno
+
+    if [ "$step_yesno" == "Y" ]
     then
 		if [ "$run_user_check" == "noswtich" ]
 		then
@@ -316,7 +327,9 @@ function fn_tibero_create_database(){
 	cat $current_path/config/tibero_credb.sql
 	echo ""
 		
-    if [ "$step_key" == "YES" ] || [ "$all_auto_enable" == "Y" ]
+	. $current_path/lib/tibero/GeneratorModule/common.sh fn_step_yesno		
+	
+    if [ "$step_yesno" == "Y" ]
     then
 		if [ "$run_user_check" == "noswtich" ]
 		then
@@ -332,8 +345,9 @@ function fn_tibero_create_database(){
 }
 #--------------------------------------------------------------------------------
 
-
-case $input_key in 
+action_option1=$1
+action_option2=$2
+case $action_option1 in 
     "fn_engine")
 		fn_engine
         ;;

@@ -16,7 +16,7 @@ function fn_install_type_menu(){
     echo "-----------------------------------------------------------------"    
     echo " * OS Configuration"
     echo "-----------------------------------------------------------------"    
-    echo " - install user: $tbis_run_user"
+    echo " - install user: $run_user"
     echo " - user name : $user_name"
     echo " - user home : $user_home"
     echo " - user group : $group_name"
@@ -27,8 +27,8 @@ function fn_install_type_menu(){
     echo " - TB_HOME : $TB_HOME"
     echo " - DB_NAME : $DB_NAME"
     echo " - LISTENER_PORT : $LISTENER_PORT"
-    echo " - CHARACTER SET : `cat $current_path/sql/credb.sql |grep CHARACTER |awk '{print $NF}'`"
-    echo " - ARCHIVE MODE : `cat $current_path/sql/credb.sql |grep -Ew "NOARCHIVELOG|ARCHIVELOG" |awk '{print $1}'`"
+    echo " - CHARACTER SET : `cat $current_path/config/tibero_credb.sql |grep CHARACTER |awk '{print $NF}'`"
+    echo " - ARCHIVE MODE : `cat $current_path/config/tibero_credb.sql |grep -Ew "NOARCHIVELOG|ARCHIVELOG" |awk '{print $1}'`"
     if [ "$tibero_node" == "SINGLE" ] || [ "$tibero_node" == "observer" ]
     then
         2>/dev/null
@@ -76,6 +76,13 @@ function fn_install_type_menu(){
 #-------------------------------------------------------------------------------
 
 
+# init
+#-------------------------------------------------------------------------------
+. $current_path/config/tibero.cfg
+. $current_path/lib/tibero/GeneratorModule/common.sh fn_profile_apply
+#-------------------------------------------------------------------------------
+
+
 #
 #-------------------------------------------------------------------------------
 fn_install_type_menu
@@ -98,13 +105,13 @@ case $press_key in
 		# tibero type check
 		if [ "$tibero_type" == "SINGLE" ]
 		then
-			. $tbis_current_path/lib/tibero/install/single.sh
+			. $current_path/lib/tibero/InstallModule/single.sh
 		elif [ "$tibero_type" == "TSC" ]
 		then
-			. $tbis_current_path/lib/tibero/install/tsc.sh
+			. $current_path/lib/tibero/InstallModule/tsc.sh
 		elif [ "$tibero_type" == "TAC" ]
 		then
-			. $tbis_current_path/lib/tibero/install/tac.sh
+			. $current_path/lib/tibero/InstallModule/tac.sh
 		fi    
         ;;
     "N"|"n")
@@ -117,13 +124,13 @@ case $press_key in
 		# tibero type check
 		if [ "$tibero_type" == "SINGLE" ]
 		then
-			. $tbis_current_path/lib/tibero/install/single.sh
+			. $current_path/lib/tibero/InstallModule/single.sh
 		elif [ "$tibero_type" == "TSC" ]
 		then
-			. $tbis_current_path/lib/tibero/install/tsc.sh
+			. $current_path/lib/tibero/InstallModule/tsc.sh
 		elif [ "$tibero_type" == "TAC" ]
 		then
-			. $tbis_current_path/lib/tibero/install/tac.sh
+			. $current_path/lib/tibero/InstallModule/tac.sh
 		fi      
         ;;
     *)
