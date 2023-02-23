@@ -133,7 +133,7 @@ function fn_tibero_boot(){
 	then	
 		case $action_option2 in
 			"nomount")
-				if [ "$run_user_check" == "noswtich" ]
+				if [ "$run_user_check" == "noswitch" ]
 				then
 					tbboot nomount
 				elif [ "$run_user_check" == "switch" ]
@@ -142,7 +142,7 @@ function fn_tibero_boot(){
 				fi				
 				;;
 			"mount")
-				if [ "$run_user_check" == "noswtich" ]
+				if [ "$run_user_check" == "noswitch" ]
 				then
 					tbboot mount
 				elif [ "$run_user_check" == "switch" ]
@@ -151,7 +151,7 @@ function fn_tibero_boot(){
 				fi
 				;;
 			"normal")
-				if [ "$run_user_check" == "noswtich" ]
+				if [ "$run_user_check" == "noswitch" ]
 				then
 					tbboot normal
 				elif [ "$run_user_check" == "switch" ]
@@ -160,7 +160,7 @@ function fn_tibero_boot(){
 				fi
 				;;
 			"recovery")
-				if [ "$run_user_check" == "noswtich" ]
+				if [ "$run_user_check" == "noswitch" ]
 				then
 					tbboot recovery
 				elif [ "$run_user_check" == "switch" ]
@@ -180,7 +180,6 @@ function fn_tibero_boot(){
 #
 #--------------------------------------------------------------------------------
 function fn_tibero_down(){
-    
 	echo
 	echo "-----------------------------------------------------------------"
 	echo " Progress> tbdown"
@@ -204,7 +203,7 @@ function fn_tibero_down(){
     then	
 		case $action_option2 in
 			"normal")
-				if [ "$run_user_check" == "noswtich" ]
+				if [ "$run_user_check" == "noswitch" ]
 				then
 					tbdown normal
 				elif [ "$run_user_check" == "switch" ]
@@ -213,7 +212,7 @@ function fn_tibero_down(){
 				fi
 				;;
 			"immediate")
-				if [ "$run_user_check" == "noswtich" ]
+				if [ "$run_user_check" == "noswitch" ]
 				then
 					tbdown immediate
 				elif [ "$run_user_check" == "switch" ]
@@ -304,7 +303,7 @@ function fn_tibero_system_shell(){
 
     if [ "$step_yesno" == "Y" ]
     then
-		if [ "$run_user_check" == "noswtich" ]
+		if [ "$run_user_check" == "noswitch" ]
 		then
 			sh $TB_HOME/scripts/system.sh -p1 tibero -p2 syscat -a1 Y -a2 Y -a3 Y -a4 Y
 		elif [ "$run_user_check" == "switch" ]
@@ -331,7 +330,7 @@ function fn_tibero_create_database(){
 	
     if [ "$step_yesno" == "Y" ]
     then
-		if [ "$run_user_check" == "noswtich" ]
+		if [ "$run_user_check" == "noswitch" ]
 		then
 			tbsql -s sys/tibero < $current_path/config/tibero_credb.sql
 			echo ""
@@ -347,6 +346,9 @@ function fn_tibero_create_database(){
 
 action_option1=$1
 action_option2=$2
+
+fn_run_user_check
+
 case $action_option1 in 
     "fn_engine")
 		fn_engine

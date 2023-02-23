@@ -8,10 +8,10 @@
 #
 #--------------------------------------------------------------------------------
 function fn_error_check(){
-	if [ -z "$option1" ] || [ -z "$option2" ]
-	then
-		fn_help_message
-	fi
+	# if [ -z "$main_option1" ] || [ -z "$main_option2" ]
+	# then
+	# 	fn_help_message
+	# fi
 
 	if [ -f $current_path/DBDeployer ]
 	then
@@ -38,7 +38,7 @@ function fn_help_message(){
 	echo "-----------------------------------------------------------------"
 	echo " option2"
 	echo "	run 		: start DBDeployer shell script"
-	echo "	auto		: automatic mode (with docker)"
+	echo "	auto		: automatic mode (or docker build)"
 	echo "-----------------------------------------------------------------"
 	echo ""
 }

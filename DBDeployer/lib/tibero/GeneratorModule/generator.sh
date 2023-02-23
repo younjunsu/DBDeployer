@@ -1,7 +1,7 @@
 #
 #--------------------------------------------------------------------------------
 function fn_profile(){
-    bash $current_path/lib/tibero/GeneratorModule/config/profile.sh
+    . $current_path/lib/tibero/GeneratorModule/config/profile.sh
 }
 #--------------------------------------------------------------------------------
 
@@ -9,7 +9,7 @@ function fn_profile(){
 #
 #--------------------------------------------------------------------------------
 function fn_instance_tip(){
-    bash $current_path/lib/tibero/GeneratorModule/config/instance_tip.sh
+    . $current_path/lib/tibero/GeneratorModule/config/instance_tip.sh
 }
 #--------------------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ function fn_instance_tip(){
 #
 #--------------------------------------------------------------------------------
 function fn_tbdsn(){
-    bash $current_path/lib/tibero/GeneratorModule/config/tbdsn_tbr.sh
+    . $current_path/lib/tibero/GeneratorModule/config/tbdsn_tbr.sh
 }
 #--------------------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ function fn_tbdsn(){
 #
 #--------------------------------------------------------------------------------
 function fn_cm_tip(){
-    bash $current_path/lib/tibero/GeneratorModule/config/cm_tip.sh
+    . $current_path/lib/tibero/GeneratorModule/config/cm_tip.sh
 }
 #--------------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ function fn_cm_tip(){
 #
 #--------------------------------------------------------------------------------
 function fn_cm_resource(){
-    bash $current_path/lib/tibero/GeneratorModule/config/cm_resource.sh
+    . $current_path/lib/tibero/GeneratorModule/config/cm_resource.sh
 }
 #--------------------------------------------------------------------------------
 
@@ -41,22 +41,21 @@ function fn_cm_resource(){
 #
 #--------------------------------------------------------------------------------
 function fn_cm_resource_command(){
-    bash $current_path/lib/tibero/GeneratorModule/config/cm_resource_command.sh
+    . $current_path/lib/tibero/GeneratorModule/config/cm_resource_command.sh
 }
 #--------------------------------------------------------------------------------
 
 
 #
 #--------------------------------------------------------------------------------
+export profile_path=$user_home/.bash_profile
 generator_option1=$1
 generator_option2=$2
 
 case $generator_option1 in
     "fn_profile")
-        export profile_path=$user_home/.bash_profile
         if [ "$generator_option2" == "apply" ]
         then
-            
             echo "-----------------------------------------------------------------"
             echo " Progress> Profile "
             echo "-----------------------------------------------------------------"
@@ -91,7 +90,7 @@ case $generator_option1 in
 
             if [ "$step_yesno" == "Y" ]
             then            
-                fn_instance_tip >> "$TB_HOME"/config/"$TB_SID".tip
+                fn_instance_tip > "$TB_HOME"/config/"$TB_SID".tip
             fi
 
         elif [ "$generator_option2" == "output" ]
@@ -114,7 +113,7 @@ case $generator_option1 in
 
             if [ "$step_yesno" == "Y" ]
             then            
-                fn_tbdsn >> "$TB_HOME"/client/config/tbdsn.tbr
+                fn_tbdsn > "$TB_HOME"/client/config/tbdsn.tbr
             fi
 
         elif [ "$generator_option2" == "output" ]
@@ -137,7 +136,7 @@ case $generator_option1 in
 
             if [ "$step_yesno" == "Y" ]
             then
-                fn_cm_tip >> "$TB_HOME"/config/"$CM_SID".tip
+                fn_cm_tip > "$TB_HOME"/config/"$CM_SID".tip
             fi
 
         elif [ "$generator_option2" == "output" ]

@@ -26,7 +26,7 @@
 . $current_path/lib/tibero/GeneratorModule/action.sh fn_owner_change
 
 # tibero boot mount
-. $current_path/lib/tibero/GeneratorModule/action.sh fn_tibero_boot mount
+. $current_path/lib/tibero/GeneratorModule/action.sh fn_tibero_boot nomount
 
 # tibero create database sql
 . $current_path/lib/tibero/GeneratorModule/action.sh fn_tibero_create_database
