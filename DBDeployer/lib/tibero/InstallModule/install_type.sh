@@ -6,7 +6,7 @@ clear
 
 #
 #-------------------------------------------------------------------------------
-function fn(){
+function fn_install_type_menu(){
     echo "[*] TIBERO DBDeployer Installation configuration"
     echo "-----------------------------------------------------------------"    
     echo " * TIBERO Mode"
@@ -68,11 +68,67 @@ function fn(){
     echo "-----------------------------------------------------------------"
     echo " * CREATE DATABASE sql"
     echo "-----------------------------------------------------------------"
-    cat $tbis_current_path/sql/credb.sql
+    cat $current_path/config/tibero_credb.sql
     echo "-----------------------------------------------------------------"
     echo ""
     printf "continue ? ( [Y]es / [N]o / [AA] All Auto] ) : "
-
-
 }
 #-------------------------------------------------------------------------------
+
+
+#
+#-------------------------------------------------------------------------------
+fn_install_type_menu
+
+if [ "$mode" == "auto" ]
+then
+    press_key="AA"
+elif [ "$mode" == "run" ]
+then
+    read press_key
+else
+    exit
+fi
+
+case $press_key in 
+    "Y"|"y")
+		# all auto mode check
+		export all_auto_enable="N"
+
+		# tibero type check
+		if [ "$tibero_type" == "SINGLE" ]
+		then
+			. $tbis_current_path/lib/tibero/install/single.sh
+		elif [ "$tibero_type" == "TSC" ]
+		then
+			. $tbis_current_path/lib/tibero/install/tsc.sh
+		elif [ "$tibero_type" == "TAC" ]
+		then
+			. $tbis_current_path/lib/tibero/install/tac.sh
+		fi    
+        ;;
+    "N"|"n")
+        exit
+        ;;
+    "AA"|"aa")
+		# all auto mode check
+		export all_auto_enable=Y
+
+		# tibero type check
+		if [ "$tibero_type" == "SINGLE" ]
+		then
+			. $tbis_current_path/lib/tibero/install/single.sh
+		elif [ "$tibero_type" == "TSC" ]
+		then
+			. $tbis_current_path/lib/tibero/install/tsc.sh
+		elif [ "$tibero_type" == "TAC" ]
+		then
+			. $tbis_current_path/lib/tibero/install/tac.sh
+		fi      
+        ;;
+    *)
+        exit
+        ;;
+esac
+#-------------------------------------------------------------------------------
+

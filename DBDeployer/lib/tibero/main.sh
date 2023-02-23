@@ -8,8 +8,8 @@ function fn_main_menu(){
     echo "[*] TIBERO DBDeployer main menu"
     echo "-----------------------------------------------------------------"
     echo " 1. install"
-    echo " 2. report"
-    echo " 3. config"
+    echo " 2. config"
+    echo " 3. report"
     echo "-----------------------------------------------------------------"
     echo " press other key to quit"
     echo "-----------------------------------------------------------------"
@@ -33,14 +33,20 @@ fi
 
 case $press_key in
     1)
-        $current_path/lib/tibero/
-    ;;
+        # install module
+        . $current_path/config/tibero.cfg
+        . $current_path/lib/ReferenceModule/error.sh
+        . $current_path/lib/InstallModule/install_type.sh
+        ;;
     2)
-
-    ;;
+        # config module
+        . $current_path/config/tibero.cfg
+        . $current_path/lib/ReferenceModule/error.sh
+        2>/dev/null
+        ;;
     3)
-
-    ;;
+        # report module
+        ;;
     *)
         exit 1
     ;;

@@ -13,7 +13,6 @@ function fn_error_check(){
 		fn_help_message
 	fi
 
-	current_path=`pwd`
 	if [ -f $current_path/DBDeployer ]
 	then
 		echo "  error> working path check"
@@ -48,6 +47,7 @@ function fn_help_message(){
 #--------------------------------------------------------------------------------
 option1=$1
 option2=$2
+export current_path=`pwd`
 fn_error_check
 
 case $option1
@@ -56,11 +56,11 @@ case $option1
 			if [ "$option2" == "run" ]
 			then
 				export mode="run"
-				bash $current_path/lib/tibero/InstallModule/install_type.sh
+				. $current_path/lib/tibero/InstallModule/install_type.sh
 			elif [ "$options2" == "auto" ]
 			then
 				export mode="auto"
-				bash $current_path/lib/tibero/InstallModule/install_type.sh
+				. $current_path/lib/tibero/InstallModule/install_type.sh
 			else
 				fn_help_message
 			fi
