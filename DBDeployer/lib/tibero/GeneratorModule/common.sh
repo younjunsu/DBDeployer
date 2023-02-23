@@ -3,7 +3,7 @@
 function fn_step_yesno(){
     if [ "$all_auto_enable" == "Y" ]
     then
-        export step_yesno="YES"
+        export step_yesno="Y"
     else
         printf "  continue ? ( [Y]es / [N]o / [S]kip ) : "
         read step_yesno

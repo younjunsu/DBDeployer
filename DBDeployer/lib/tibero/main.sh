@@ -35,13 +35,13 @@ case $press_key in
     1)
         # install module
         . $current_path/config/tibero.cfg
-        . $current_path/lib/CommonModule/error.sh
-        . $current_path/lib/InstallModule/install_type.sh
+        . $current_path/lib/tibero/ExceptionModule/error.sh
+        . $current_path/lib/tibero/InstallModule/install_type.sh
         ;;
     2)
         # config module
         . $current_path/config/tibero.cfg
-        . $current_path/lib/ReferenceModule/error.sh
+        . $current_path/lib/tibero/ExceptionModule/error.sh
         2>/dev/null
         ;;
     3)
