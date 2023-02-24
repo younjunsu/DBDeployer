@@ -38,7 +38,8 @@ function fn_help_message(){
 	echo "-----------------------------------------------------------------"
 	echo " option2"
 	echo "	run 		: start DBDeployer shell script"
-	echo "	auto		: automatic mode (or docker build)"
+	echo "	auto		: automatic mode"
+	echo "  docker		: automatic container run mode (from docker)"
 	echo "-----------------------------------------------------------------"
 	echo ""
 }
@@ -75,6 +76,10 @@ case $main_option1 in
 			elif [ "$main_option2" == "auto" ]
 			then
 				export mode="auto"
+			elif [ "$main_option2" == "docker" ]
+			then
+				export mode="auto"
+				export docker="Y"
 			else
 				fn_help_message
 			fi

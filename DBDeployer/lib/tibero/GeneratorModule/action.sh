@@ -22,7 +22,7 @@ function fn_engine(){
 	echo "-----------------------------------------------------------------"
 	echo ""
 	echo " - gunzip ../binary/tibero*.tar.gz"
-	echo " - tar -xvf ../binary/tibero*.tar -C $TB_HOME"
+	echo " - tar -xvf ../binary/tibero*.tar -C $user_home"
 	echo ""
 	
 	. $current_path/lib/tibero/GeneratorModule/common.sh fn_step_yesno
