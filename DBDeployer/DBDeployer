@@ -59,10 +59,10 @@ case $main_option1 in
 			then
 				export mode="run"
 				. $current_path/lib/tibero/main.sh
-			elif [ "$main_options2" == "auto" ]
+			elif [ "$main_option2" == "auto" ]
 			then
 				export mode="auto"
-				. $current_path/lib/tibero/InstallModule/main.sh
+				. $current_path/lib/tibero/main.sh
 			else
 				fn_help_message
 			fi
@@ -72,7 +72,7 @@ case $main_option1 in
 			if [ "$main_option2" == "run" ]
 			then
 				export mode="run"
-			elif [ "$main_options2" == "auto" ]
+			elif [ "$main_option2" == "auto" ]
 			then
 				export mode="auto"
 			else
