@@ -33,8 +33,10 @@ function fn_help_message(){
 	echo " usage: ./DBDeployer [option1] [option2]"
 	echo "-----------------------------------------------------------------"
 	echo " option1"
-	echo "	tibero		: tibero installation"
-	echo "	cubrid		: cubrid installation"
+	echo "	tibero		: tibero installation 		(Supported on version 6   or higher)"
+	# echo "	cubrid		: cubrid installation 		(Supported on version 8   or higher)"
+	# echo "	mysql		: mysql installation		(Supported on version 8.0 or higher)"
+	# echo "	postgres	: postgres installation		(Supported on version 13  or higher)"
 	echo "-----------------------------------------------------------------"
 	echo " option2"
 	echo "	run 		: start DBDeployer shell script"
@@ -84,6 +86,38 @@ case $main_option1 in
 				fn_help_message
 			fi
 		;;
+	"mysql"|"MYSQL")
+		main_option1_value="mysql"
+			if [ "$main_option2" == "run" ]
+			then
+				export mode="run"
+			elif [ "$main_option2" == "auto" ]
+			then
+				export mode="auto"
+			elif [ "$main_option2" == "docker" ]
+			then
+				export mode="auto"
+				export docker="Y"
+			else
+				fn_help_message
+			fi
+		;;		
+	"postgres"|"postgresql")
+		main_option1_value="postgres"
+			if [ "$main_option2" == "run" ]
+			then
+				export mode="run"
+			elif [ "$main_option2" == "auto" ]
+			then
+				export mode="auto"
+			elif [ "$main_option2" == "docker" ]
+			then
+				export mode="auto"
+				export docker="Y"
+			else
+				fn_help_message
+			fi
+		;;				
 	*)
 		fn_help_message
 		;;	
