@@ -66,6 +66,12 @@ case $main_option1 in
 			then
 				export mode="auto"
 				. $current_path/lib/tibero/main.sh
+			elif [ "$main_option2" == "docker" ]
+			then
+				export mode="auto"
+				. $current_path/lib/tibero/main.sh
+				export entrypoint="y"
+
 			else
 				fn_help_message
 			fi
